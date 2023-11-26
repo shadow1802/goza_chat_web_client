@@ -61,8 +61,9 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
 
             <div className="message_content">
                 {!isSameUser && (<p className="text-sm font-semibold text-black">{message.createdBy.fullName} <span className="ml-2 text-xs font-normal text-sky-600">{dateTimeConverter(String(message.lastModified))}</span></p>)}
-                <p className="text-sm hover:bg-gray-200 text-gray-700">{message.message}</p>
-                {message.file && <img src={message.file} className="border-2 max-w-[250px] max-h-[400px] rounded-lg"/>}
+                <p className="min-w-[100px] group text-sm hover:scale-[115%] hover:bg-black hover:bg-opacity-10 rounded-md hover:shadow-md
+                duration-200 hover:px-2 text-gray-700">{message.message} <span className="text-[0.7rem] text-sky-600 hidden group-hover:inline">{dateTimeConverter(String(message.lastModified))}</span></p>
+                {message.file && <img src={message.file} className="hover:scale-[115%] duration-200 shadow-lg max-w-[250px] max-h-[400px] rounded-lg"/>}
                 {
                     message.reactions.length > 0 && <div>
                         { message.reactions.map((item: any, index) => <div key={index} className="w-9 h-5 text-xs border-[0.5px] flex justify-center items-center rounded-lg border-sky-500">

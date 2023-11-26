@@ -6,18 +6,22 @@ import { Switch } from "@/components/ui/switch"
 import { useLobbyContext } from "@/context/Lobby.context";
 import useAuthValue from "@/utils/useAuthValue";
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { FaCopy, FaRegCopy, FaUserPlus, FaUserTimes } from "react-icons/fa";
 import useInvoker from "@/utils/useInvoker";
 import UploadService from "@/utils/s3.service";
 import { useParams } from "next/navigation";
+import { ROOM_ROLES, ROOM_ROLES_COLORS } from "@/constants/room.roles";
+import UserRender from "../user.render";
 
 type Props = {}
 
@@ -72,15 +76,23 @@ const RoomSetting: FC<Props> = () => {
     }
 
     const kick = async (userId: string) => {
-        const handler = await invoker.post(`/usersrooms/delete`, {
+
+        console.log("xoa khoi phong", userId)
+
+        const res = await invoker.post(`/usersrooms/delete`, {
             userId, roomId: room
         })
-        if (roomDetail) {
 
-            const asd = roomDetail.roomUsers.filter(item => item.user._id !== userId)
+        if (roomDetail && res.status === 200) {
+            setRoomDetail(prev => {
+                if (prev) {
+                    const asd = prev.roomUsers.filter(item => item.user._id !== userId)
 
-            const newRoomDetail = { ...roomDetail, roomUsers: asd }
-            setRoomDetail(newRoomDetail)
+                    console.log(asd)
+
+                    return { ...prev, roomUsers: asd }
+                } else return null
+            })
         }
     }
 
@@ -123,17 +135,68 @@ const RoomSetting: FC<Props> = () => {
 
                 <div className="border-b-2 flex p-4 justify-between items-center">
                     <p className="text-sm font-semibold">Danh sách thành viên</p>
+                    <AlertDialog>
+                        <AlertDialogTrigger><FaUserPlus className="text-lg text-sky-600" /></AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Thêm thành viên</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Sau khi thêm thành viên, người dùng có thể gửi tin nhắn, ảnh, video,...
+                                    <div className="mt-4 border-2">
+                                        {
+                                            users.filter(item => !roomDetail?.roomUsers.map(item => item.user._id).includes(item._id)).map(item => <div
+                                                key={item._id} className="group hover:bg-sky-500 border-b-2 p-2 user_room flex items-center justify-between space-x-2">
+                                                <div className="flex items-center space-x-2">
+                                                    <div className="w-10 h-10 border-2 rounded-full bg-sky-600"></div>
+                                                    <div>
+                                                        <p className="group-hover:text-white text-gray-700 text-sm">{item.fullName}</p>
+                                                        <p className="group-hover:text-white text-xs text-gray-600 font-semibold">@{item.username}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="group-hover:flex hidden space-x-2 items-center">
+                                                    <FaUserPlus className="text-lg cursor-pointer text-white" />
+                                                </div>
+                                            </div>)
+                                        }
+                                    </div>
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Đóng</AlertDialogCancel>
+
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
 
                 {roomDetail?.roomUsers?.map(user => {
-                    return <div key={user._id} className="hover:bg-sky-500 py-2 px-4 flex items-center space-x-2 justify-between">
+                    return <div key={"room_setting_user_" + user._id} className="hover:bg-sky-500 py-2 px-4 flex items-center space-x-2 justify-between">
                         <div className="flex space-x-2 items-center">
                             {user.user.avatar ? <img src={user.user.avatar} className="w-10 h-10 rounded-full" />
                                 : <img src="/images/default-avatar.jpg" className="w-10 h-10 rounded-full border-2" />
                             }
-                            <p className="text-sm font-semibold">{user.user.fullName}</p>
+                            <div>
+                                <p className="text-sm font-semibold">{user.user.fullName} {authValue?.user._id === user.user._id && "(bạn)"}</p>
+                                <p className={`text-xs font-bold lowercase ${ROOM_ROLES_COLORS[user.roomRole]}`}>{ROOM_ROLES[user.roomRole]}</p>
+                            </div>
                         </div>
-                        {authValue?.user._id === user.user._id ? <></> : <button disabled={!isOwner} onClick={() => kick(user.user._id)}><FaUserTimes className="text-red-500 text-lg" /></button>}
+                        {authValue?.user._id === user.user._id ? <></> : <>
+                            <AlertDialog>
+                                <AlertDialogTrigger><button disabled={!isOwner} className="text-red-500 disabled:text-gray-500"><FaUserTimes className="text-lg" /></button></AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Bạn muốn xóa thành viên này khỏi phòng hay không?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Sau khi bị xóa, người dùng vẫn có thể tiếp tục vào phòng của bạn
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Hủy bỏ</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => kick(user.user._id)}>Đồng ý</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </>}
                     </div>
                 })}
             </div>
