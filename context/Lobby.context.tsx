@@ -1,15 +1,14 @@
 "use client"
-import { CreatedBy, IRoom, LastMessage } from "@/types/room"
+import { CreatedBy, IRoom } from "@/types/room"
 import { ICurrentUser, IUser } from "@/types/user"
-
+import { useToast } from "@/components/ui/use-toast"
 import { ReactNode, Dispatch, SetStateAction, useState, createContext, useContext, useEffect } from "react"
 import { useSocket } from "./Socket.context"
-import { useAuthState } from "./Auth.context"
-import guardian from "@/utils/guardian"
 import { getCookie } from "cookies-next"
 import { AuthState } from "@/types/auth"
 import { INotify } from "@/types/notify"
 import { IOutSide } from "@/types/outside"
+import { dateTimeConverter } from "@/utils/dateTimeConverter"
 
 const LobbyContext = createContext<{
     users: IUser[],
@@ -22,15 +21,15 @@ const LobbyContext = createContext<{
     setShowChatScreen: Dispatch<SetStateAction<boolean>>,
     notifies: INotify[],
     setNotifies: Dispatch<SetStateAction<INotify[]>>
-}>({ 
-    users: [], 
-    rooms: [], 
-    setUsers:() => [], 
-    setRooms:() => [], 
-    showChatScreen: false, 
-    setShowChatScreen:() => false, 
+}>({
+    users: [],
+    rooms: [],
+    setUsers: () => [],
+    setRooms: () => [],
+    showChatScreen: false,
+    setShowChatScreen: () => false,
     currentUser: null,
-    setCurrentUser:() => [],
+    setCurrentUser: () => [],
     notifies: [],
     setNotifies: () => []
 })
@@ -44,6 +43,7 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
     const [rooms, setRooms] = useState<IRoom[]>(initialRooms)
     const [currentUser, setCurrentUser] = useState<ICurrentUser | null>(initialCurrentUser)
     const [notifies, setNotifies] = useState<INotify[]>(initialNotifies)
+    const { toast } = useToast()
     const [showChatScreen, setShowChatScreen] = useState<boolean>(false)
     const { socket } = useSocket()
 
@@ -60,21 +60,36 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
 
         socket.on("receive_chat_room_outside", (data: IOutSide) => {
 
+            console.log(data)
+
             const roomIndex = rooms.findIndex(room => room._id === data.room._id)
+
 
             setRooms(prev => {
                 const newRooms = [...prev]
-                newRooms[roomIndex].lastMessage = { 
-                    _id: data._id, 
-                    message: data.message, 
-                    lastModified: data.lastModified, 
+                newRooms[roomIndex].lastMessage = {
+                    _id: data._id,
+                    message: data.message,
+                    lastModified: data.lastModified,
                     createdBy: data.createdBy as CreatedBy,
                     isDeleted: false
                 }
                 return newRooms
             })
 
-            console.log("receive_chat_room_outside", data)
+            toast({
+                title: `Tin nhắn mới`,
+                description: <div className="flex items-center space-x-3">
+                    {data.createdBy.avatar ? <img src={data.createdBy.avatar} className="border-2 border-sky-500 w-12 h-12 rounded-full" />
+                        : <img src="images/default-avatar.jpg" className="border-2 border-sky-500 w-12 h-12 rounded-full" />}
+                    <div>
+                        <p className="text-xs text-black">{data.room.roomName}</p>
+                        <p className="text-sm font-semibold text-sky-500">{data.createdBy.fullName}  <span className="text-xs text-gray-500">{dateTimeConverter(String(data.createdTime))}</span></p>
+                        <p className="text-xs">{data.message}</p>
+                    </div>
+                </div>
+            })
+
         })
 
         socket.on("login_time", data => console.log(data))
@@ -82,7 +97,7 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
     }, [authCookie])
 
     return <LobbyContext.Provider value={{ users, rooms, setUsers, setRooms, showChatScreen, setShowChatScreen, currentUser, setCurrentUser, notifies, setNotifies }}>
-        { children }
+        {children}
     </LobbyContext.Provider>
 }
 
