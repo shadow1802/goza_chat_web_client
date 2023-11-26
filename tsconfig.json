@@ -22,6 +22,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(main)/[room]/meeting/meeting.view.tsx", "app/(main)/[room]/meeting/page.tsx"],
   "exclude": ["node_modules"]
 }
