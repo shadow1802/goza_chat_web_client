@@ -39,6 +39,7 @@ import { dateTimeConverter } from "@/utils/dateTimeConverter"
 import useQuickBlox from "@/utils/useQuickBlox"
 import useAuthValue from "@/utils/useAuthValue"
 import { IRoomDetail } from "@/types/room.detail"
+import SidebarNotify from "./sidebar.notify"
 
 type Props = {}
 
@@ -76,7 +77,7 @@ const Sidebar: FC<Props> = (props) => {
     }
 
     useEffect(() => {
-        
+
     }, [])
 
     return <div className="w-[360px] min-h-screen bg-white flex overflow-auto">
@@ -93,6 +94,7 @@ const Sidebar: FC<Props> = (props) => {
                 </div>
                 {rooms?.filter(item => item.roomType === 3).map(item => <RoomCard key={item._id} room={item} />)}
             </div>
+
             <div className="w-full h-[20vh] bg-sky-500 flex flex-col items-center justify-between py-5">
                 <Dialog open={showRoomCreator} onOpenChange={setShowRoomCreator}>
                     <DialogTrigger>
@@ -103,7 +105,7 @@ const Sidebar: FC<Props> = (props) => {
                             <DialogTitle className="text-gray-600">Tạo phòng</DialogTitle>
                         </DialogHeader>
 
-                        <RoomCreator setShowRoomCreator={setShowRoomCreator} setPrivateRoomDetail={setPrivateRoomDetail}/>
+                        <RoomCreator setShowRoomCreator={setShowRoomCreator} setPrivateRoomDetail={setPrivateRoomDetail} />
 
                     </DialogContent>
                 </Dialog>
@@ -121,21 +123,7 @@ const Sidebar: FC<Props> = (props) => {
                     <Title />
                     <Popover>
                         <PopoverTrigger><img src="/icons/bell.svg" className="w-5 h-5" alt="" /></PopoverTrigger>
-                        <PopoverContent className="w-[320px] p-3">
-                            <div className="space-y-2 h-[300px] overflow-y-auto scrollbar-none border-b-2 border-gray-200">
-                                {notifies?.map(noti => {
-                                    const content = JSON.parse(noti.content) as INotifyContentMessage
-                                    return <div key={noti._id} className="hover:bg-sky-500 px-2 py-1 rounded-md duration-200 cursor-pointer flex items-center space-x-2">
-                                        {content.createdBy.avatar ? <img src={content.createdBy.avatar} className="w-8 h-8 rounded-full" /> : <div className="w-7 h-7 rounded-full bg-red-500"></div>}
-                                        <div>
-                                            <p className="text-sm">{content.createdBy.fullName} <span className="text-xs">{dateTimeConverter(noti.createdAt)}</span></p>
-                                            <p className="text-sm font-semibold">{NOTIFY[noti.type]}</p>
-                                        </div>
-                                    </div>
-                                })}
-                            </div>
-                            {notifies.length > 0 && <p className="hover:text-sky-500 cursor-pointer text-sm">Đánh dấu là đã đọc</p>}
-                        </PopoverContent>
+                        <SidebarNotify notifies={notifies} />
                     </Popover>
                 </div>
 
@@ -182,7 +170,7 @@ const Sidebar: FC<Props> = (props) => {
             </div>
 
             <div className="absolute bottom-0 flex space-x-2 w-full bg-white border-t-2 h-14 items-center px-2">
-                { currentUser?.avatar ? <img src={currentUser.avatar} className="w-11 h-11 rounded-full"/> : <img src="/images/default-avatar.jpg" className="border-2 w-11 h-11 rounded-full"/>}
+                {currentUser?.avatar ? <img src={currentUser.avatar} className="w-11 h-11 rounded-full" /> : <img src="/images/default-avatar.jpg" className="border-2 w-11 h-11 rounded-full" />}
                 <div className="">
                     <p className="leading-5 text-gray-700 font-semibold text-[0.9rem]">{currentUser?.fullName}</p>
                     <p className="leading-5 text-gray-600 font-semibold text-xs">@{currentUser?.username}</p>

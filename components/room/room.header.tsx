@@ -17,7 +17,7 @@ const RoomHeader: FC<Props> = (props) => {
     const { room } = useParams()
     const { roomDetail } = useRoomContext()
 
-    return <div className="room_header w-full bg-white border-l-2 border-b-2 flex justify-between items-center py-2 px-4">
+    return <div className="room_header min-h-[6vh] w-full bg-white border-l-2 border-b-2 flex justify-between items-center py-2 px-4">
         <div>
             <p className="text-sm font-semibold text-black uppercase">{roomDetail?.roomName}</p>
             <p className="text-xs font-semibold text-gray-500">{roomDetail?.roomUsers?.length} thành viên</p>
