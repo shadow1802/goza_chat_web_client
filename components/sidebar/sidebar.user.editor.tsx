@@ -28,7 +28,9 @@ const UserEditor: FC<Props> = (props) => {
         const controller = new AbortController()
         try {
             const { status, data, message } = await invoker.put("/user/changeBufaByToken")
-            setCurrentUser(prev => ({ ...prev, bufa: data }))
+            if (currentUser) {
+                setCurrentUser({ ...currentUser, bufa: data })
+            }
         } catch (error) {
 
         } finally {
@@ -57,10 +59,12 @@ const UserEditor: FC<Props> = (props) => {
             })
 
             if (status === 200) {
-                setCurrentUser(prev => ({ ...prev, fullName: data.fullName, email: data.email, phoneNumber: data.phoneNumber, bio: data.bio }))
+                if (currentUser) {
+                    setCurrentUser({ ...currentUser, fullName: data.fullName, email: data.email, phoneNumber: data.phoneNumber, bio: data.bio })
+                }
                 toast({
                     title: "Thành công",
-                    description: <p className="text-green-600">{message}</p> 
+                    description: <p className="text-green-600">{message}</p>
                 })
             }
         } catch (error) {

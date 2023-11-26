@@ -32,6 +32,6 @@ export interface ICurrentUser {
     lastLogin: Date
     bio: string
     updatedTime: Date
-    bufa: string
+    bufa?: string
     rooms: string[]
 }
