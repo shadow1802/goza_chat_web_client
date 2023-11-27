@@ -52,8 +52,6 @@ const Sidebar: FC<Props> = (props) => {
     const [showRoomCreator, setShowRoomCreator] = useState<boolean>(false)
     const [privateRoomDetail, setPrivateRoomDetail] = useState<IRoomDetail | null>(null)
 
-    // const { QB, makeCall } = useQuickBlox()
-
     const { get, post } = useInvoker()
 
 

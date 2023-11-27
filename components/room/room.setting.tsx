@@ -169,36 +169,38 @@ const RoomSetting: FC<Props> = () => {
                     </AlertDialog>
                 </div>
 
-                {roomDetail?.roomUsers?.map(user => {
-                    return <div key={"room_setting_user_" + user._id} className="hover:bg-sky-500 py-2 px-4 flex items-center space-x-2 justify-between">
-                        <div className="flex space-x-2 items-center">
-                            {user.user.avatar ? <img src={user.user.avatar} className="w-10 h-10 rounded-full" />
-                                : <img src="/images/default-avatar.jpg" className="w-10 h-10 rounded-full border-2" />
-                            }
-                            <div>
-                                <p className="text-sm font-semibold">{user.user.fullName} {authValue?.user._id === user.user._id && "(bạn)"}</p>
-                                <p className={`text-xs font-bold lowercase ${ROOM_ROLES_COLORS[user.roomRole]}`}>{ROOM_ROLES[user.roomRole]}</p>
+                <div className="max-h-[400px] overflow-y-auto scrollbar-none">
+                    {roomDetail?.roomUsers?.map(user => {
+                        return <div key={"room_setting_user_" + user._id} className="hover:bg-sky-500 py-2 px-4 flex items-center space-x-2 justify-between">
+                            <div className="flex space-x-2 items-center">
+                                {user.user.avatar ? <img src={user.user.avatar} className="w-10 h-10 rounded-full" />
+                                    : <img src="/images/default-avatar.jpg" className="w-10 h-10 rounded-full border-2" />
+                                }
+                                <div>
+                                    <p className="text-sm font-semibold">{user.user.fullName} {authValue?.user._id === user.user._id && "(bạn)"}</p>
+                                    <p className={`text-xs font-bold lowercase ${ROOM_ROLES_COLORS[user.roomRole]}`}>{ROOM_ROLES[user.roomRole]}</p>
+                                </div>
                             </div>
+                            {authValue?.user._id === user.user._id ? <></> : <>
+                                <AlertDialog>
+                                    <AlertDialogTrigger><button disabled={!isOwner} className="text-red-500 disabled:text-gray-500"><FaUserTimes className="text-lg" /></button></AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Bạn muốn xóa thành viên này khỏi phòng hay không?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Sau khi bị xóa, người dùng vẫn có thể tiếp tục vào phòng của bạn
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Hủy bỏ</AlertDialogCancel>
+                                            <AlertDialogAction onClick={() => kick(user.user._id)}>Đồng ý</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </>}
                         </div>
-                        {authValue?.user._id === user.user._id ? <></> : <>
-                            <AlertDialog>
-                                <AlertDialogTrigger><button disabled={!isOwner} className="text-red-500 disabled:text-gray-500"><FaUserTimes className="text-lg" /></button></AlertDialogTrigger>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>Bạn muốn xóa thành viên này khỏi phòng hay không?</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            Sau khi bị xóa, người dùng vẫn có thể tiếp tục vào phòng của bạn
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>Hủy bỏ</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => kick(user.user._id)}>Đồng ý</AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
-                        </>}
-                    </div>
-                })}
+                    })}
+                </div>
             </div>
         </div>
     </div>

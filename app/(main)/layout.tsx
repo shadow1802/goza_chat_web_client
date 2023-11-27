@@ -20,8 +20,6 @@ export default async function MainLayout({ children }: { children: React.ReactNo
 
     const cookieStore = cookies()
     const authCookie = cookieStore.get('auth')
-    const authState = authCookie ? JSON.parse(authCookie.value) as AuthState : null
-    console.log(authState)
 
     const loader = async (): Promise<{
         rooms: IRoom[],
@@ -32,8 +30,6 @@ export default async function MainLayout({ children }: { children: React.ReactNo
 
         try {
             const serverLoader = new ServerLoader()
-
-            console.log(serverLoader.configs)
 
             const [rooms, users, currentUser, notifies] = await Promise.all([
                 serverLoader.getJoinedRooms(),

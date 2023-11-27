@@ -18,8 +18,6 @@ export default class ServerLoader {
 
         if (authState) {
 
-            console.log("load auth state")
-
             this.configs = {
                 headers: {
                     Authorization: `Bearer ${authState?.token}`
@@ -36,7 +34,7 @@ export default class ServerLoader {
             const { status, data } = await req.json()
 
             if (status === 200) {
-                return data
+                return data.filter((item: any) => item !== null)
             } else {
                 return []
             }
@@ -51,7 +49,7 @@ export default class ServerLoader {
             const req = await fetch("https://api-chat.luongson.me/api/notify/getListOfNotify", this.configs)
 
             const res = await req.json()
-            return res
+            return res.filter((item: any) => ['receive_message'].includes(item.type))
         } catch(error: any) {
             log.error(["getJoinedRooms", error])
             return []

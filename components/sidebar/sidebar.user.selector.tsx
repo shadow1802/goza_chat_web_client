@@ -23,7 +23,8 @@ export default function SidebarUserSelector({ setPartner }:Props) {
         <SelectContent>
             {users.map(u => <SelectItem key={u._id} value={u._id} className="py-2">
                 <div className="flex items-center space-x-2">
-                    <img src={u.avatar} alt="" className="w-8 h-8" />
+                    { u.avatar ? <img src={u.avatar} alt="" className="w-8 h-8 rounded-full" />
+                    : <img src="/images/default-avatar.jpg" alt="" className="w-8 h-8 rounded-full" />}
                     <p className="text-sm font-semibold text-gray-700">{u.fullName} ({u.username})</p>
                 </div>
             </SelectItem>)}
