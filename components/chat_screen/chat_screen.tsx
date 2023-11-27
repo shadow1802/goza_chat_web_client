@@ -88,6 +88,8 @@ const ChatScreen: FC<Props> = ({ roomDetail }) => {
         return () => { console.log(`leave room`) }
     }, [roomDetail, socket])
 
+    const members = roomDetail?.roomUsers.map(item => item.user._id).filter(item => item !== authValue?.user._id)
+
     const handleSendMesssage = async (event: FormEvent) => {
 
         event.preventDefault()
@@ -96,7 +98,7 @@ const ChatScreen: FC<Props> = ({ roomDetail }) => {
 
             const { data, message, status } = await invoker.post("/chat/insert", { message: messageRef.current.value, room: roomDetail?._id, type: 1 })
             console.log(data)
-            socket.emit("insert_chat", { messageObject: data, roomId: roomDetail?._id })
+            socket.emit("insert_chat", { messageObject: data, roomId: roomDetail?._id, userIds: members })
             messageRef.current.value = ""
         }
     }

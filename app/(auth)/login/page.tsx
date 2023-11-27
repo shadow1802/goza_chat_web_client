@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import LoginContainer from './login.container'
 
 export const metadata: Metadata = {
-    icons: "/images/luongson-logo.svg",
+    icons: "/images/logo.png",
     title: 'Đăng nhập',
     description: 'Đăng nhập vào nào',
 }

@@ -22,6 +22,7 @@ import UploadService from "@/utils/s3.service";
 import { useParams } from "next/navigation";
 import { ROOM_ROLES, ROOM_ROLES_COLORS } from "@/constants/room.roles";
 import UserRender from "../user.render";
+import { useSocket } from "@/context/Socket.context";
 
 type Props = {}
 
@@ -29,14 +30,27 @@ const RoomSetting: FC<Props> = () => {
 
     const { room } = useParams()
     const { roomDetail, setRoomDetail } = useRoomContext()
+    const { socket } = useSocket()
     const [roomName, setRoomName] = useState<string>(roomDetail?.roomName ?? "")
     const { users } = useLobbyContext()
     const authValue = useAuthValue()
     const [isActive, setIsActive] = useState<boolean>(roomDetail?.isActive ?? false)
-    const [showAddMemberBar, setShowAddMemberBar] = useState<boolean>(false)
     const fileRef = useRef<HTMLInputElement>(null)
     const [roomIconPreview, setRoomIconPreview] = useState<string>(roomDetail?.roomIcon ?? "")
     const invoker = useInvoker()
+
+    const inviteMember = async ({ roomId, userId }: { roomId: string, userId: string }) => {
+        const { status, data } = await invoker.post("/usersrooms/insert", {
+            userId,
+            roomId
+        })
+
+        if (status === 200) {
+            const newData = await invoker.get(`/room/getRoomById/${roomId}`)
+            setRoomDetail(newData.data)
+            socket.emit("invite_into_room", { roomObject: data, roomId: room, userIds: [userId] })
+        }
+    }
 
     const onSelectedFile = async () => {
         if (fileRef?.current?.files) {
@@ -154,7 +168,7 @@ const RoomSetting: FC<Props> = () => {
                                                     </div>
                                                 </div>
                                                 <div className="group-hover:flex hidden space-x-2 items-center">
-                                                    <FaUserPlus className="text-lg cursor-pointer text-white" />
+                                                    <FaUserPlus onClick={() => inviteMember({ userId: item._id, roomId: String(room) })} className="cursor-pointer text-lg text-white" />
                                                 </div>
                                             </div>)
                                         }

@@ -184,7 +184,10 @@ const RoomContainer: FC<Props> = (props) => {
 
     const handleReaction = async (message: IMessage, emoji: string) => {
         const { data, status } = await invoker.post(`/reaction/insert`, { chatId: message._id, emoji: emoji })
-        socket.emit("send_reaction_chat", { message, roomId: room, emoji })
+
+        console.log(data)
+
+        socket.emit("send_reaction_chat", { message: data, roomId: room, emoji })
     }
 
     return <div className="flex-grow min-h-screen overflow-y-hidden text-gray-200">

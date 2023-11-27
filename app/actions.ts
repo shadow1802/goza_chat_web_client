@@ -2,7 +2,11 @@
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
-export async function login(form: FormData) {
+type LoginConfigs = {
+    redirectTo?: string
+}
+
+export async function login(form: FormData, configs?: LoginConfigs) {
 
     const username = form.get("username")
     const password = form.get("password")
@@ -21,7 +25,7 @@ export async function login(form: FormData) {
         cookies().set("auth", JSON.stringify({ token, user: {
             _id: user._id, username: user.username, role: user.role, bio: user.bio
         } }))
-        redirect("/")
+        redirect(configs?.redirectTo ?? "/")
     } else throw new Error(message)
 
 }

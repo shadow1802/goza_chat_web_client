@@ -60,10 +60,7 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
 
         socket.on("receive_chat_room_outside", (data: IOutSide) => {
 
-            console.log(data)
-
             const roomIndex = rooms.findIndex(room => room._id === data.room._id)
-
 
             setRooms(prev => {
                 const newRooms = [...prev]
@@ -90,6 +87,13 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
                 </div>
             })
 
+        })
+
+        socket.on("receive_invite_into_room", (data) => {
+            toast({
+                title: `Ai đó đã mời bạn vào phòng`,
+            })
+            setRooms(prev => [...prev, data.roomObject])
         })
 
         socket.on("login_time", data => console.log(data))

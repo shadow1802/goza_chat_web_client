@@ -37,9 +37,9 @@ const RoomCardMenu: FC<Props> = ({ room, children }) => {
                     <div className="text-gray-600 border-b-[0.5px] border-gray-500 pb-2 px-4 flex justify-between space-x-2 items-center">
                         <div className="w-full">
                            <span className="text-xs font-normal">{dateTimeConverter(room.lastMessage.lastModified)}</span>
-                            <p className="text-sm font-semibold">{room.lastMessage.createdBy.fullName}: <span className="font-normal">{room.lastMessage.message}</span>...</p>
+                            <p className="text-sm font-semibold">{room?.lastMessage?.createdBy?.fullName}: <span className="font-normal">{room.lastMessage.message}</span>...</p>
                         </div>
-                        { room.lastMessage.createdBy.avatar ? <img src={room.lastMessage.createdBy.avatar} className="w-9 h-9 rounded-full"/>:<img src="/images/default-avatar.jpg" className="border-2 w-9 h-9 rounded-full"/>}
+                        { room.lastMessage?.createdBy?.avatar ? <img src={room.lastMessage.createdBy.avatar} className="w-9 h-9 rounded-full"/>:<img src="/images/default-avatar.jpg" className="border-2 w-9 h-9 rounded-full"/>}
                     </div>
                 ) }
 

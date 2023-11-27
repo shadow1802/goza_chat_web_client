@@ -17,9 +17,9 @@ const RoomCard: FC<Props> = ({ room }) => {
     ]
 
     if (room.lastMessage) list.unshift(<button disabled className="text-white flex space-x-2 items-center">
-        {room.lastMessage.createdBy.avatar ? <img src={room.lastMessage.createdBy.avatar} className="w-9 h-9 rounded-full"/>:<div className="w-8 h-8 bg-sky-500 rounded-full"></div>}
+        {room.lastMessage?.createdBy?.avatar ? <img src={room.lastMessage.createdBy.avatar} className="w-9 h-9 rounded-full"/>:<div className="w-8 h-8 bg-sky-500 rounded-full"></div>}
         <div className="flex flex-col items-start">
-            <p className="font-semibold">{room.lastMessage.createdBy.fullName}</p>
+            <p className="font-semibold">{room.lastMessage?.createdBy?.fullName}</p>
             <p>{room.lastMessage.message}</p>
         </div>
     </button>)
