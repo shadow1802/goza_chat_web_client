@@ -26,6 +26,7 @@ import UploadService from "@/utils/s3.service"
 import useAuthValue from "@/utils/useAuthValue"
 import SidebarUserSelector from "./sidebar.user.selector"
 import { IRoomDetail } from "@/types/room.detail"
+import { useSocket } from "@/context/Socket.context"
 
 type Props = {
     setShowRoomCreator: Dispatch<SetStateAction<boolean>>
@@ -35,6 +36,7 @@ type Props = {
 const RoomCreator: FC<Props> = ({ setShowRoomCreator, setPrivateRoomDetail }) => {
 
     const router = useRouter()
+    const { socket } = useSocket()
     const { setShowChatScreen } = useLobbyContext()
     const [usersSelected, setUsersSelected] = useState<{ _id: string, fullName: string }[]>([])
     const roomNameRef = useRef<HTMLInputElement>(null)
@@ -69,6 +71,10 @@ const RoomCreator: FC<Props> = ({ setShowRoomCreator, setPrivateRoomDetail }) =>
                 roomType: 3,
                 ...(!!roomIcon && { roomIcon }),
                 ...(usersSelected.length > 0 && { roomUsers: JSON.stringify(usersSelected.map(i => i._id)) })
+            })
+
+            socket.emit("invite_into_room", {
+                roomObject: data, roomId: data._id, userIds: usersSelected.map(i => i._id)
             })
 
             setShowRoomCreator(false)

@@ -19,7 +19,7 @@ import {
 import { FaCopy, FaRegCopy, FaUserPlus, FaUserTimes } from "react-icons/fa";
 import useInvoker from "@/utils/useInvoker";
 import UploadService from "@/utils/s3.service";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { ROOM_ROLES, ROOM_ROLES_COLORS } from "@/constants/room.roles";
 import UserRender from "../user.render";
 import { useSocket } from "@/context/Socket.context";
@@ -32,6 +32,8 @@ const RoomSetting: FC<Props> = () => {
     const { currentUser } = useLobbyContext()
     const { roomDetail, setRoomDetail } = useRoomContext()
     const { socket } = useSocket()
+    const router = useRouter()
+    const { setRooms } = useLobbyContext()
     const [roomName, setRoomName] = useState<string>(roomDetail?.roomName ?? "")
     const { users } = useLobbyContext()
     const authValue = useAuthValue()
@@ -55,6 +57,29 @@ const RoomSetting: FC<Props> = () => {
                     avatar: currentUser?.avatar
                 }
             })
+        }
+    }
+
+    const setUserAsManager = async (userId: string) => {
+        const { data, status, message } = await invoker.put("/usersrooms/setUserAsRoomManager", {
+            userId,
+            roomId: room
+        })
+
+        if (status === 200) {
+            const newData = await invoker.get(`/room/getRoomById/${room}`)
+            setRoomDetail(newData.data)
+        }
+
+        console.log(data, message)
+    }
+
+    const deleteRoom = async () => {
+        const { data, status } = await invoker.remove(`/room/delete/${room}`)
+        if (status === 200) {
+            const { data } = await invoker.get("/room/getByToken")
+            setRooms(data.filter((item: any) => item !== null))
+            router.push("/")
         }
     }
 
@@ -146,11 +171,12 @@ const RoomSetting: FC<Props> = () => {
 
         <div className="px-6 mt-2">
             <div className="p-2 flex justify-between">
-                <div className="flex items-center justify-center space-x-2 w-full">
+                <div className="flex border-b-2 py-2 items-center justify-center space-x-2 w-full">
                     <Switch checked={isActive} disabled={!isOwner} onCheckedChange={onChangeRoomStatus} id="airplane-mode" />
                     <Label htmlFor="airplane-mode">Khóa phòng</Label>
                 </div>
             </div>
+
             <div className="mt-2 border-2">
 
                 <div className="border-b-2 flex p-4 justify-between items-center">
@@ -217,14 +243,14 @@ const RoomSetting: FC<Props> = () => {
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel>Hủy bỏ</AlertDialogCancel>
-                                            <AlertDialogAction onClick={() => kick(user.user._id)}>Đồng ý</AlertDialogAction>
+                                            <AlertDialogAction onClick={() => setUserAsManager(user.user._id)}>Đồng ý</AlertDialogAction>
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
                                 </AlertDialog>
                                 <AlertDialog>
                                     <AlertDialogTrigger>
                                         <button disabled={!isOwner} className="py-1 hover:underline px-1 text-red-500 disabled:text-gray-500 flex space-x-1 items-center">
-                                        <span className="text-xs">Xóa khỏi phòng</span>
+                                            <span className="text-xs">Xóa khỏi phòng</span>
                                         </button>
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>
@@ -245,6 +271,28 @@ const RoomSetting: FC<Props> = () => {
                     })}
                 </div>
             </div>
+        </div>
+        <div className="px-6">
+
+            <AlertDialog>
+                <AlertDialogTrigger className="w-full">
+                    <button disabled={!isOwner} className="disabled:bg-gray-400 w-full px-2 text-white py-1 rounded-b-md font-semibold bg-red-500">Xóa phòng</button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Xóa phòng</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            <p>Bạn sẽ không thể không phục dữ liệu cho phòng này sau khi xóa phòng</p>
+                            <p>Vẫn tiếp tục xóa?</p>
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogAction disabled={!isOwner} onClick={deleteRoom}>Chấp nhận</AlertDialogAction>
+                        <AlertDialogCancel>Đóng</AlertDialogCancel>
+
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     </div>
 }

@@ -10,6 +10,8 @@ import { IRoom } from "@/types/room"
 import { IoSettingsOutline } from "react-icons/io5";
 import { RiUserAddLine } from "react-icons/ri"
 import { dateTimeConverter } from "@/utils/dateTimeConverter";
+import useInvoker from "@/utils/useInvoker";
+import { useLobbyContext } from "@/context/Lobby.context";
 
 type Props = {
     room: IRoom,
@@ -17,6 +19,18 @@ type Props = {
 }
 
 const RoomCardMenu: FC<Props> = ({ room, children }) => {
+
+    const invoker = useInvoker()
+    const { setRooms } = useLobbyContext()
+
+    const leaveRoom = async () => {
+        const { data, status } = await invoker.remove(`/usersrooms/leaveRoom/${room._id}`)
+        if (status === 200) {
+            const { data } = await invoker.get("/room/getByToken")
+            
+            setRooms(data.filter((item: any) => item !== null))
+        }
+    }
 
     return <ContextMenu>
         <ContextMenuTrigger>{children}</ContextMenuTrigger>
@@ -51,10 +65,10 @@ const RoomCardMenu: FC<Props> = ({ room, children }) => {
                     <span className="group-hover:text-white text-sm font-semibold">Mời người dùng</span>
                     <RiUserAddLine className="group-hover:text-white"/>
                 </button>
-                <button className="group flex items-center justify-between text-red-500 from-cyan-500 to-blue-500 hover:bg-gradient-to-r duration-200 w-full px-4 py-2">
+                <ContextMenuItem onClick={leaveRoom} className="group flex items-center justify-between text-red-500 from-cyan-500 to-blue-500 hover:bg-gradient-to-r duration-200 w-full px-4 py-2">
                     <span className="text-sm font-semibold">Rời khỏi phòng</span>
                     <RiUserAddLine className=""/>
-                </button>
+                </ContextMenuItem>
             </div>
         </ContextMenuContent>
     </ContextMenu>

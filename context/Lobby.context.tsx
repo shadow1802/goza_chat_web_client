@@ -59,36 +59,40 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
         })
 
         socket.on("receive_chat_room_outside", (data: IOutSide) => {
+            try {
+                const { _id, message, lastModified, createdBy } = data
+                if (!_id && !message && !lastModified && !createdBy) return
+                if (data?.self) return
 
-            if (data?.self) return
+                const roomIndex = rooms.findIndex(room => room._id === data.room._id)
 
-            const roomIndex = rooms.findIndex(room => room._id === data.room._id)
+                setRooms(prev => {
+                    const newRooms = [...prev]
+                    newRooms[roomIndex].lastMessage = {
+                        _id: _id,
+                        message: message,
+                        lastModified: lastModified,
+                        createdBy: createdBy as CreatedBy,
+                        isDeleted: false
+                    }
+                    return newRooms
+                })
 
-            setRooms(prev => {
-                const newRooms = [...prev]
-                newRooms[roomIndex].lastMessage = {
-                    _id: data._id,
-                    message: data.message,
-                    lastModified: data.lastModified,
-                    createdBy: data.createdBy as CreatedBy,
-                    isDeleted: false
-                }
-                return newRooms
-            })
-
-            toast({
-                title: `Tin nhắn mới`,
-                description: <div className="flex items-center space-x-3">
-                    {data.createdBy.avatar ? <img src={data.createdBy.avatar} className="border-2 border-sky-500 w-12 h-12 rounded-full" />
-                        : <img src="images/default-avatar.jpg" className="border-2 border-sky-500 w-12 h-12 rounded-full" />}
-                    <div>
-                        <p className="text-xs text-black">{data.room.roomName}</p>
-                        <p className="text-sm font-semibold text-sky-500">{data.createdBy.fullName}  <span className="text-xs text-gray-500">{dateTimeConverter(String(data.createdTime))}</span></p>
-                        <p className="text-xs">{data.message}</p>
+                toast({
+                    title: `Tin nhắn mới`,
+                    description: <div className="flex items-center space-x-3">
+                        {data.createdBy.avatar ? <img src={data.createdBy.avatar} className="border-2 border-sky-500 w-12 h-12 rounded-full" />
+                            : <img src="images/default-avatar.jpg" className="border-2 border-sky-500 w-12 h-12 rounded-full" />}
+                        <div>
+                            <p className="text-xs text-black">{data.room.roomName}</p>
+                            <p className="text-sm font-semibold text-sky-500">{data.createdBy.fullName}  <span className="text-xs text-gray-500">{dateTimeConverter(String(data.createdTime))}</span></p>
+                            <p className="text-xs">{data.message}</p>
+                        </div>
                     </div>
-                </div>
-            })
-
+                })
+            } catch(error: any) {
+                toast({ title: error.message })
+            }
         })
 
         socket.on("receive_invite_into_room", (data) => {
@@ -96,10 +100,10 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
             toast({
                 title: `${data.from ? data.from.fullName + ' đã mời bạn vào phòng' : 'Ai đó đã mời bạn vào phòng'}`,
                 description: <div className="flex space-x-2 items-center">
-                    { data.roomObject.roomIcon && <img src={data.roomObject.roomIcon} className="w-10 h-10 border-2 border-sky-500 rounded-full"/> }
+                    {data.roomObject.roomIcon && <img src={data.roomObject.roomIcon} className="w-10 h-10 border-2 border-sky-500 rounded-full" />}
                     <div className="">
-                        <p className="text-sky-500 font-semibold text-lg">{ data.roomObject.roomName }</p>
-                        <p className="text-sm font-semibold text-gray-600">{ data.roomObject.roomUsers.length } thành viên</p>
+                        <p className="text-sky-500 font-semibold text-lg">{data.roomObject.roomName}</p>
+                        <p className="text-sm font-semibold text-gray-600">{data.roomObject.roomUsers.length} thành viên</p>
                     </div>
                 </div>
             })

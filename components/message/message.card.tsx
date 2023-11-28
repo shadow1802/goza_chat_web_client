@@ -7,6 +7,7 @@ import { FaHeart, FaSadCry, FaAngry, FaSmile } from "react-icons/fa"
 import log from "@/utils/logger"
 import MessageCardMenu from "./message.card.menu"
 import { IoReturnDownForwardSharp } from "react-icons/io5"
+import { ROOM_ROLES_COLORS } from "@/constants/room.roles"
 
 type Props = {
     message: IMessage,
@@ -19,6 +20,8 @@ type Props = {
 
 const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage, setMessageReplySender, prevMessage, handleReaction }) => {
 
+    const { roomDetail } = useRoomContext()
+    const memberDetail = roomDetail?.roomUsers.find(item => item.user._id === message.createdBy._id)
     const isSameUser = prevMessage?.createdBy._id === message.createdBy._id
 
     return <MessageCardMenu message={message} setMessageEditor={setMessageEditor} handleRemoveMessage={handleRemoveMessage} setMessageReplySender={setMessageReplySender} handleReaction={handleReaction}>
@@ -34,7 +37,7 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
 
             <div className={`message-content ${message.replyTo && "p-4 rounded-lg border-2 mt-3 shadow-md max-w-[24rem]"}`}>
 
-                {!isSameUser && (<p className="max-w-[22rem] text-sm font-semibold text-black">{message.createdBy.fullName} <span className="ml-2 text-xs font-normal text-sky-600">{dateTimeConverter(String(message.lastModified))}</span></p>)}
+                {!isSameUser && (<p className={`max-w-[22rem] text-sm font-semibold ${memberDetail && ROOM_ROLES_COLORS[memberDetail?.roomRole]}`}>{message.createdBy.fullName} <span className="ml-2 text-xs font-normal text-sky-600">{dateTimeConverter(String(message.lastModified))}</span></p>)}
                 <p className="min-w-[100px] group text-sm hover:scale-[115%] hover:bg-white hover:bg-opacity-50 rounded-md hover:shadow-md
                 duration-200 hover:px-2 text-gray-700">{message.message} <span className="text-[0.7rem] text-sky-600 hidden group-hover:inline">{dateTimeConverter(String(message.lastModified))}</span></p>
 

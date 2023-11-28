@@ -9,7 +9,6 @@ import {
     ContextMenuItem,
     ContextMenuTrigger,
 } from "@/components/ui/context-menu"
-import useAuthValue from "@/utils/useAuthValue"
 
 type Props = {
     message: IMessage,
@@ -21,9 +20,6 @@ type Props = {
 }
 
 const MessageCardMenu: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage, setMessageReplySender, handleReaction, children }) => {
-
-    const authValue = useAuthValue()
-    const isOwner = message.createdBy._id === authValue?.user._id
 
     return <ContextMenu>
         <ContextMenuTrigger>{children}</ContextMenuTrigger>
@@ -51,7 +47,7 @@ const MessageCardMenu: FC<Props> = ({ message, setMessageEditor, handleRemoveMes
                     <FaLocationPin className="text-sky-500 group-hover:text-white" />
                 </ContextMenuItem>
 
-                <ContextMenuItem disabled={!isOwner} onClick={()=>handleRemoveMessage(message._id)} className="group w-full hover:bg-sky-500 duration-300 bg-white flex items-center justify-between px-4 py-2">
+                <ContextMenuItem onClick={()=>handleRemoveMessage(message._id)} className="group w-full hover:bg-sky-500 duration-300 bg-white flex items-center justify-between px-4 py-2">
                     <p className="text-sky-500 group-hover:text-white text-sm font-semibold">Xóa tin nhắn</p>
                     <FaTrashCan className="text-red-500 group-hover:text-red-600" />
                 </ContextMenuItem>
