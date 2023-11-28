@@ -90,8 +90,18 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
         })
 
         socket.on("receive_invite_into_room", (data) => {
+
+            console.log(data)
+
             toast({
-                title: `Ai đó đã mời bạn vào phòng`,
+                title: `${data.from ? data.from.fullName + ' đã mời bạn vào phòng' : 'Ai đó đã mời bạn vào phòng'}`,
+                description: <div className="flex space-x-2 items-center">
+                    { data.roomObject.roomIcon && <img src={data.roomObject.roomIcon} className="w-10 h-10 border-2 border-sky-500 rounded-full"/> }
+                    <div className="">
+                        <p className="text-sky-500 font-semibold text-lg">{ data.roomObject.roomName }</p>
+                        <p className="text-sm font-semibold text-gray-600">{ data.roomObject.roomUsers.length } thành viên</p>
+                    </div>
+                </div>
             })
             setRooms(prev => [...prev, data.roomObject])
         })

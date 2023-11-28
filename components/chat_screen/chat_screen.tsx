@@ -126,7 +126,7 @@ const ChatScreen: FC<Props> = ({ roomDetail }) => {
                 </div>
             </div>
             <div className="flex space-x-2">
-                <IoCall className="cursor-pointer text-gray-100" onClick={startCall} />
+                <IoCall className="cursor-pointer text-gray-600" />
                 {fullScreen ? <GoScreenNormal className="text-gray-100 cursor-pointer" onClick={() => setFullScreen(false)} /> : <GoScreenFull className="text-gray-100 cursor-pointer" onClick={() => setFullScreen(true)} />}
                 <AiOutlineClose onClick={() => setShowChatScreen(prev => !prev)} className="cursor-pointer text-gray-100 text-lg" />
             </div>

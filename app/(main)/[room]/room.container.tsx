@@ -80,6 +80,10 @@ const RoomContainer: FC<Props> = (props) => {
             console.log(data)
         })
 
+        socket.on("receive_exit_room", (data) => {
+            setOnlineRoomUsers(data)
+        })
+
         socket.on("receive_remove_chat", (data: { msg: string, removedMessageId: string }) => {
             setMessages(prev => {
                 const newMessage = [...prev].filter(item => item._id !== data.removedMessageId)
@@ -87,7 +91,7 @@ const RoomContainer: FC<Props> = (props) => {
             })
         })
 
-        return () => { console.log("lololololololololol") }
+        return () => { socket.emit("exit_room", { roomId: room, userId: authValue?.user._id }) }
 
     }, [socket])
 

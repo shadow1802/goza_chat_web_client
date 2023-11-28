@@ -7,15 +7,13 @@ type Props = {
 }
 
 const UserCard: FC<Props> = ({ user, ...rest }) => {
-    return <div {...rest} className="flex items-center space-x-2">
+    return <div {...rest} className="group cursor-pointer flex items-center space-x-2 hover:bg-sky-500 px-4 py-2">
 
-        <div className="flex items-center justify-center w-10 h-10 p-3 rounded-full bg-sky-500">
-            <p className="text-gray-100">{user.username[0]}</p>
-        </div>
+        { user.avatar ? <img src={user.avatar} className="rounded-full w-10 h-10"/> : <img src="/images/default-avatar.jpg" className="border-2 rounded-full w-10 h-10"/> }
 
         <div>
-            <p className="text-gray-600 text-[0.89rem] font-semibold">{user.fullName}</p>
-            <p className="text-sm text-gray-500">@{user.username}</p>
+            <p className="text-sky-500 group-hover:text-white text-[0.89rem] font-semibold">{user.fullName}</p>
+            <p className="text-xs text-gray-500 group-hover:text-white font-semibold">@{user.username}</p>
         </div>
     </div>
 }

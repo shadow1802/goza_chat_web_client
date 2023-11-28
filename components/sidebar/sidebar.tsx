@@ -1,7 +1,7 @@
 "use client"
 import { useLobbyContext } from "@/context/Lobby.context"
 import { AiOutlineSetting, AiOutlineExclamationCircle } from "react-icons/ai"
-import { FC, useEffect, useState } from "react"
+import { ChangeEvent, ChangeEventHandler, FC, useEffect, useState } from "react"
 import { BiExit } from "react-icons/bi"
 import RoomCard from "../room.card"
 import UserCard from "../user.card"
@@ -29,14 +29,11 @@ import {
 import UserEditor from "./sidebar.user.editor"
 import RoomCreator from "./sidebar.room.creator"
 import { useRouter } from "next/navigation"
-import { INotifyContentMessage } from "@/types/notify"
-import NOTIFY from "@/constants/notify.types"
+
 import useInvoker from "@/utils/useInvoker"
 import { IUser } from "@/types/user"
 import { IRoom } from "@/types/room"
 import Title from "../title"
-import { dateTimeConverter } from "@/utils/dateTimeConverter"
-import useQuickBlox from "@/utils/useQuickBlox"
 import useAuthValue from "@/utils/useAuthValue"
 import { IRoomDetail } from "@/types/room.detail"
 import SidebarNotify from "./sidebar.notify"
@@ -51,7 +48,8 @@ const Sidebar: FC<Props> = (props) => {
     const authValue = useAuthValue()
     const [showRoomCreator, setShowRoomCreator] = useState<boolean>(false)
     const [privateRoomDetail, setPrivateRoomDetail] = useState<IRoomDetail | null>(null)
-
+    const [searchUserItems, setSearchUsersItems] = useState<IUser[]>([])
+    const invoker = useInvoker()
     const { get, post } = useInvoker()
 
 
@@ -74,9 +72,11 @@ const Sidebar: FC<Props> = (props) => {
         }
     }
 
-    useEffect(() => {
+    const handleSearchUser = async (input: string) => {
+        const { data } = await invoker.get(`/user/getPaging?fullName=${input}`)
 
-    }, [])
+        setSearchUsersItems(data)
+    }
 
     return <div className="w-[360px] min-h-screen bg-white flex overflow-auto">
 
@@ -154,17 +154,18 @@ const Sidebar: FC<Props> = (props) => {
                 </div>
             </div>
 
-            <div className="px-4 flex justify-between">
-                <p className="font-semibold text-gray-600">Danh bạ:</p>
-
-                <div className="flex items-center space-x-1">
-                    <img src="/icons/add-user.svg" className="w-5 h-5" alt="" />
+            <div className="px-4">
+                <div className="flex space-x-1 py-1 border-2 rounded-lg px-2">
                     <img src="/icons/search.svg" className="w-5 h-5" alt="" />
+                    <input type="text" onChange={(e)=>handleSearchUser(e.target.value)} className="w-full text-sm" placeholder="Tìm kiếm người dùng" />
                 </div>
             </div>
 
-            <div className="px-3 space-y-2 relative">
-                {users?.map(item => <UserCard key={item._id} user={item} onClick={() => handlerClickUser(item)} />)}
+            <div className="relative">
+                {searchUserItems.length > 0 ? 
+                    searchUserItems?.map(item => <UserCard key={item._id} user={item} onClick={() => handlerClickUser(item)} />)
+                    : users?.map(item => <UserCard key={item._id} user={item} onClick={() => handlerClickUser(item)} />)
+                }
             </div>
 
             <div className="absolute bottom-0 flex space-x-2 w-full bg-white border-t-2 h-14 items-center px-2">

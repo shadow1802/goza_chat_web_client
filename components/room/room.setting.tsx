@@ -29,6 +29,7 @@ type Props = {}
 const RoomSetting: FC<Props> = () => {
 
     const { room } = useParams()
+    const { currentUser } = useLobbyContext()
     const { roomDetail, setRoomDetail } = useRoomContext()
     const { socket } = useSocket()
     const [roomName, setRoomName] = useState<string>(roomDetail?.roomName ?? "")
@@ -48,7 +49,10 @@ const RoomSetting: FC<Props> = () => {
         if (status === 200) {
             const newData = await invoker.get(`/room/getRoomById/${roomId}`)
             setRoomDetail(newData.data)
-            socket.emit("invite_into_room", { roomObject: data, roomId: room, userIds: [userId] })
+            socket.emit("invite_into_room", { roomObject: data, roomId: room, userIds: [userId], from: {
+                fullName: currentUser?.fullName,
+                avatar: currentUser?.avatar
+            } })
         }
     }
 
