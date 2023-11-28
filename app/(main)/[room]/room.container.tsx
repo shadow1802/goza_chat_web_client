@@ -5,9 +5,11 @@ import { useSocket } from "@/context/Socket.context";
 import useInvoker from "@/utils/useInvoker";
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
 import { ImAttachment } from "react-icons/im"
+import { BsEmojiSunglasses } from "react-icons/bs"
 import { useParams, useRouter } from "next/navigation";
 import { FC, FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { HiOutlineSpeakerWave } from "react-icons/hi2"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import MessageCard from "@/components/message/message.card";
 import log from "@/utils/logger";
@@ -22,6 +24,7 @@ import {
 import MediaSender from "@/components/media.sender";
 import RoomUsers from "@/components/room/room.users";
 import RoomHeader from "@/components/room/room.header";
+import AnouncementSender from "@/components/anouncement.sender";
 
 type Props = {}
 
@@ -46,7 +49,7 @@ const RoomContainer: FC<Props> = (props) => {
 
         socket.emit("join_room", { roomId: room, userId: authValue?.user._id })
 
-        socket.on("receive_join_room", (data: { room: string, users: string [] }) => {
+        socket.on("receive_join_room", (data: { room: string, users: string[] }) => {
             if (data.room === room) {
 
                 setOnlineRoomUsers(data.users)
@@ -83,14 +86,14 @@ const RoomContainer: FC<Props> = (props) => {
             console.log(data)
         })
 
-        socket.on("receive_exit_room", (data: { room: string, users: string [] }) => {
+        socket.on("receive_exit_room", (data: { room: string, users: string[] }) => {
             if (data.room === room) {
 
                 setOnlineRoomUsers(data.users)
             }
         })
 
-        socket.on("receive_user_disconnect", (data: {[key:string]: string[]}) => {
+        socket.on("receive_user_disconnect", (data: { [key: string]: string[] }) => {
             setOnlineRoomUsers(data[room as string])
         })
 
@@ -260,13 +263,22 @@ const RoomContainer: FC<Props> = (props) => {
                         <img src="/icons/close.svg" onClick={() => setMessageEditor(null)} className="cursor-pointer w-5 h-5" alt="" />
                     </div>}
 
-                    <form ref={formRef} onSubmit={onSubmit} className="flex border-2 border-sky-500 justify-between items-center w-full bg-gray-100 p-2">
+                    <form ref={formRef} onSubmit={onSubmit} className="flex border-2 border-sky-500 justify-between items-center w-full">
                         <textarea ref={messageRef} style={{ resize: 'none' }} placeholder="Vui lòng nhập tin nhắn" onKeyDown={onKeyDown} className="px-2 text-gray-700 scrollbar-thin flex border-none outline-none items-center h-6 w-full bg-transparent" />
-                        <div className="flex space-x-2">
+                        <div className="flex justify-between space-x-3 bg-black px-4 py-2">
+
+                            <Dialog>
+                                <DialogTrigger>
+                                    <img src="/icons/notify.svg" className="w-6 hover:scale-[120%] duration-200" alt="" />
+                                </DialogTrigger>
+                                <DialogContent className="p-0 border-0 w-[500px]">
+                                    <AnouncementSender />
+                                </DialogContent>
+                            </Dialog>
 
                             <Popover>
                                 <PopoverTrigger asChild>
-                                    <img className="cursor-pointer" src="/icons/emoji.svg" alt="" />
+                                    <img src="/icons/emoji.svg" className="w-6 hover:scale-[120%] duration-200 cursor-pointer" alt="" />
                                 </PopoverTrigger>
                                 <PopoverContent className="w-[390px] bg-transparent border-none p-0">
                                     <EmojiPicker onEmojiClick={onEmojiPicked} />
@@ -275,7 +287,7 @@ const RoomContainer: FC<Props> = (props) => {
 
                             <Dialog open={showMediaSender} onOpenChange={setShowMediaSender}>
                                 <DialogTrigger>
-                                    <ImAttachment className="cursor-pointer text-xl text-sky-500" />
+                                    <img src="/icons/attach.svg" className="w-6 hover:scale-[120%] duration-200" alt="" />
                                 </DialogTrigger>
                                 <DialogContent className="p-0 border-0 w-[500px]">
                                     <MediaSender handleSendMessageWithFile={handleSendMessageWithFile} />

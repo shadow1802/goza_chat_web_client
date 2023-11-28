@@ -21,7 +21,6 @@ import useInvoker from "@/utils/useInvoker";
 import UploadService from "@/utils/s3.service";
 import { useParams, useRouter } from "next/navigation";
 import { ROOM_ROLES, ROOM_ROLES_COLORS } from "@/constants/room.roles";
-import UserRender from "../user.render";
 import { useSocket } from "@/context/Socket.context";
 
 type Props = {}

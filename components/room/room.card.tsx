@@ -1,5 +1,5 @@
 import { FC, ReactNode } from "react"
-import Menu from "./menu"
+import Menu from "../menu"
 import { IRoom } from "@/types/room"
 import { useRouter } from "next/navigation"
 import RoomCardMenu from "./room.card.menu"
