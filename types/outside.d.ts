@@ -8,7 +8,8 @@ export interface IOutSide {
     isDeleted: boolean
     _id: string
     createdBy: CreatedBy
-    notify: Notify[]
+    notify: Notify[],
+    self?: boolean
   }
   
   export interface Room {

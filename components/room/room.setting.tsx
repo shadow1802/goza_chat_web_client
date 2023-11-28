@@ -49,10 +49,12 @@ const RoomSetting: FC<Props> = () => {
         if (status === 200) {
             const newData = await invoker.get(`/room/getRoomById/${roomId}`)
             setRoomDetail(newData.data)
-            socket.emit("invite_into_room", { roomObject: data, roomId: room, userIds: [userId], from: {
-                fullName: currentUser?.fullName,
-                avatar: currentUser?.avatar
-            } })
+            socket.emit("invite_into_room", {
+                roomObject: data, roomId: room, userIds: [userId], from: {
+                    fullName: currentUser?.fullName,
+                    avatar: currentUser?.avatar
+                }
+            })
         }
     }
 
@@ -189,7 +191,7 @@ const RoomSetting: FC<Props> = () => {
 
                 <div className="max-h-[400px] overflow-y-auto scrollbar-none">
                     {roomDetail?.roomUsers?.map(user => {
-                        return <div key={"room_setting_user_" + user._id} className="hover:bg-sky-500 py-2 px-4 flex items-center space-x-2 justify-between">
+                        return <div key={"room_setting_user_" + user._id} className="py-2 px-4 flex items-center space-x-2 justify-between">
                             <div className="flex space-x-2 items-center">
                                 {user.user.avatar ? <img src={user.user.avatar} className="w-10 h-10 rounded-full" />
                                     : <img src="/images/default-avatar.jpg" className="w-10 h-10 rounded-full border-2" />
@@ -199,9 +201,32 @@ const RoomSetting: FC<Props> = () => {
                                     <p className={`text-xs font-bold lowercase ${ROOM_ROLES_COLORS[user.roomRole]}`}>{ROOM_ROLES[user.roomRole]}</p>
                                 </div>
                             </div>
-                            {authValue?.user._id === user.user._id ? <></> : <>
+                            {authValue?.user._id === user.user._id ? <></> : <div className="flex space-x-2">
                                 <AlertDialog>
-                                    <AlertDialogTrigger><button disabled={!isOwner} className="text-red-500 disabled:text-gray-500"><FaUserTimes className="text-lg" /></button></AlertDialogTrigger>
+                                    <AlertDialogTrigger>
+                                        <button disabled={!isOwner} className="py-1 hover:underline px-1 text-orange-500 disabled:text-gray-500 flex space-x-1 items-center">
+                                            <span className="text-xs">Nâng cấp quản lý</span>
+                                        </button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Bạn muốn nâng cấp thành viên này thành quản lý hay không?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Sau khi trở thành quản lý, người dùng có thể gửi và quản lý thông báo trong phòng của bạn
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Hủy bỏ</AlertDialogCancel>
+                                            <AlertDialogAction onClick={() => kick(user.user._id)}>Đồng ý</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                                <AlertDialog>
+                                    <AlertDialogTrigger>
+                                        <button disabled={!isOwner} className="py-1 hover:underline px-1 text-red-500 disabled:text-gray-500 flex space-x-1 items-center">
+                                        <span className="text-xs">Xóa khỏi phòng</span>
+                                        </button>
+                                    </AlertDialogTrigger>
                                     <AlertDialogContent>
                                         <AlertDialogHeader>
                                             <AlertDialogTitle>Bạn muốn xóa thành viên này khỏi phòng hay không?</AlertDialogTitle>
@@ -215,7 +240,7 @@ const RoomSetting: FC<Props> = () => {
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
                                 </AlertDialog>
-                            </>}
+                            </div>}
                         </div>
                     })}
                 </div>

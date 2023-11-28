@@ -85,7 +85,7 @@ const ChatScreen: FC<Props> = ({ roomDetail }) => {
             })
         })
 
-        return () => { console.log(`leave room`) }
+        return () => { socket.emit("exit_room", { roomId: roomDetail?._id, userId: authState?.user._id }) }
     }, [roomDetail, socket])
 
     const members = roomDetail?.roomUsers.map(item => item.user._id).filter(item => item !== authValue?.user._id)
@@ -111,10 +111,6 @@ const ChatScreen: FC<Props> = ({ roomDetail }) => {
     }
 
     const target = roomDetail?.roomUsers.find(item => item.user._id !== authValue?.user._id)
-
-    const startCall = async () => {
-        
-    }
 
     return <motion.div drag className={`fixed flex flex-col rounded-lg z-20 ${fullScreen ? "top-0 left-0 w-screen min-h-screen" : "w-[25vw] bottom-16 right-6"} bg-white shadow-xl drop-shadow-xl`}>
         <div className="chat_screen_header bg-gradient-to-r from-cyan-500 to-blue-500 items-center rounded-t-md flex space-x-2 justify-between px-2 py-1">

@@ -60,6 +60,8 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
 
         socket.on("receive_chat_room_outside", (data: IOutSide) => {
 
+            if (data?.self) return
+
             const roomIndex = rooms.findIndex(room => room._id === data.room._id)
 
             setRooms(prev => {
@@ -90,8 +92,6 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
         })
 
         socket.on("receive_invite_into_room", (data) => {
-
-            console.log(data)
 
             toast({
                 title: `${data.from ? data.from.fullName + ' đã mời bạn vào phòng' : 'Ai đó đã mời bạn vào phòng'}`,

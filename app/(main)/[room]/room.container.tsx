@@ -46,8 +46,13 @@ const RoomContainer: FC<Props> = (props) => {
 
         socket.emit("join_room", { roomId: room, userId: authValue?.user._id })
 
-        socket.on("receive_join_room", data => {
-            setOnlineRoomUsers(data)
+        socket.on("receive_join_room", (data: { room: string, users: string [] }) => {
+            if (data.room === room) {
+
+                console.log(data.users)
+
+                setOnlineRoomUsers(data.users)
+            }
         })
 
         socket.on("receive_leave_room", (data: any) => {
@@ -80,8 +85,13 @@ const RoomContainer: FC<Props> = (props) => {
             console.log(data)
         })
 
-        socket.on("receive_exit_room", (data) => {
-            setOnlineRoomUsers(data)
+        socket.on("receive_exit_room", (data: { room: string, users: string [] }) => {
+            if (data.room === room) {
+
+                console.log(data.users)
+
+                setOnlineRoomUsers(data.users)
+            }
         })
 
         socket.on("receive_user_disconnect", (data: {[key:string]: string[]}) => {
