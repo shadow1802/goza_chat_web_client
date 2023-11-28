@@ -49,8 +49,6 @@ const RoomContainer: FC<Props> = (props) => {
         socket.on("receive_join_room", (data: { room: string, users: string [] }) => {
             if (data.room === room) {
 
-                console.log(data.users)
-
                 setOnlineRoomUsers(data.users)
             }
         })
@@ -88,8 +86,6 @@ const RoomContainer: FC<Props> = (props) => {
         socket.on("receive_exit_room", (data: { room: string, users: string [] }) => {
             if (data.room === room) {
 
-                console.log(data.users)
-
                 setOnlineRoomUsers(data.users)
             }
         })
@@ -116,7 +112,6 @@ const RoomContainer: FC<Props> = (props) => {
         const nextPage = currentPage + 1
 
         const { data } = await invoker.get(`/chat/getPaging?room=${room}&pageIndex=${nextPage}`)
-        console.log(data.data)
 
         setMessages(prev => {
             return ([...prev, ...data.data])
@@ -125,7 +120,6 @@ const RoomContainer: FC<Props> = (props) => {
         setIsLoading(false)
 
         setCurrentPage(nextPage)
-        console.log(`fetch data page ${nextPage}`)
     }
 
     const onEmojiPicked = (emoji: EmojiClickData, event: MouseEvent) => {
@@ -168,7 +162,6 @@ const RoomContainer: FC<Props> = (props) => {
 
     const handleSendMessageWithFile = async (message: string, file: string) => {
         const userIds = roomDetail?.roomUsers.filter(item => item.user._id !== authValue?.user._id).map(item => item.user._id)
-        console.log(userIds)
         const { data, status } = await invoker.post("/chat/insert", { message, room, type: 1, file })
         socket.emit("insert_chat", { messageObject: data, roomId: room, userIds })
         setShowMediaSender(false)
@@ -190,7 +183,6 @@ const RoomContainer: FC<Props> = (props) => {
         }
 
         const { message } = elements
-        console.log(message)
     }
 
     const onKeyDown = (event: KeyboardEvent) => {
