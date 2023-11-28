@@ -84,6 +84,10 @@ const RoomContainer: FC<Props> = (props) => {
             setOnlineRoomUsers(data)
         })
 
+        socket.on("receive_user_disconnect", (data: {[key:string]: string[]}) => {
+            setOnlineRoomUsers(data[room as string])
+        })
+
         socket.on("receive_remove_chat", (data: { msg: string, removedMessageId: string }) => {
             setMessages(prev => {
                 const newMessage = [...prev].filter(item => item._id !== data.removedMessageId)
