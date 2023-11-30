@@ -5,12 +5,13 @@ import ServerLoader from "@/utils/serverLoader"
 const loader = async(room: string) => {
     const serverLoader = new ServerLoader()
 
-    const [messages, roomDetail] = await Promise.all([
+    const [messages, roomDetail, anouncements] = await Promise.all([
         serverLoader.getMessages(room),
-        serverLoader.getRoomDetailById(room)
+        serverLoader.getRoomDetailById(room),
+        serverLoader.getAnouncement(room)
     ])
 
-    return {messages: messages.data, roomDetail}
+    return {messages: messages.data, roomDetail, anouncements}
 }
 
 type Props = {
@@ -20,10 +21,10 @@ type Props = {
 
 export default async function RoomLayout(props: Props) {
 
-    const {messages, roomDetail} = await loader(props.params.room)
+    const {messages, roomDetail, anouncements} = await loader(props.params.room)
 
     return <main className="bg-[#1F1D1E] flex-grow">
-        <RoomProvider initialMessages={messages} initialRoomDetail={roomDetail}>
+        <RoomProvider initialMessages={messages} initialRoomDetail={roomDetail} initAnouncements={anouncements}>
             { props.children }
         </RoomProvider>
     </main>

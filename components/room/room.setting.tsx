@@ -29,14 +29,14 @@ const RoomSetting: FC<Props> = () => {
 
     const { room } = useParams()
     const { currentUser } = useLobbyContext()
-    const { roomDetail, setRoomDetail } = useRoomContext()
+    const { roomDetail, setRoomDetail, reloader } = useRoomContext()
     const { socket } = useSocket()
     const router = useRouter()
     const { setRooms } = useLobbyContext()
     const [roomName, setRoomName] = useState<string>(roomDetail?.roomName ?? "")
     const { users } = useLobbyContext()
     const authValue = useAuthValue()
-    const [isActive, setIsActive] = useState<boolean>(roomDetail?.isActive ?? false)
+    const [isActive, setIsActive] = useState<boolean>(!roomDetail?.isActive ?? false)
     const fileRef = useRef<HTMLInputElement>(null)
     const [roomIconPreview, setRoomIconPreview] = useState<string>(roomDetail?.roomIcon ?? "")
     const invoker = useInvoker()
@@ -48,8 +48,7 @@ const RoomSetting: FC<Props> = () => {
         })
 
         if (status === 200) {
-            const newData = await invoker.get(`/room/getRoomById/${roomId}`)
-            setRoomDetail(newData.data)
+            await reloader.roomDetail()
             socket.emit("invite_into_room", {
                 roomObject: data, roomId: room, userIds: [userId], from: {
                     fullName: currentUser?.fullName,
@@ -66,11 +65,8 @@ const RoomSetting: FC<Props> = () => {
         })
 
         if (status === 200) {
-            const newData = await invoker.get(`/room/getRoomById/${room}`)
-            setRoomDetail(newData.data)
+            await reloader.roomDetail()
         }
-
-        console.log(data, message)
     }
 
     const deleteRoom = async () => {
@@ -103,8 +99,12 @@ const RoomSetting: FC<Props> = () => {
     }
 
     const onChangeRoomStatus = async () => {
-        const data = await invoker.put(`/room/update/${roomDetail?._id}`, { isActive: !isActive })
         setIsActive(!isActive)
+        const { data, status, message } = await invoker.put(`/room/update/${roomDetail?._id}`, { isActive: 0 })
+
+        console.log( data, status, message )
+
+        await reloader.roomDetail()
     }
 
     const changeRoomName = async () => {
@@ -121,22 +121,13 @@ const RoomSetting: FC<Props> = () => {
 
     const kick = async (userId: string) => {
 
-        console.log("xoa khoi phong", userId)
 
         const res = await invoker.post(`/usersrooms/delete`, {
             userId, roomId: room
         })
 
         if (roomDetail && res.status === 200) {
-            setRoomDetail(prev => {
-                if (prev) {
-                    const asd = prev.roomUsers.filter(item => item.user._id !== userId)
-
-                    console.log(asd)
-
-                    return { ...prev, roomUsers: asd }
-                } else return null
-            })
+            
         }
     }
 
@@ -156,12 +147,15 @@ const RoomSetting: FC<Props> = () => {
             </label>
             <input disabled={!isOwner} type="file" ref={fileRef} onChange={onSelectedFile} className="hidden" id="room_icon" accept="image/*" />
             <div className="group cursor-pointer flex items-center justify-center">
-                <input disabled={!isOwner} onChange={(e) => setRoomName(e.target.value)} value={roomName} className="disabled:bg-white border-none outline-none text-center mt-2 text-lg font-bold text-sky-500 uppercase w-auto" />
+                <input disabled={!isOwner} onChange={(e) => setRoomName(e.target.value)} value={roomName} className="disabled:bg-white border-none outline-none text-center mt-2 text-lg font-bold text-sky-500 w-auto" />
                 <MdModeEdit className="hidden ml-1 text-sky-500 mt-2 text-base group-hover:block" onClick={changeRoomName} />
             </div>
+
+                <p className="text-sm">Sao chép liên kết dưới đây để mời người dùng vào phòng</p>
+
             <p onClick={() => copier(
                 `${process.env.NEXT_PUBLIC_URL_HOST ?? "http://localhost:3000"}/invite/${room}`
-            )} className="cursor-pointer flex items-center space-x-2 border-b-2 px-1 py-1 text-xs text-gray-700">
+            )} className="cursor-pointer flex items-center space-x-2 px-1 py-1 text-xs text-gray-700">
                 <span className="cursor-pointer text-sky-600">{process.env.NEXT_PUBLIC_URL_HOST ?? "http://localhost:3000"}/invite/{room}</span>
                 <FaRegCopy />
             </p>
@@ -169,12 +163,12 @@ const RoomSetting: FC<Props> = () => {
 
 
         <div className="px-6 mt-2">
-            <div className="p-2 flex justify-between">
+            {/*<div className="p-2 flex justify-between">
                 <div className="flex border-b-2 py-2 items-center justify-center space-x-2 w-full">
-                    <Switch checked={isActive} disabled={!isOwner} onCheckedChange={onChangeRoomStatus} id="airplane-mode" />
+                    <Switch checked={isActive} disabled={!isOwner} onCheckedChange={onChangeRoomStatus} id="airplane-mode" className="data-[state=checked]:bg-red-500" />
                     <Label htmlFor="airplane-mode">Khóa phòng</Label>
                 </div>
-            </div>
+            </div>*/}
 
             <div className="mt-2 border-2">
 
@@ -230,7 +224,7 @@ const RoomSetting: FC<Props> = () => {
                                 <AlertDialog>
                                     <AlertDialogTrigger>
                                         <button disabled={!isOwner} className="py-1 hover:underline px-1 text-orange-500 disabled:text-gray-500 flex space-x-1 items-center">
-                                            <span className="text-xs">Nâng cấp quản lý</span>
+                                            <span className="text-xs">{user.roomRole === 1 ? "Giáng cấp":"Nâng cấp quản lý"}</span>
                                         </button>
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>

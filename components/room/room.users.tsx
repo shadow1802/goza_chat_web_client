@@ -10,7 +10,7 @@ const RoomUsers: FC<Props> = (props) => {
     const { roomDetail, onlineRoomUsers } = useRoomContext()
 
     return <div className="w-[300px] border-l-2 bg-gray-100">
-        <div className="px-2 py-3 border-b-2 bg-sky-500">
+        <div className="px-2 py-3 border-b-2 bg-sky-500 h-[4vh] flex items-center">
             <p className="text-sm text-white font-semibold">Thành viên đang online:</p>
         </div>
 

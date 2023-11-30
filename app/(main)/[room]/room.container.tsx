@@ -4,15 +4,11 @@ import { useRoomContext } from "@/context/Room.context";
 import { useSocket } from "@/context/Socket.context";
 import useInvoker from "@/utils/useInvoker";
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
-import { ImAttachment } from "react-icons/im"
-import { BsEmojiSunglasses } from "react-icons/bs"
 import { useParams, useRouter } from "next/navigation";
-import { FC, FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import { FC, KeyboardEvent, useEffect, useRef, useState } from "react";
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { HiOutlineSpeakerWave } from "react-icons/hi2"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import MessageCard from "@/components/message/message.card";
-import log from "@/utils/logger";
 import { IMessage } from "@/types/message";
 import useAuthValue from "@/utils/useAuthValue";
 
@@ -25,6 +21,9 @@ import MediaSender from "@/components/media.sender";
 import RoomUsers from "@/components/room/room.users";
 import RoomHeader from "@/components/room/room.header";
 import AnouncementSender from "@/components/anouncement.sender";
+import RoomAnouncements from "@/components/room/room.anouncements";
+import isBlank from "@/utils/isBlank";
+import { toast } from "@/components/ui/use-toast";
 
 type Props = {}
 
@@ -43,9 +42,12 @@ const RoomContainer: FC<Props> = (props) => {
 
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [showMediaSender, setShowMediaSender] = useState<boolean>(false)
+    const [showAnouncementSender, setShowAnouncementSender] = useState<boolean>(false)
     const dummy = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
+
+        console.log(roomDetail?.isActive)
 
         socket.emit("join_room", { roomId: room, userId: authValue?.user._id })
 
@@ -156,6 +158,12 @@ const RoomContainer: FC<Props> = (props) => {
                 messageRef.current.value = ""
                 return
             }
+
+            if (isBlank(messageRef.current.value)) {
+                toast({ title: "Không thể gửi tin nhắn", description: <p className="text-red-500">Tin nhắn không được bao gồm toàn bộ là khoảng trắng</p> })
+                return
+            }
+
             const { data, message, status } = await invoker.post("/chat/insert", { message: messageRef.current.value, room, type: 1 })
             socket.emit("insert_chat", { messageObject: data, roomId: room, userIds })
             dummy.current?.scrollIntoView({ behavior: "smooth" })
@@ -165,7 +173,7 @@ const RoomContainer: FC<Props> = (props) => {
 
     const handleSendMessageWithFile = async (message: string, file: string) => {
         const userIds = roomDetail?.roomUsers.filter(item => item.user._id !== authValue?.user._id).map(item => item.user._id)
-        const { data, status } = await invoker.post("/chat/insert", { message, room, type: 1, file })
+        const { data, status } = await invoker.post("/chat/insert", { message, room, type: 2, file })
         socket.emit("insert_chat", { messageObject: data, roomId: room, userIds })
         setShowMediaSender(false)
     }
@@ -209,17 +217,17 @@ const RoomContainer: FC<Props> = (props) => {
 
         <div className="flex">
             <div className="flex-grow bg-gray-100 border-l-2 bg-cover" style={{ backgroundImage: `url(/images/bg2.png)` }}>
+                <RoomAnouncements />
                 <div
                     id="scrollableDiv"
                     className="relative pb-10 px-5 scrollbar-thin"
                     style={{
-                        height: '84vh',
+                        height: '80vh',
                         overflow: 'auto',
                         display: 'flex',
                         flexDirection: 'column-reverse',
                     }}
                 >
-                    <div ref={dummy}></div>
                     <InfiniteScroll
                         dataLength={100}
                         next={fetchMoreData}
@@ -247,6 +255,10 @@ const RoomContainer: FC<Props> = (props) => {
 
                 <div className="sticky flex flex-col items-center justify-center space-x-2 bottom-0 w-full min-h-[10vh] px-12">
 
+                    <div className="absolute w-full top-0 h-[2px] px-12">
+                        <div className="h-[2px] w-full shadow-lg drop-shadow bg-gray-100"></div>
+                    </div>
+
                     {messageReplySender && <div className="bg-sky-500 relative ml-2 py-2 flex items-center justify-between w-full h-8 px-2">
                         <div className="absolute  right-0 -top-6 bg-red-500 px-4">
                             <p className="font-semibold">Trả lời tin nhắn của {messageReplySender.createdBy.fullName}</p>
@@ -256,23 +268,30 @@ const RoomContainer: FC<Props> = (props) => {
                     </div>}
 
                     {messageEditor && <div className="bg-sky-500 relative ml-2 py-2 flex items-center justify-between w-full h-8 px-2">
-                        <div className="absolute right-0 -top-6 px-4 border-2 border-sky-500">
+                        <div className="absolute right-0 bg-gray-100 -top-6 px-4 border-2 border-sky-500">
                             <p className="font-semibold text-sky-500">Chỉnh sửa tin nhắn</p>
                         </div>
                         <p className="text-sm font-semibold text-white">{messageEditor.message}</p>
                         <img src="/icons/close.svg" onClick={() => setMessageEditor(null)} className="cursor-pointer w-5 h-5" alt="" />
                     </div>}
 
-                    <form ref={formRef} onSubmit={onSubmit} className="flex border-2 border-sky-500 justify-between items-center w-full">
-                        <textarea ref={messageRef} style={{ resize: 'none' }} placeholder="Vui lòng nhập tin nhắn" onKeyDown={onKeyDown} className="px-2 text-gray-700 scrollbar-thin flex border-none outline-none items-center h-6 w-full bg-transparent" />
-                        <div className="flex justify-between space-x-3 bg-black px-4 py-2">
+                    <form ref={formRef} onSubmit={onSubmit} className="flex justify-between items-center w-full bg-gray-300 shadow-lg">
+                        <div className="px-3 w-full">
+                            <textarea ref={messageRef}
+                                style={{ resize: 'none' }}
+                                placeholder="Vui lòng nhập tin nhắn"
+                                onKeyDown={onKeyDown}
+                                className="px-2 bg-gray-100 pt-[3px] rounded-lg text-gray-700 text-sm scrollbar-thin flex justify-center border-none outline-none items-center h-7 w-full"
+                            />
+                        </div>
+                        <div className="flex justify-between space-x-3 bg-gray-300 px-4 py-2">
 
-                            <Dialog>
+                            <Dialog open={showAnouncementSender} onOpenChange={setShowAnouncementSender}>
                                 <DialogTrigger>
                                     <img src="/icons/notify.svg" className="w-6 hover:scale-[120%] duration-200" alt="" />
                                 </DialogTrigger>
                                 <DialogContent className="p-0 border-0 w-[500px]">
-                                    <AnouncementSender />
+                                    <AnouncementSender setShowAnouncementSender={setShowAnouncementSender} />
                                 </DialogContent>
                             </Dialog>
 

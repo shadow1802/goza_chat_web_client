@@ -38,7 +38,7 @@ export default class ServerLoader {
             } else {
                 return []
             }
-        } catch(error: any) {
+        } catch (error: any) {
             log.error(["getJoinedRooms", error])
             return []
         }
@@ -50,7 +50,7 @@ export default class ServerLoader {
 
             const res = await req.json()
             return res.filter((item: any) => ['receive_message'].includes(item.type))
-        } catch(error: any) {
+        } catch (error: any) {
             log.error(["getJoinedRooms", error])
             return []
         }
@@ -59,9 +59,9 @@ export default class ServerLoader {
     async getUsers() {
         try {
             const req = await fetch("https://api-chat.luongson.me/api/user/getPaging", this.configs)
-        const { data } = await req.json()
-        return data ?? []
-        } catch(error: any) {
+            const { data } = await req.json()
+            return data ?? []
+        } catch (error: any) {
             log.error(["getUsers", error])
             return []
         }
@@ -74,7 +74,7 @@ export default class ServerLoader {
             if (status === 200) {
                 return data
             } else return null
-        } catch(error: any) {
+        } catch (error: any) {
             log.error(["getCurrentUser", error])
             return null
         }
@@ -87,7 +87,7 @@ export default class ServerLoader {
             if (status === 200) {
                 return data
             } else return []
-        } catch(error: any) {
+        } catch (error: any) {
             log.error(["getMessages", error])
             return []
         }
@@ -99,6 +99,19 @@ export default class ServerLoader {
         if (status === 200) {
             return data
         } else return {}
+    }
+
+    async getAnouncement(room: string) {
+        try {
+            const req = await fetch(`https://api-chat.luongson.me/api/room/notify/paging?roomId=${room}`, this.configs)
+            const { status, data } = await req.json()
+            if (status === 200) {
+                return data.data
+            } else return []
+        } catch (error: any) {
+            log.error(["getAnouncement", error])
+            return []
+        }
     }
 }
 

@@ -21,7 +21,7 @@ import { IRoomDetail } from "@/types/room.detail"
 import { AiOutlineClose } from "react-icons/ai"
 import { GoScreenFull, GoScreenNormal } from "react-icons/go"
 import { IoCall } from "react-icons/io5"
-import Peer from "peerjs"
+
 
 type Props = {
     roomDetail: IRoomDetail | null
@@ -105,7 +105,7 @@ const ChatScreen: FC<Props> = ({ roomDetail }) => {
 
     const handleSendMessageWithFile = async (message: string, file: string) => {
         const userIds = roomDetail?.roomUsers.filter(item => item.user._id !== authValue?.user._id).map(item => item.user._id)
-        const { data, status } = await invoker.post("/chat/insert", { message, room: roomDetail?._id, type: 1, file })
+        const { data, status } = await invoker.post("/chat/insert", { message, room: roomDetail?._id, type: 2, file })
         socket.emit("insert_chat", { messageObject: data, roomId: roomDetail?._id })
         setShowMediaSender(false)
     }

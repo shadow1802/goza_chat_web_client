@@ -29,3 +29,10 @@ export async function login(form: FormData, configs?: LoginConfigs) {
     } else throw new Error(message)
 
 }
+
+export async function createAnouncement(form: FormData) {
+    const anouncement_content = form.get("anouncement_content")
+    const anouncement_file = form.get("anouncement_file")
+
+    console.log(anouncement_content, anouncement_file)
+}
