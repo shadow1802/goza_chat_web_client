@@ -17,11 +17,11 @@ const RoomUsers: FC<Props> = (props) => {
         <div className="flex space-y-2 flex-col p-2">
             {onlineRoomUsers.map(userId => {
                 const current = roomDetail?.roomUsers.find(item => item.user._id === userId)
-                return <div key={userId} className="relative flex space-x-2 items-center">
+                return current?.user ? <div key={userId} className="relative flex space-x-2 items-center">
                     { current?.user.avatar ? <img src={current?.user.avatar} className="w-10 h-10 rounded-full border-[1px] border-green-500"/>:<img src="/images/default-avatar.jpg" className="w-10 h-10 border-[1px] border-green-500 rounded-full"/>}
                     <p className="text-sm font-semibold text-gray-700">{current?.user.fullName}</p>
                     <div className="w-3 h-3 border-[1px] border-green-500 bg-white absolute bottom-0 left-5 rounded-full"></div>
-                </div>
+                </div>:null
             })}
         </div>
     </div>

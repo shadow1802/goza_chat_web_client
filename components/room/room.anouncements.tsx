@@ -21,6 +21,7 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useToast } from "@/components/ui/use-toast"
+import { truncate } from "@/utils/helper"
 
 type Props = {}
 
@@ -47,7 +48,7 @@ const RoomAnouncements: FC<Props> = () => {
         {anouncements?.length > 0 ? <div className="flex items-center border-b-2 border-l-[10px] border-l-sky-500  w-full h-[4vh] px-4 justify-between">
             <div className="flex space-x-1 text-gray-600 text-sm">
                 <strong className="text-sky-500 underline">Thông báo:</strong>
-                <span> {anouncements[0].message}</span>
+                <span> {truncate(anouncements[0].message, 100)}</span>
                 {anouncements[0].file && <div className="flex items-center">
                     <a href={anouncements[0].file} className="text-sky-500" target="_blank">1 tệp đính kèm</a>
                     <MdOutlineAttachFile className="text-sm text-sky-500" />

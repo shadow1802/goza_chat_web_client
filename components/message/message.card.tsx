@@ -40,7 +40,7 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
 
                 {!isSameUser && (<p className={`max-w-[22rem] text-sm font-semibold ${memberDetail && ROOM_ROLES_COLORS[memberDetail?.roomRole]}`}>{message.createdBy.fullName} <span className="ml-2 text-xs font-normal text-sky-600">{dateTimeConverter(String(message.lastModified))}</span></p>)}
                 <p className="min-w-[100px] w-[400px] hover:bg-black rounded-md hover:bg-opacity-20 group text-sm px-2
-                duration-200 text-gray-700">{message.message}</p>
+                duration-200 text-gray-700 text-block-default">{message.message}</p>
 
                 {message.replyTo && <div className="mt-1 border-l-8 border-sky-500 px-2 text-gray-600 flex space-x-2 items-center">
                     <IoReturnDownForwardSharp className="text-2xl text-sky-500" />

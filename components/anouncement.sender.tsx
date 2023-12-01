@@ -4,7 +4,7 @@ import { useRoomContext } from "@/context/Room.context"
 import useInvoker from "@/utils/useInvoker"
 import { MdOutlineAttachFile } from "react-icons/md"
 import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from "react"
-import { createAnouncement } from "@/app/actions"
+import { toast } from "./ui/use-toast"
 import useAuthValue from "@/utils/useAuthValue"
 import UploadService from "@/utils/s3.service"
 
@@ -48,13 +48,17 @@ const AnouncementSender: FC<Props> = ({ setShowAnouncementSender }) => {
             link = `https://luongsonchatapp.sgp1.digitaloceanspaces.com/${params.Key}`
         }
 
-        const { data, message, status } = await invoker.post("/room/notify/create", {
+        const { status, message } = await invoker.post("/room/notify/create", {
             roomId: roomDetail?._id,
             message: anouncement_content.value,
             ...(anouncement_file.files.length > 0 && { file: link })
         })
 
-        setShowAnouncementSender(false)
+        if (status === 200) {
+            setShowAnouncementSender(false)
+        } else {
+            toast({ title: "Không thể gửi thông báo", description: <p className="text-sm text-red-500">{message}</p> })
+        }
     }
 
     return <div className="">

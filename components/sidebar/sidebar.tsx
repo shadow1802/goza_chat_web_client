@@ -197,14 +197,6 @@ const Sidebar: FC<Props> = (props) => {
                                             </SheetTrigger>
                                             <SheetContent side={"left"} className="p-0 rounded-none">
 
-                                                <div className="p-2 bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center space-x-2 drop-shadow shadow shadow-black">
-                                                    <img src="/images/default-avatar.jpg" className="w-14 h-14 bg-sky-500 rounded-full border-4 border-darkness-500" />
-                                                    <div>
-                                                        <p className="text-gray-100 uppercase font-semibold text-sm">{currentUser?.fullName}</p>
-                                                        <p className="text-gray-200 font-semibold text-xs">@{currentUser?.username}</p>
-                                                    </div>
-                                                </div>
-
                                                 <UserEditor />
 
                                             </SheetContent>

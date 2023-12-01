@@ -24,6 +24,7 @@ import AnouncementSender from "@/components/anouncement.sender";
 import RoomAnouncements from "@/components/room/room.anouncements";
 import isBlank from "@/utils/isBlank";
 import { toast } from "@/components/ui/use-toast";
+import { truncate } from "@/utils/helper";
 
 type Props = {}
 
@@ -46,8 +47,6 @@ const RoomContainer: FC<Props> = (props) => {
     const dummy = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-
-        console.log(roomDetail?.isActive)
 
         socket.emit("join_room", { roomId: room, userId: authValue?.user._id })
 
@@ -263,7 +262,7 @@ const RoomContainer: FC<Props> = (props) => {
                         <div className="absolute  right-0 -top-6 bg-red-500 px-4">
                             <p className="font-semibold">Trả lời tin nhắn của {messageReplySender.createdBy.fullName}</p>
                         </div>
-                        <p className="text-white text-sm font-semibold">{messageReplySender.message}</p>
+                        <p className="text-white text-sm font-semibold">{truncate(messageReplySender.message, 100)}</p>
                         <img src="/icons/close.svg" onClick={() => setMessageReplySender(null)} className="cursor-pointer w-5 h-5" alt="" />
                     </div>}
 
@@ -271,7 +270,7 @@ const RoomContainer: FC<Props> = (props) => {
                         <div className="absolute right-0 bg-gray-100 -top-6 px-4 border-2 border-sky-500">
                             <p className="font-semibold text-sky-500">Chỉnh sửa tin nhắn</p>
                         </div>
-                        <p className="text-sm font-semibold text-white">{messageEditor.message}</p>
+                        <p className="text-sm font-semibold text-white">{truncate(messageEditor.message, 100)}</p>
                         <img src="/icons/close.svg" onClick={() => setMessageEditor(null)} className="cursor-pointer w-5 h-5" alt="" />
                     </div>}
 

@@ -1,11 +1,12 @@
 "use client"
-import { FC, FormEvent, useRef, useState } from "react";
+import { ChangeEvent, FC, FormEvent, useRef, useState } from "react";
 import { HiOutlineMail, HiUser, HiOutlineRss, HiOutlineStatusOnline } from "react-icons/hi"
 import { AiOutlineUser, AiOutlinePhone } from "react-icons/ai"
 import { useAuthState } from "@/context/Auth.context";
 import useInvoker from "@/utils/useInvoker";
 import { useLobbyContext } from "@/context/Lobby.context";
 import { useToast } from "@/components/ui/use-toast"
+import UploadService from "@/utils/s3.service";
 type Props = {}
 
 const UserEditor: FC<Props> = (props) => {
@@ -15,7 +16,7 @@ const UserEditor: FC<Props> = (props) => {
     const { toast } = useToast()
     const invoker = useInvoker()
 
-    const [values, setValues] = useState<Object>({})
+    const [localAvatarPreview, setLocalAvatarPreview] = useState<string | null>(null)
 
     const usernameRef = useRef<HTMLInputElement>(null)
     const fullNameRef = useRef<HTMLInputElement>(null)
@@ -23,6 +24,7 @@ const UserEditor: FC<Props> = (props) => {
     const emailRef = useRef<HTMLInputElement>(null)
     const phoneNumberRef = useRef<HTMLInputElement>(null)
     const bioRef = useRef<HTMLInputElement>(null)
+    const fileRef = useRef<HTMLInputElement>(null)
 
     const handleChangeBufa = async () => {
         const controller = new AbortController()
@@ -42,20 +44,37 @@ const UserEditor: FC<Props> = (props) => {
         event.preventDefault()
         const controller = new AbortController()
 
-        let username = usernameRef.current?.value
         let fullName = fullNameRef.current?.value
         let password = passwordRef.current?.value
         let email = emailRef.current?.value
         let phoneNumber = phoneNumberRef.current?.value
         let bio = bioRef.current?.value
+        let files = fileRef.current?.files
 
         try {
+
+            let avatarLink = ''
+
+            if (files && files.length > 0) {
+                const params = {
+                    Body: files[0],
+                    Bucket: "luongsonchatapp",
+                    Key: `admins/${currentUser?._id}/${new Date().getTime()}_${files[0].name}`,
+                    ACL: "public-read"
+                };
+
+                await UploadService.uploader(params as any)
+
+                avatarLink = `https://luongsonchatapp.sgp1.digitaloceanspaces.com/${params.Key}`
+            }
+
             const { status, data, message } = await invoker.put("/user/updateUserByToken", {
                 ...(!!fullName && ({ fullName })),
                 ...(!!password && ({ password })),
                 ...(!!email && ({ email })),
                 ...(!!phoneNumber && ({ phoneNumber })),
-                ...(!!bio && ({ bio }))
+                ...(!!bio && ({ bio })),
+                ...(!!avatarLink && ({ avatar: avatarLink }))
             })
 
             if (status === 200) {
@@ -72,7 +91,32 @@ const UserEditor: FC<Props> = (props) => {
         } finally { controller.abort() }
     }
 
+    const handleChangeAvatar = (event: ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files) {
+            const src = URL.createObjectURL(event.target.files[0])
+            setLocalAvatarPreview(src)
+        }
+    }
+
     return <form onSubmit={handleUpdateUser} className="text-gray-600 px-3 py-2 flex-col items-center space-y-3 shadow-black">
+
+        <div className="p-2 bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center space-x-2 drop-shadow shadow shadow-black">
+            <label htmlFor="user_editor_avatar_picker" className="cursor-pointer">
+
+                {
+                    localAvatarPreview ?
+                        <img src={localAvatarPreview} className="w-14 h-14 rounded-full border-4 border-darkness-500" />
+                        : (currentUser?.avatar ?
+                            <img src={currentUser.avatar} className="w-14 h-14 bg-sky-500 rounded-full border-4 border-darkness-500" />
+                            : <img src="/images/default-avatar.jpg" className="w-14 h-14 bg-sky-500 rounded-full border-4 border-darkness-500" />)
+                }
+            </label>
+            <input onChange={handleChangeAvatar} ref={fileRef} type="file" id="user_editor_avatar_picker" accept="image/*" className="hidden" />
+            <div>
+                <p className="text-gray-100 uppercase font-semibold text-sm">{currentUser?.fullName}</p>
+                <p className="text-gray-200 font-semibold text-xs">@{currentUser?.username}</p>
+            </div>
+        </div>
 
         <div className="mt-4 border-gray-300 border-b-[0.5px]">
             <p className="font-semibold text-gray-600 uppercase text-xs my-1 ml-1">tên người dùng</p>
