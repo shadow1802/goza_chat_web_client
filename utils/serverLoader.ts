@@ -29,69 +29,47 @@ export default class ServerLoader {
     }
 
     async getJoinedRooms() {
-        try {
             const req = await fetch(process.env.HOST + "/room/getByToken", this.configs)
-            const { status, data } = await req.json()
+            const { status, data, message } = await req.json()
 
             if (status === 200) {
                 return data.filter((item: any) => item !== null)
-            } else {
-                return []
-            }
-        } catch (error: any) {
-            log.error(["getJoinedRooms", error])
-            return []
-        }
+            } else throw new Error(message)
     }
 
     async getNotifies() {
-        try {
             const req = await fetch(process.env.HOST + "/notify/getListOfNotify", this.configs)
-
             const res = await req.json()
-            console.log(res)
             return res.filter((item: any) => ['receive_message'].includes(item.type))
-        } catch (error: any) {
-            log.error(["getNotifies", error.message])
-            return []
-        }
     }
 
     async getUsers() {
-        try {
             const req = await fetch(process.env.HOST + "/user/getPaging", this.configs)
-            const { data } = await req.json()
-            return data ?? []
-        } catch (error: any) {
-            log.error(["getUsers", error])
-            return []
-        }
+            // const { data, status, message } = await req.json()
+            // if (status === 200) {
+            //     return data
+            // } else {
+            //     console.log(this.configs, data, status, message)
+            //     throw new Error(message)
+            // }
+            const res = await req.json()
+            return res.data
     }
 
     async getCurrentUser() {
-        try {
             const req = await fetch(process.env.HOST + "/user/getByToken", this.configs)
-            const { status, data } = await req.json()
+            const { status, data, message } = await req.json()
             if (status === 200) {
                 return data
-            } else return null
-        } catch (error: any) {
-            log.error(["getCurrentUser", error])
-            return null
-        }
+            } else throw new Error(message)
     }
 
     async getMessages(room: string) {
-        try {
             const req = await fetch(process.env.HOST + `/chat/getPaging?room=${room}`, this.configs)
             const { status, data } = await req.json()
             if (status === 200) {
                 return data
             } else return []
-        } catch (error: any) {
-            log.error(["getMessages", error])
-            return []
-        }
     }
 
     async getRoomDetailById(room: string) {

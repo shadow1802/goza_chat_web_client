@@ -41,11 +41,8 @@ export default async function MainLayout({ children }: { children: React.ReactNo
             return { rooms, users, currentUser, notifies }
 
         } catch (error) {
-
             console.log(error)
-
             redirect("/login")
-            // return { rooms:[], users:[], currentUser:null, notifies:null }
         }
     }
 

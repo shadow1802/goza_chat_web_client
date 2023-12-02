@@ -87,9 +87,6 @@ export default function useInvoker(options?: Props) {
             headers,
             body: JSON.stringify(body)
         }); const res = await req.json()
-
-        console.log(90, res)
-
         return res
     }
 

@@ -99,6 +99,15 @@ const ChatScreen: FC<Props> = ({ roomDetail }) => {
             const { data, message, status } = await invoker.post("/chat/insert", { message: messageRef.current.value, room: roomDetail?._id, type: 1 })
             console.log(data)
             socket.emit("insert_chat", { messageObject: data, roomId: roomDetail?._id, userIds: members })
+
+            if (roomDetail && authValue) {
+                await invoker.ring({ 
+                    userIds: roomDetail.roomUsers.map(item => item.user._id),
+                    title: authValue.user.fullName,
+                    body: data.message
+                })
+            }
+
             messageRef.current.value = ""
         }
     }
