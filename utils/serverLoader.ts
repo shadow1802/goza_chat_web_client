@@ -30,7 +30,7 @@ export default class ServerLoader {
 
     async getJoinedRooms() {
         try {
-            const req = await fetch("https://api-chat.luongson.me/api/room/getByToken", this.configs)
+            const req = await fetch(process.env.HOST + "/room/getByToken", this.configs)
             const { status, data } = await req.json()
 
             if (status === 200) {
@@ -46,19 +46,20 @@ export default class ServerLoader {
 
     async getNotifies() {
         try {
-            const req = await fetch("https://api-chat.luongson.me/api/notify/getListOfNotify", this.configs)
+            const req = await fetch(process.env.HOST + "/notify/getListOfNotify", this.configs)
 
             const res = await req.json()
+            console.log(res)
             return res.filter((item: any) => ['receive_message'].includes(item.type))
         } catch (error: any) {
-            log.error(["getJoinedRooms", error])
+            log.error(["getNotifies", error.message])
             return []
         }
     }
 
     async getUsers() {
         try {
-            const req = await fetch("https://api-chat.luongson.me/api/user/getPaging", this.configs)
+            const req = await fetch(process.env.HOST + "/user/getPaging", this.configs)
             const { data } = await req.json()
             return data ?? []
         } catch (error: any) {
@@ -69,7 +70,7 @@ export default class ServerLoader {
 
     async getCurrentUser() {
         try {
-            const req = await fetch("https://api-chat.luongson.me/api/user/getByToken", this.configs)
+            const req = await fetch(process.env.HOST + "/user/getByToken", this.configs)
             const { status, data } = await req.json()
             if (status === 200) {
                 return data
@@ -82,7 +83,7 @@ export default class ServerLoader {
 
     async getMessages(room: string) {
         try {
-            const req = await fetch(`https://api-chat.luongson.me/api/chat/getPaging?room=${room}`, this.configs)
+            const req = await fetch(process.env.HOST + `/chat/getPaging?room=${room}`, this.configs)
             const { status, data } = await req.json()
             if (status === 200) {
                 return data
@@ -94,7 +95,7 @@ export default class ServerLoader {
     }
 
     async getRoomDetailById(room: string) {
-        const req = await fetch(`https://api-chat.luongson.me/api/room/getRoomById/${room}`, this.configs)
+        const req = await fetch(process.env.HOST + `/room/getRoomById/${room}`, this.configs)
         const { status, data } = await req.json()
         if (status === 200) {
             return data
@@ -103,7 +104,7 @@ export default class ServerLoader {
 
     async getAnouncement(room: string) {
         try {
-            const req = await fetch(`https://api-chat.luongson.me/api/room/notify/paging?roomId=${room}`, this.configs)
+            const req = await fetch(process.env.HOST + `/room/notify/paging?roomId=${room}`, this.configs)
             const { status, data } = await req.json()
             if (status === 200) {
                 return data.data

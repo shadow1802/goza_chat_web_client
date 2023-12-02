@@ -11,7 +11,7 @@ export async function login(form: FormData, configs?: LoginConfigs) {
     const username = form.get("username")
     const password = form.get("password")
 
-    const res = await fetch(`https://api-chat.luongson.me/api/user/login`, {
+    const res = await fetch(`${process.env.HOST}/user/login`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

@@ -2,7 +2,7 @@ import InviteContainer from "./invite.container";
 
 const loader = async (roomId: string) => {
     try {
-        const res = await fetch(`https://api-chat.luongson.me/api/room/getRoomById/${roomId}`)
+        const res = await fetch(`${process.env.HOST}/room/getRoomById/${roomId}`)
         const { status, data } = await res.json()
         if (status !== 200) {
             return { data: `Lời mời không hợp lệ`, isSuccessLoaded: false }

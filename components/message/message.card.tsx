@@ -24,8 +24,10 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
     const memberDetail = roomDetail?.roomUsers.find(item => item.user._id === message.createdBy._id)
     const isSameUser = prevMessage?.createdBy._id === message.createdBy._id
 
+    const counter = message.reactions
+
     return <MessageCardMenu message={message} setMessageEditor={setMessageEditor} handleRemoveMessage={handleRemoveMessage} setMessageReplySender={setMessageReplySender} handleReaction={handleReaction}>
-        <div onClick={() => console.log(message)} className={`${!isSameUser && "mt-3"} group flex space-x-2 max-w-[40rem]`}>
+        <div onClick={() => console.log(counter)} className={`${!isSameUser && "mt-3"} group flex space-x-2 max-w-[40rem]`}>
             {!isSameUser ? (
                 message.createdBy.avatar ?
                     <img className="rounded-full w-14 h-14 p-1 flex justify-center items-center" src={message.createdBy.avatar} />
@@ -36,7 +38,7 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
                 <p className="group-hover:inline hidden text-xs">{dateTimeConverter(String(message.lastModified)).split(", ")[1]}</p>
             </div>}
 
-            <div className={`message-content ${message.replyTo && "p-4 rounded-lg border-2 mt-3 shadow-md max-w-[24rem]"}`}>
+            <div className={`message-content ${message.replyTo && "p-4 rounded-lg border-2 shadow-md max-w-[24rem]"}`}>
 
                 {!isSameUser && (<p className={`max-w-[22rem] text-sm font-semibold ${memberDetail && ROOM_ROLES_COLORS[memberDetail?.roomRole]}`}>{message.createdBy.fullName} <span className="ml-2 text-xs font-normal text-sky-600">{dateTimeConverter(String(message.lastModified))}</span></p>)}
                 <p className="min-w-[100px] w-[400px] hover:bg-black rounded-md hover:bg-opacity-20 group text-sm px-2
@@ -61,7 +63,7 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
 
                 {message.file && <img src={message.file} className="duration-200 shadow-lg max-w-[250px] max-h-[400px] rounded-lg" />}
                 {
-                    message.reactions.length > 0 && <div>
+                    message.reactions.length > 0 && <div className="flex space-x-1">
                         {message.reactions.map((item: any, index) => <div key={index} className="w-9 h-5 text-xs border-[0.5px] flex justify-center items-center rounded-lg border-sky-500">
                             <p>{item.emoji}</p>
                             <p className="text-sky-600">1</p>

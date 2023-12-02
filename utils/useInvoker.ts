@@ -5,6 +5,14 @@ type Props = {
     baseUrl?: string
 }
 
+type RingInput = {
+    userIds: string[]
+    title: string
+    body: string
+    image?: string
+    clickAction?: string
+}
+
 export default function useInvoker(options?: Props) {
 
     const base = options?.baseUrl ?? process.env.NEXT_PUBLIC_API
@@ -72,5 +80,18 @@ export default function useInvoker(options?: Props) {
         return res
     }
 
-    return { get, post, put, remove }
+    const ring = async (body: RingInput) => {
+        console.log(body)
+        const req = await fetch(base + "/message/send", {
+            method: "POST",
+            headers,
+            body: JSON.stringify(body)
+        }); const res = await req.json()
+
+        console.log(90, res)
+
+        return res
+    }
+
+    return { get, post, put, remove, ring }
 }
