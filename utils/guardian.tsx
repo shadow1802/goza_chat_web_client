@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react"
 
 type Props = {
-    children: React.ReactNode;
+    children: React.ReactNode
 };
 
 const guardian: CallableFunction = (ProtectedComponent: React.FC) => {
