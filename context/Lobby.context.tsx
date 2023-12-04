@@ -18,12 +18,14 @@ const LobbyContext = createContext<{
     setUsers: Dispatch<SetStateAction<IUser[]>>,
     setRooms: Dispatch<SetStateAction<IRoom[]>>,
     showChatScreen: boolean,
+    setLoading: Dispatch<SetStateAction<boolean>>,
     setShowChatScreen: Dispatch<SetStateAction<boolean>>,
     notifies: INotify[],
     setNotifies: Dispatch<SetStateAction<INotify[]>>
 }>({
     users: [],
     rooms: [],
+    setLoading: () => null,
     setUsers: () => [],
     setRooms: () => [],
     showChatScreen: false,
@@ -39,6 +41,7 @@ type Props = { children: ReactNode, initialUsers: IUser[], initialRooms: IRoom[]
 function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initialNotifies, children }: Props) {
 
     const authCookie = getCookie("auth")
+    const [loading, setLoading] = useState<boolean>(false)
     const [users, setUsers] = useState<IUser[]>(initialUsers)
     const [rooms, setRooms] = useState<IRoom[]>(initialRooms)
     const [currentUser, setCurrentUser] = useState<ICurrentUser | null>(initialCurrentUser)
@@ -90,7 +93,7 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
                         </div>
                     </div>
                 })
-            } catch(error: any) {
+            } catch (error: any) {
                 toast({ title: error.message })
             }
         })
@@ -114,8 +117,11 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
 
     }, [authCookie])
 
-    return <LobbyContext.Provider value={{ users, rooms, setUsers, setRooms, showChatScreen, setShowChatScreen, currentUser, setCurrentUser, notifies, setNotifies }}>
+    return <LobbyContext.Provider value={{ users, rooms, setLoading, setUsers, setRooms, showChatScreen, setShowChatScreen, currentUser, setCurrentUser, notifies, setNotifies }}>
         {children}
+        {loading && <div className="fixed z-30 top-[45%] left-[45%]">
+            <img src="/icons/loading.svg" alt="" />
+        </div>}
     </LobbyContext.Provider>
 }
 

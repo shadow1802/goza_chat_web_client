@@ -25,6 +25,7 @@ import RoomAnouncements from "@/components/room/room.anouncements";
 import isBlank from "@/utils/isBlank";
 import { toast } from "@/components/ui/use-toast";
 import { truncate } from "@/utils/helper";
+import { useLobbyContext } from "@/context/Lobby.context";
 
 type Props = {}
 
@@ -35,6 +36,7 @@ const RoomContainer: FC<Props> = (props) => {
     const { socket } = useSocket()
     const { messages, setMessages, roomDetail, messageEditor, setMessageEditor, messageReplySender, setMessageReplySender, setOnlineRoomUsers } = useRoomContext()
     const { authState } = useAuthState()
+    const { setLoading } = useLobbyContext()
     const authValue = useAuthValue()
     const messageRef = useRef<HTMLTextAreaElement>(null)
     const formRef = useRef<HTMLFormElement>(null)
@@ -105,7 +107,9 @@ const RoomContainer: FC<Props> = (props) => {
             })
         })
 
-        return () => { socket.emit("exit_room", { roomId: room, userId: authValue?.user._id }) }
+        return () => { 
+            socket.emit("exit_room", { roomId: room, userId: authValue?.user._id })
+        }
 
     }, [socket])
 

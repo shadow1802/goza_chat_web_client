@@ -3,18 +3,21 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { useToast } from "@/components/ui/use-toast"
 import { CiLock, CiUser, CiReceipt, CiMail, CiPhone } from "react-icons/ci"
-import type { FC, FormEvent } from "react"
+import { useState, type FC, type FormEvent } from "react"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
+import Title from "@/components/title"
 
 type Props = {}
 
 const RegisterContainer: FC<Props> = (props) => {
 
     const { toast } = useToast()
+    const [loading, setLoading] = useState<boolean>(false)
 
     const onRegister = async (event: React.SyntheticEvent<HTMLFormElement>) => {
         event.preventDefault()
+        setLoading(true)
         const form = event.currentTarget
         const elements = form.elements as typeof form.elements & {
             username: { value: string },
@@ -24,49 +27,54 @@ const RegisterContainer: FC<Props> = (props) => {
             phoneNumber: { value: string }
         }
 
-        const { username, password, fullName, email, phoneNumber } = elements
-
-        const register = await fetch(process.env.NEXT_PUBLIC_API + "/user/register", {
-            method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
-                username: username.value,
-                password: password.value,
-                fullName: fullName.value,
-                ...(!!email.value && { email: email.value }),
-                ...(!!phoneNumber.value && { phoneNumber: phoneNumber.value })
-            })
-        })
-
-        const { message, data, status } = await register.json()
-
-        if (status === 200) {
-            toast({
-                title: "Thành công",
-                description: <p className='text-green-500 font-semibold'>{message}</p>,
-            })
-        } else {
-            toast({
-                title: "Thất bại",
-                description: <p className='text-red-500 font-semibold'>{message}</p>,
-            })
-        }
-
         try {
 
-        } catch (error: any) {
+            const { username, password, fullName, email, phoneNumber } = elements
 
+            const register = await fetch(process.env.NEXT_PUBLIC_API + "/user/register", {
+
+                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
+                    username: username.value,
+                    password: password.value,
+                    fullName: fullName.value,
+                    ...(!!email.value && { email: email.value }),
+                    ...(!!phoneNumber.value && { phoneNumber: phoneNumber.value })
+                })
+            })
+
+            const { message, data, status } = await register.json()
+            setLoading(false)
+            if (status === 200) {
+                toast({
+                    title: "Thành công",
+                    description: <p className='text-green-500 font-semibold'>{message}</p>,
+                })
+            } else {
+                toast({
+                    title: "Thất bại",
+                    description: <p className='text-red-500 font-semibold'>{message}</p>,
+                })
+            }
+
+        } catch (error: any) {
+            setLoading(false)
         }
     }
 
     return <div className="bg-gray-200 w-screen min-h-screen flex items-center justify-center">
         <div className="h-screen w-full flex flex-col justify-center items-center bg-sky-500">
+            {loading && <div className="fixed z-30 top-[45%] left-[45%]">
+                <img src="/icons/loading.svg" alt="" />
+            </div>}
             <form onSubmit={onRegister} className="">
                 <Card className="rounded-none shadow-xl min-h-screen drop-shadow-xl bg-opacity-10 w-[500px]">
                     <CardHeader className="flex justify-center items-center">
 
                         <img src="/images/logo.png" className="w-44 h-44" alt="" />
-                        <h1 className="text-sky-500 text-4xl font-bold">GOZA CHAT</h1>
+                        
+                        <Title size={26}/>
 
-                        <h2 className="text-xl font-semibold text-gray-600">Đăng ký tài khoản</h2>
+                        <h2 className="text-2xl font-semibold text-gray-600">Đăng ký tài khoản</h2>
 
                     </CardHeader>
                     <CardContent className="space-y-3">

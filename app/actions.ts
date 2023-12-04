@@ -19,6 +19,7 @@ export async function login(form: FormData, configs?: LoginConfigs) {
         body: JSON.stringify({ username, password })
     })
     const { data, status, message } = await res.json()
+    console.log(process.env.HOST)
 
     if (status === 200) {
         const { token, user } = data
