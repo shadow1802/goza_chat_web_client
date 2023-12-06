@@ -29,6 +29,8 @@ export default class ServerLoader {
     }
 
     async getJoinedRooms() {
+
+            console.log(`fetch config:`, this.configs)
             const req = await fetch(process.env.HOST + "/room/getByToken", this.configs)
             const { status, data, message } = await req.json()
 
@@ -40,7 +42,7 @@ export default class ServerLoader {
     async getNotifies() {
             const req = await fetch(process.env.HOST + "/notify/getListOfNotify", this.configs)
             const res = await req.json()
-            return res.filter((item: any) => ['receive_message', 'receive_friend'].includes(item.type))
+            return res
     }
 
     async getUsers() {

@@ -11,20 +11,22 @@ export async function login(form: FormData, configs?: LoginConfigs) {
     const username = form.get("username")
     const password = form.get("password")
 
-    const res = await fetch(`${process.env.HOST}/user/login`, {
+    const body = JSON.stringify({ username, password })
+
+    const res = await fetch("https://api-goza.luongson.me/api/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ username, password })
+        body
     })
-    const { data, status, message } = await res.json()
-    console.log(process.env.HOST)
+    const { status, data, message } = await res.json()
+    console.log(24, data)
 
     if (status === 200) {
-        const { token, user } = data
-        cookies().set("auth", JSON.stringify({ token, user: {
-            _id: user._id, username: user.username, role: user.role, bio: user.bio
+        console.log(data.token)
+        cookies().set("auth", JSON.stringify({ token: data.token, user: {
+            _id: data.user._id, username: data.user.username, role: data.user.role, bio: data.user.bio
         } }))
         redirect(configs?.redirectTo ?? "/")
     } else throw new Error(message)

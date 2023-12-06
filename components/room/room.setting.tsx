@@ -1,8 +1,7 @@
 import { useRoomContext } from "@/context/Room.context";
 import { FC, useRef, useState } from "react";
 import { MdModeEdit } from "react-icons/md"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
+import { useToast } from "@/components/ui/use-toast"
 import { useLobbyContext } from "@/context/Lobby.context";
 import useAuthValue from "@/utils/useAuthValue";
 import {
@@ -40,6 +39,8 @@ const RoomSetting: FC<Props> = () => {
     const fileRef = useRef<HTMLInputElement>(null)
     const [roomIconPreview, setRoomIconPreview] = useState<string>(roomDetail?.roomIcon ?? "")
     const invoker = useInvoker()
+    const [inviteUrl, setInviteUrl] = useState<string>("")
+    const { toast } = useToast()
 
     const inviteMember = async ({ roomId, userId }: { roomId: string, userId: string }) => {
         const { status, data } = await invoker.post("/usersrooms/insert", {
@@ -78,6 +79,13 @@ const RoomSetting: FC<Props> = () => {
         }
     }
 
+    const createInviteLink = async () => {
+        const { data } = await invoker.post(`/room/createInvite`, { roomId: room })
+        console.log(data)
+        const url = process.env.NEXT_PUBLIC_URL_HOST + "/invition/" + data._id
+        setInviteUrl(url)
+    }
+
     const onSelectedFile = async () => {
         if (fileRef?.current?.files) {
 
@@ -102,7 +110,7 @@ const RoomSetting: FC<Props> = () => {
         setIsActive(!isActive)
         const { data, status, message } = await invoker.put(`/room/update/${roomDetail?._id}`, { isActive: 0 })
 
-        console.log( data, status, message )
+        console.log(data, status, message)
 
         await reloader.roomDetail()
     }
@@ -117,6 +125,7 @@ const RoomSetting: FC<Props> = () => {
 
     const copier = async (text: string) => {
         await navigator.clipboard.writeText(text)
+        toast({ title: "Copy thành công", description: <p className="text-sm text-sky-500">{text}</p> })
     }
 
     const kick = async (userId: string) => {
@@ -127,7 +136,7 @@ const RoomSetting: FC<Props> = () => {
         })
 
         if (roomDetail && res.status === 200) {
-            
+
         }
     }
 
@@ -151,14 +160,15 @@ const RoomSetting: FC<Props> = () => {
                 <MdModeEdit className="hidden ml-1 text-sky-500 mt-2 text-base group-hover:block" onClick={changeRoomName} />
             </div>
 
-                <p className="text-sm">Sao chép liên kết dưới đây để mời người dùng vào phòng</p>
+            <button onClick={createInviteLink} className="text-lg px-4 py-1 rounded-md text-white bg-sky-500 my-1">Tạo link mời</button>
 
-            <p onClick={() => copier(
-                `${process.env.NEXT_PUBLIC_URL_HOST ?? "http://localhost:3000"}/invite/${room}`
-            )} className="cursor-pointer flex items-center space-x-2 px-1 py-1 text-xs text-gray-700">
-                <span className="cursor-pointer text-sky-600">{process.env.NEXT_PUBLIC_URL_HOST ?? "http://localhost:3000"}/invite/{room}</span>
-                <FaRegCopy />
-            </p>
+            {inviteUrl && <div onClick={()=>copier(inviteUrl)} className="cursor-pointer my-2 rounded-lg bg-gray-200 px-4 py-2 shadow-lg drop-shadow-lg border-t-2 flex space-x-2 items-center">
+                <p className="cursor-pointer text-xs text-sky-500">{inviteUrl}</p>
+                <FaCopy className="text-sky-500"/>
+            </div>}
+
+            {inviteUrl && <p className="text-sm">Link mời sẽ tồn tại trong vòng 3 phút</p>}
+
         </div>
 
 
@@ -183,7 +193,7 @@ const RoomSetting: FC<Props> = () => {
                                     Sau khi thêm thành viên, người dùng có thể gửi tin nhắn, ảnh, video,...
                                     <div className="mt-4 border-2">
                                         {
-                                            users.filter(item => !roomDetail?.roomUsers.map(item => item.user._id).includes(item._id)).map(item => <div
+                                            users?.filter(item => !roomDetail?.roomUsers.map(item => item.user._id).includes(item._id)).map(item => <div
                                                 key={item._id} className="group hover:bg-sky-500 border-b-2 p-2 user_room flex items-center justify-between space-x-2">
                                                 <div className="flex items-center space-x-2">
                                                     <div className="w-10 h-10 border-2 rounded-full bg-sky-600"></div>
@@ -224,7 +234,7 @@ const RoomSetting: FC<Props> = () => {
                                 <AlertDialog>
                                     <AlertDialogTrigger>
                                         <button disabled={!isOwner} className="py-1 hover:underline px-1 text-orange-500 disabled:text-gray-500 flex space-x-1 items-center">
-                                            <span className="text-xs">{user.roomRole === 1 ? "Giáng cấp":"Nâng cấp quản lý"}</span>
+                                            <span className="text-xs">{user.roomRole === 1 ? "Giáng cấp" : "Nâng cấp quản lý"}</span>
                                         </button>
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>

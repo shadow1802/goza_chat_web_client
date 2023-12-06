@@ -17,7 +17,7 @@ const RoomCard: FC<Props> = ({ room }) => {
     const onClick = () => {
         setLoading(true)
         router.push(`/${room._id}`)
-        setTimeout(() => setLoading(false), 1000)
+        setTimeout(() => setLoading(false), 1250)
     }
 
 
