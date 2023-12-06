@@ -30,7 +30,7 @@ const MediaSender: FC<Props> = ({ handleSendMessageWithFile }) => {
             const params = {
                 Body: fileRef.current.files[0],
                 Bucket: "luongsonchatapp",
-                Key: `admins/${authValue?.user._id}/${new Date().getTime()}_${fileRef.current.files[0].name}`,
+                Key: `users/${authValue?.user._id}/${new Date().getTime()}_${fileRef.current.files[0].name}`,
                 ACL: "public-read"
             };
 

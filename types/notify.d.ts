@@ -11,7 +11,7 @@ export interface INotify {
 export interface INotifyContentMessage {
   message: string
   createdBy: CreatedBy
-  room: Room
+  [key: string]: string
 }
 
 export interface CreatedBy {

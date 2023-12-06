@@ -52,6 +52,8 @@ const Sidebar: FC<Props> = (props) => {
     const invoker = useInvoker()
     const { get, post } = useInvoker()
 
+    console.log(55, notifies)
+    const unreadNotify = notifies.filter(item => item.isRead === false).length
 
     const handlerClickUser = async (user: IUser) => {
         if (authState) {
@@ -120,7 +122,8 @@ const Sidebar: FC<Props> = (props) => {
                 <div className="px-4 py-2 flex items-center justify-between">
                     <Title />
                     <Popover>
-                        <PopoverTrigger><img src="/icons/bell.svg" className="w-5 h-5" alt="" /></PopoverTrigger>
+                        <PopoverTrigger><img src="/icons/bell.svg" className="w-5 h-5" alt="" />
+                        {String(unreadNotify)}</PopoverTrigger>
                         <SidebarNotify notifies={notifies} />
                     </Popover>
                 </div>

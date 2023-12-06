@@ -1,6 +1,4 @@
 import type { Metadata } from 'next'
-import { Toaster } from "@/components/ui/toaster"
-import AuthProvider from '@/context/Auth.context'
 import LobbyProvider from '@/context/Lobby.context'
 import { redirect } from 'next/navigation'
 
