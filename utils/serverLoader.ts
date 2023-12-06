@@ -5,6 +5,7 @@ import log from './logger'
 export default class ServerLoader {
 
     configs: RequestInit = {
+        cache: "no-cache",
         headers: {
             Authorization: ""
         }

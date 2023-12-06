@@ -39,7 +39,7 @@ export default function AuthProvider({ children }: Props) {
     const logOut = () => {
         deleteCookie("auth")
         setAuthState(null)
-        router.push("/login")
+        window.location.href = "/login"
     }
 
     return <AuthContext.Provider value={{ authState, setAuthState, logOut }}>
