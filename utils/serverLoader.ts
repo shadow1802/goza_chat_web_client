@@ -42,7 +42,7 @@ export default class ServerLoader {
     async getNotifies() {
             const req = await fetch(process.env.HOST + "/notify/getListOfNotify", this.configs)
             const res = await req.json()
-            return res
+            return res.filter((item: any) => ["receive_message", "receive_friend"].includes(item.type))
     }
 
     async getUsers() {

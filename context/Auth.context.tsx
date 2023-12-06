@@ -3,8 +3,6 @@ import { getCookie, deleteCookie } from "cookies-next"
 import { AuthState } from "@/types/auth"
 import { ReactNode, useContext, createContext, useState, Dispatch, SetStateAction, useEffect, useRef, MutableRefObject } from "react"
 import { useRouter } from "next/navigation"
-import { initQuickBlox } from "@/utils/quickblox.service"
-
 type Props = { children: ReactNode }
 
 const AuthContext = createContext<{
@@ -39,8 +37,8 @@ export default function AuthProvider({ children }: Props) {
     }, [authCookie])
 
     const logOut = () => {
-        setAuthState(null)
         deleteCookie("auth")
+        setAuthState(null)
         router.push("/login")
     }
 
@@ -50,9 +48,3 @@ export default function AuthProvider({ children }: Props) {
 }
 
 export const useAuthState = () => useContext(AuthContext)
-
-const ROOM_ROLES: { [key:number]:string } = {
-    0: "Chủ phòng",
-    1: "Quản trị",
-    2: "Thành viên"
-}

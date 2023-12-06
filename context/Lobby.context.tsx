@@ -9,6 +9,7 @@ import { AuthState } from "@/types/auth"
 import { INotify } from "@/types/notify"
 import { IOutSide } from "@/types/outside"
 import { dateTimeConverter } from "@/utils/dateTimeConverter"
+import useInvoker from "@/utils/useInvoker"
 
 const LobbyContext = createContext<{
     users: IUser[],
@@ -41,6 +42,7 @@ type Props = { children: ReactNode, initialUsers: IUser[], initialRooms: IRoom[]
 function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initialNotifies, children }: Props) {
 
     const authCookie = getCookie("auth")
+    const invoker = useInvoker()
     const [loading, setLoading] = useState<boolean>(false)
     const [users, setUsers] = useState<IUser[]>(initialUsers)
     const [rooms, setRooms] = useState<IRoom[]>(initialRooms)
@@ -49,6 +51,15 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
     const { toast } = useToast()
     const [showChatScreen, setShowChatScreen] = useState<boolean>(false)
     const { socket } = useSocket()
+
+    const reloader = {
+        setRooms: async () => {
+            const { data, status } = await invoker.get("/room/getByToken")
+            setRooms(data.filter((item: any) => item !== null))
+        },
+        setUsers: async () => {},
+        currentUser: async () => {}
+    }
 
     useEffect(() => {
 
