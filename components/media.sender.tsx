@@ -4,6 +4,8 @@ import Scanner from "./form/scanner"
 import { RiSendPlane2Line } from "react-icons/ri"
 import UploadService from "@/utils/s3.service"
 import useAuthValue from "@/utils/useAuthValue"
+import { useRoomContext } from "@/context/Room.context"
+import { IMAGE_TYPES, VIDEO_TYPES } from "@/constants/file.types"
 type Props = {
     handleSendMessageWithFile: (message: string, file: string) => void
 }
@@ -11,6 +13,7 @@ type Props = {
 const MediaSender: FC<Props> = ({ handleSendMessageWithFile }) => {
 
     const fileRef = useRef<HTMLInputElement>(null)
+    const { roomDetail } = useRoomContext()
     const [message, setMessage] = useState<string>("")
     const [previewUrl, setPreviewUrl] = useState<string>("")
     const authValue = useAuthValue()
@@ -26,11 +29,23 @@ const MediaSender: FC<Props> = ({ handleSendMessageWithFile }) => {
 
         event.preventDefault()
 
+        let type = "document"
+
         if (fileRef?.current?.files) {
+
+            const ext = fileRef.current.files[0].name.split(".").pop()
+
+            if (ext && IMAGE_TYPES.includes(ext)) {
+                type = "image"
+            }
+            if (ext && VIDEO_TYPES.includes(ext)) {
+                type = "video"
+            }
+
             const params = {
                 Body: fileRef.current.files[0],
                 Bucket: "luongsonchatapp",
-                Key: `users/${authValue?.user._id}/${new Date().getTime()}_${fileRef.current.files[0].name}`,
+                Key: `${roomDetail?._id}/${type}/${authValue?.user._id}/${Date.now()}_${fileRef.current.files[0].name}`,
                 ACL: "public-read"
             };
 
@@ -51,7 +66,7 @@ const MediaSender: FC<Props> = ({ handleSendMessageWithFile }) => {
                 className={`cursor-pointer w-full min-h-[220px] flex flex-col items-center justify-center rounded-lg ${!previewUrl && "border-dashed border-2"}`}>
                 {previewUrl ? <img className="bg-darkness-500" src={previewUrl} /> : <p className="text-sm font-semibold text-gray-600">Tải ảnh lên</p>}
             </label>
-            <input type="file" ref={fileRef} onChange={onFileSelected} id="media_image_sender" className="hidden" accept="image/*" multiple />
+            <input type="file" ref={fileRef} onChange={onFileSelected} id="media_image_sender" className="hidden" accept="audio/*|video/*|image/*" multiple />
             {previewUrl && <div className="px-4">
                 <Scanner onChange={(e: any) => setMessage(e.target.value)} icon={<RiSendPlane2Line className="text-sky-500" />} placeholder="Nhập tin nhắn" name="mesage" />
             </div>}

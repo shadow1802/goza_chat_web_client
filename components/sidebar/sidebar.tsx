@@ -1,7 +1,7 @@
 "use client"
 import { useLobbyContext } from "@/context/Lobby.context"
 import { AiOutlineSetting, AiOutlineExclamationCircle } from "react-icons/ai"
-import { ChangeEvent, ChangeEventHandler, FC, useEffect, useState } from "react"
+import { FC, useState } from "react"
 import { BiExit } from "react-icons/bi"
 import RoomCard from "../room/room.card"
 import UserCard from "../user.card"
@@ -37,6 +37,7 @@ import Title from "../title"
 import useAuthValue from "@/utils/useAuthValue"
 import { IRoomDetail } from "@/types/room.detail"
 import SidebarNotify from "./sidebar.notify"
+import Scanner from "../form/scanner"
 
 type Props = {}
 
@@ -52,7 +53,6 @@ const Sidebar: FC<Props> = (props) => {
     const invoker = useInvoker()
     const { get, post } = useInvoker()
 
-    console.log(55, notifies)
     const unreadNotify = notifies.filter(item => item.isRead === false).length
 
     const handlerClickUser = async (user: IUser) => {
@@ -123,7 +123,7 @@ const Sidebar: FC<Props> = (props) => {
                     <Title />
                     <Popover>
                         <PopoverTrigger><img src="/icons/bell.svg" className="w-5 h-5" alt="" />
-                        {String(unreadNotify)}</PopoverTrigger>
+                            {String(unreadNotify)}</PopoverTrigger>
                         <SidebarNotify notifies={notifies} />
                     </Popover>
                 </div>
@@ -144,10 +144,25 @@ const Sidebar: FC<Props> = (props) => {
                     </button>
                 </div>
                 <div className="px-2">
-                    <button className="w-full rounded-md hover:bg-gray-200 flex items-center space-x-2 p-2">
-                        <FaUser className="text-sky-500" />
-                        <p className="text-sky-500 text-sm font-semibold">Bạn bè</p>
-                    </button>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <button className="w-full rounded-md hover:bg-gray-200 flex items-center space-x-2 p-2">
+                                <FaUser className="text-sky-500" />
+                                <p className="text-sky-500 text-sm font-semibold">Thêm bạn bè +</p>
+                            </button>
+                        </DialogTrigger>
+                        <DialogContent className="w-[600px] p-0 border-none outline-none rounded-none">
+                            <div className="bg-sky-500 px-4 py-3">
+                                <h1 className="text-white font-semibold">Thêm bạn bè</h1>
+                            </div>
+                            <form className="px-4 pb-4">
+                                <p className="text-lg font-semibold">Nhập mã GOZA của đối tác để kết bạn</p>
+                                <Scanner icon={<FaBullseye />} name="ádasdasd" placeholder="Mã GOZA của đối tác"/>
+                                <button className="mt-2 w-full py-2 bg-sky-500 text-white font-semibold">Kết bạn</button>
+                            </form>
+                        </DialogContent>
+                            
+                    </Dialog>
                 </div>
                 <div className="px-2">
                     <button className="w-full rounded-md hover:bg-gray-200 flex items-center space-x-2 p-2">
@@ -160,12 +175,12 @@ const Sidebar: FC<Props> = (props) => {
             <div className="px-4">
                 <div className="flex space-x-1 py-1 border-2 rounded-lg px-2">
                     <img src="/icons/search.svg" className="w-5 h-5" alt="" />
-                    <input type="text" onChange={(e)=>handleSearchUser(e.target.value)} className="w-full text-sm" placeholder="Tìm kiếm người dùng" />
+                    <input type="text" onChange={(e) => handleSearchUser(e.target.value)} className="w-full text-sm" placeholder="Tìm kiếm người dùng" />
                 </div>
             </div>
 
             <div className="relative">
-                {searchUserItems.length > 0 ? 
+                {searchUserItems.length > 0 ?
                     searchUserItems?.map(item => <UserCard key={item._id} user={item} onClick={() => handlerClickUser(item)} />)
                     : users?.map(item => <UserCard key={item._id} user={item} onClick={() => handlerClickUser(item)} />)
                 }

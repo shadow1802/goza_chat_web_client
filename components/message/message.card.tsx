@@ -8,6 +8,7 @@ import log from "@/utils/logger"
 import MessageCardMenu from "./message.card.menu"
 import { IoReturnDownForwardSharp } from "react-icons/io5"
 import { ROOM_ROLES_COLORS } from "@/constants/room.roles"
+import { IMAGE_TYPES, VIDEO_TYPES } from "@/constants/file.types"
 
 type Props = {
     message: IMessage,
@@ -25,6 +26,24 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
     const isSameUser = prevMessage?.createdBy._id === message.createdBy._id
 
     const counter = message.reactions
+
+    const FileRender: FC<{ file: string }> = ({ file }) => {
+        let type = "document"
+        const ext = file.split(".").pop()
+        if (ext && IMAGE_TYPES.includes(ext)) {
+            type = "image"
+        }
+        if (ext && VIDEO_TYPES.includes(ext)) {
+            type = "video"
+        }
+
+        console.log(type)
+
+        return <div>
+            { type === "video" && <video className="w-[300px]" src={file} controls></video> }
+            { type === "image" && <img src={file} className="w-[300px]" /> }
+        </div>
+    }
 
     return <MessageCardMenu message={message} setMessageEditor={setMessageEditor} handleRemoveMessage={handleRemoveMessage} setMessageReplySender={setMessageReplySender} handleReaction={handleReaction}>
         <div onClick={() => console.log(counter)} className={`${!isSameUser && "mt-3"} group flex space-x-2 max-w-[40rem]`}>
@@ -61,7 +80,7 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
                 </div>}
 
 
-                {message.file && <img src={message.file} className="duration-200 shadow-lg max-w-[250px] max-h-[400px] rounded-lg" />}
+                {message.file && <FileRender file={message.file}/>}
                 {
                     message.reactions.length > 0 && <div className="flex space-x-1">
                         {message.reactions.map((item: any, index) => <div key={index} className="w-9 h-5 text-xs border-[0.5px] flex justify-center items-center rounded-lg border-sky-500">

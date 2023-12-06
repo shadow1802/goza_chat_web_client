@@ -4,6 +4,7 @@ import { IRoom } from "@/types/room"
 import { useRouter } from "next/navigation"
 import RoomCardMenu from "./room.card.menu"
 import { useLobbyContext } from "@/context/Lobby.context"
+
 type Props = {
     room: IRoom
 }
@@ -25,7 +26,8 @@ const RoomCard: FC<Props> = ({ room }) => {
             <div onClick={onClick} className="cursor-pointer border-2 rounded-full bg-darkness-700 m-2 w-14 h-14">
                 {room.roomIcon ?
                     <img src={room.roomIcon} className="w-full rounded-full h-full" alt="" />
-                    : <div className="w-full h-full"></div>}
+                    : <div className="w-full h-full"></div>
+                }
             </div>
         </RoomCardMenu>
 }
