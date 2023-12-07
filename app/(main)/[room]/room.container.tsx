@@ -66,7 +66,6 @@ const RoomContainer: FC<Props> = (props) => {
         })
 
         socket.on("receive_chat", (data: IMessage) => {
-
             if (data.room._id === room) {
                 setMessages(prev => {
                     const newListOfMessage = [data, ...prev]
@@ -226,7 +225,7 @@ const RoomContainer: FC<Props> = (props) => {
                 <RoomAnouncements />
                 <div
                     id="scrollableDiv"
-                    className="relative pb-10 px-5 scrollbar-thin"
+                    className="relative pb-10 px-5 scrollbar-thin border-b-2"
                     style={{
                         height: '80vh',
                         overflow: 'auto',

@@ -1,3 +1,4 @@
+"use client"
 import { IMessage } from "@/types/message"
 import { dateTimeConverter } from "@/utils/dateTimeConverter"
 import { FC, Dispatch, SetStateAction, ReactNode } from "react"
@@ -26,7 +27,7 @@ const MessageCardMenu: FC<Props> = ({ message, setMessageEditor, handleRemoveMes
     const isOwner = authValue?.user._id === message.createdBy._id
 
     return <ContextMenu>
-        <ContextMenuTrigger>{children}</ContextMenuTrigger>
+        <ContextMenuTrigger className="w-full">{children}</ContextMenuTrigger>
         <ContextMenuContent className="bg-white rounded-md min-w-[300px] p-0 shadow-lg drop-shadow-lg">
             <div className="bg-sky-500 flex space-x-3 px-4 py-2 items-center justify-between">
                 <div>

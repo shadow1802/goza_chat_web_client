@@ -1,3 +1,4 @@
+"use client"
 import { IMessage } from "@/types/message"
 import { dateTimeConverter } from "@/utils/dateTimeConverter"
 import { FC, Dispatch, SetStateAction } from "react"
@@ -40,25 +41,45 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
         }
 
         return <div>
-            {type === "video" && <video className="w-[300px]" src={file} controls></video>}
-            {type === "image" && <img src={file} className="w-[300px]" />}
+            {type === "video" && <video className="w-[350px]" src={file} controls></video>}
+            {type === "image" && <img src={file} className="w-[350px]" />}
         </div>
     }
 
-    const isSelf = authValue?.user._id === message.createdBy._id
+    const isSameCreator = authValue?.user._id === message.createdBy._id
 
     return <MessageCardMenu message={message} setMessageEditor={setMessageEditor} handleRemoveMessage={handleRemoveMessage} setMessageReplySender={setMessageReplySender} handleReaction={handleReaction}>
-        <div className={`message_direction px-8 w-full mt-2 flex ${isSelf?"justify-start":"justify-end"}`}>
-            <div className={`message_container ${isSelf?"bg-sky-500":"bg-white"} shadow-lg rounded-lg max-w-[500px] p-2 flex space-x-2`}>
-                {isSameUser ? null : <div className="">
-                    <img src={message.createdBy.avatar || "/images/default-avatar.jpg"} className="w-12 h-12 rounded-full" alt="" />
-                </div>}
-                <div>
-                    { !isSameUser && <p className="font-semibold text-sm text-sky-500">{message.createdBy.fullName} <span className="text-xs text-gray-400">{dateTimeConverter(String(message.createdTime))}</span></p>}
-                    <p className="text-sm text-gray-600">{message.message}</p>
+        {isSameCreator ? <div id={message._id} className="msg_direction px-7 w-full flex justify-start">
+
+            <div onClick={() => console.log(message)} className="msg_container p-2 flex items-start max-w-[500px] space-x-2">
+
+                {!isSameUser ? <img src={message.createdBy.avatar || '/images/default-avatar.jpg'} className="border-2 border-sky-500 w-14 h-14 rounded-full" /> : <div className="w-14"></div>}
+                <div className="bg-sky-500 rounded-lg shadow-lg p-3">
+                    {message.replyTo && <div className="border-2 px-2 rounded-lg">
+                        <p>Trả lời tin nhắn của {message.replyTo.createdBy.fullName}:</p>
+                        <p className="text-sm max-w-[500px] text-block-default">{message.replyTo.message}</p>
+                        {message.replyTo.file && <FileRender file={message.replyTo.message} />}
+                    </div>}
+                    {!isSameUser && <p className="font-semibold">{message.createdBy.fullName} <span className="text-xs text-gray-200">{dateTimeConverter(String(message.lastModified))}</span></p>}
+                    <p className="text-sm max-w-[500px] text-block-default">{message.message}</p>
+                    {message.file && <FileRender file={message.file} />}
                 </div>
             </div>
-        </div>
+        </div> : <div className="my-1 msg_direction px-7 w-full flex justify-end">
+            <div className="msg_container flex items-start max-w-[500px] space-x-2">
+                {!isSameUser && <img src={message.createdBy.avatar || '/images/default-avatar.jpg'} className="border-2 border-sky-500 w-14 h-14 rounded-full" />}
+                <div className="p-3 bg-white rounded-lg shadow-lg">
+                    {message.replyTo && <div className="border-2 px-2 rounded-lg">
+                        <p>Trả lời tin nhắn của {message.replyTo.createdBy.fullName}:</p>
+                        <p className="text-sm max-w-[500px] text-block-default">{message.replyTo.message}</p>
+                        {message.replyTo.file && <FileRender file={message.replyTo.message} />}
+                    </div>}
+                    {!isSameUser && <p className="font-semibold text-gray-500">{message.createdBy.fullName} <span className="text-xs text-gray-400">{dateTimeConverter(String(message.lastModified))}</span></p>}
+                    <p className="text-sm max-w-[500px] text-block-default text-black">{message.message}</p>
+                    {message.file && <FileRender file={message.file} />}
+                </div>
+            </div>
+        </div>}
     </MessageCardMenu>
 }
 
