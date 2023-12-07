@@ -161,7 +161,7 @@ const UserEditor: FC<Props> = (props) => {
             </div>
         </div>
         <div className="border-gray-300 border-b-[0.5px]">
-            <p className="font-semibold text-gray-600 uppercase text-xs my-1 ml-1">bufa</p>
+            <p className="font-semibold text-gray-600 uppercase text-xs my-1 ml-1">GOZA</p>
             <div className="flex rounded-md p-2 space-x-2 items-center ">
                 <HiOutlineStatusOnline onClick={handleChangeBufa} className="cursor-pointer text-gray-400" />
                 <input type="text" value={currentUser?.bufa} disabled className="text-sm border-none outline-none w-full bg-white" />

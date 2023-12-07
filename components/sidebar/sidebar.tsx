@@ -3,10 +3,16 @@ import { useLobbyContext } from "@/context/Lobby.context"
 import { AiOutlineSetting, AiOutlineExclamationCircle } from "react-icons/ai"
 import { FC, useState } from "react"
 import { BiExit } from "react-icons/bi"
-import RoomCard from "../room/room.card"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 import UserCard from "../user.card"
 import ChatScreen from "../chat_screen/chat_screen"
 import { useAuthState } from "@/context/Auth.context"
+import { BsJournal } from "react-icons/bs"
 import {
     Sheet,
     SheetContent,
@@ -23,7 +29,6 @@ import {
 import { FaUser, FaBullseye, FaRss } from "react-icons/fa"
 import {
     Popover,
-    PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
 import UserEditor from "./sidebar.user.editor"
@@ -38,6 +43,13 @@ import useAuthValue from "@/utils/useAuthValue"
 import { IRoomDetail } from "@/types/room.detail"
 import SidebarNotify from "./sidebar.notify"
 import Scanner from "../form/scanner"
+import FriendMaker from "./sidebar.friend.maker"
+import { RiContactsBook2Line } from "react-icons/ri"
+import Hoverable from "../hoverable/hoverable"
+import Contacts from "./sidebar.contacts"
+import { truncate } from "@/utils/helper"
+import { dateTimeConverter } from "@/utils/dateTimeConverter"
+import RoomCard from "../room/room.card"
 
 type Props = {}
 
@@ -55,9 +67,9 @@ const Sidebar: FC<Props> = (props) => {
 
     const unreadNotify = notifies.filter(item => item.isRead === false).length
 
-    const handlerClickUser = async (user: IUser) => {
+    const handlerClickUser = async (userId: string) => {
         if (authState) {
-            const { data } = await get(`/room/findPrivateRoom/${authState.user._id}_${user._id}`)
+            const { data } = await get(`/room/findPrivateRoom/${authState.user._id}_${userId}`)
             if (data) {
                 setPrivateRoomDetail(data)
                 setShowChatScreen(true)
@@ -65,8 +77,8 @@ const Sidebar: FC<Props> = (props) => {
                 const { data: newRoom } = await post(`/room/insert`, {
                     roomName: ' ',
                     roomType: 0,
-                    key: `${authState.user._id}_${user._id}`,
-                    roomUsers: JSON.stringify([user._id])
+                    key: `${authState.user._id}_${userId}`,
+                    roomUsers: JSON.stringify([userId])
                 })
                 setPrivateRoomDetail(newRoom)
                 setShowChatScreen(true)
@@ -74,16 +86,14 @@ const Sidebar: FC<Props> = (props) => {
         }
     }
 
+    const [showListOfContact, setShowListOfContact] = useState<boolean>(false)
+
     const handleSearchUser = async (input: string) => {
         const { data } = await invoker.get(`/user/getPaging?fullName=${input}`)
-
         setSearchUsersItems(data)
     }
 
-    return <div className="w-[360px] min-h-screen bg-white flex overflow-auto">
-
-        <audio id="localMedia" />
-        <audio id="remoteMedia" />
+    return <div className="w-[380px] min-h-screen bg-white flex overflow-auto">
 
         {showChatScreen && (<ChatScreen roomDetail={privateRoomDetail} />)}
 
@@ -92,30 +102,34 @@ const Sidebar: FC<Props> = (props) => {
                 <div onClick={() => router.push("/")} className="cursor-pointer w-20 h-20">
                     <img src="/images/bg.png" className="w-full h-full" alt="" />
                 </div>
-                {rooms?.filter(item => item.roomType === 3).map(item => <RoomCard key={item._id} room={item} />)}
+                <div className="space-y-4 flex flex-col items-center justify-center pt-6">
+                    <Hoverable content={<p className="text-sky-500">Danh bạ</p>}>
+                        <BsJournal onClick={() => setShowListOfContact(true)} className="cursor-pointer text-4xl text-white" />
+                    </Hoverable>
+                    <Dialog open={showRoomCreator} onOpenChange={setShowRoomCreator}>
+                        <DialogTrigger>
+                            <img onClick={() => setShowRoomCreator(true)} src="/icons/add.svg" className="w-11 h-11" alt="" />
+                        </DialogTrigger>
+                        <DialogContent className="bg-white">
+                            <DialogHeader>
+                                <DialogTitle className="text-gray-600">Tạo phòng</DialogTitle>
+                            </DialogHeader>
+
+                            <RoomCreator setShowRoomCreator={setShowRoomCreator} setPrivateRoomDetail={setPrivateRoomDetail} />
+
+                        </DialogContent>
+                    </Dialog>
+                </div>
             </div>
 
+            <Contacts open={showListOfContact} onOpenChange={setShowListOfContact} handlerClickUser={handlerClickUser} />
+
             <div className="w-full h-[20vh] bg-sky-500 flex flex-col items-center justify-between py-5">
-                <Dialog open={showRoomCreator} onOpenChange={setShowRoomCreator}>
-                    <DialogTrigger>
-                        <img onClick={() => setShowRoomCreator(true)} src="/icons/add.svg" className="w-9 h-9" alt="" />
-                    </DialogTrigger>
-                    <DialogContent className="bg-white">
-                        <DialogHeader>
-                            <DialogTitle className="text-gray-600">Tạo phòng</DialogTitle>
-                        </DialogHeader>
-
-                        <RoomCreator setShowRoomCreator={setShowRoomCreator} setPrivateRoomDetail={setPrivateRoomDetail} />
-
-                    </DialogContent>
-                </Dialog>
-
-                <img src="/icons/call.svg" className="cursor-pointer w-9 h-9" alt="" />
-                <img src="/icons/saved.svg" className="w-9 h-9" alt="" />
+                
             </div>
         </div>
 
-        <div className="relative flex-col justify-between space-y-2 h-full flex-grow">
+        <div className="relative flex-col justify-between h-full flex-grow">
 
             <div className="">
 
@@ -151,17 +165,8 @@ const Sidebar: FC<Props> = (props) => {
                                 <p className="text-sky-500 text-sm font-semibold">Thêm bạn bè +</p>
                             </button>
                         </DialogTrigger>
-                        <DialogContent className="w-[600px] p-0 border-none outline-none rounded-none">
-                            <div className="bg-sky-500 px-4 py-3">
-                                <h1 className="text-white font-semibold">Thêm bạn bè</h1>
-                            </div>
-                            <form className="px-4 pb-4">
-                                <p className="text-lg font-semibold">Nhập mã GOZA của đối tác để kết bạn</p>
-                                <Scanner icon={<FaBullseye />} name="ádasdasd" placeholder="Mã GOZA của đối tác"/>
-                                <button className="mt-2 w-full py-2 bg-sky-500 text-white font-semibold">Kết bạn</button>
-                            </form>
-                        </DialogContent>
-                            
+                        <FriendMaker />
+
                     </Dialog>
                 </div>
                 <div className="px-2">
@@ -172,18 +177,12 @@ const Sidebar: FC<Props> = (props) => {
                 </div>
             </div>
 
-            <div className="px-4">
-                <div className="flex space-x-1 py-1 border-2 rounded-lg px-2">
-                    <img src="/icons/search.svg" className="w-5 h-5" alt="" />
-                    <input type="text" onChange={(e) => handleSearchUser(e.target.value)} className="w-full text-sm" placeholder="Tìm kiếm người dùng" />
-                </div>
-            </div>
 
-            <div className="relative">
-                {searchUserItems.length > 0 ?
-                    searchUserItems?.map(item => <UserCard key={item._id} user={item} onClick={() => handlerClickUser(item)} />)
-                    : users?.map(item => <UserCard key={item._id} user={item} onClick={() => handlerClickUser(item)} />)
-                }
+
+            <div className="relative p-2">
+                {rooms.filter(item => item.roomType === 3).map(item => {
+                    return <RoomCard key={item._id} room={item} />
+                })}
             </div>
 
             <div className="absolute bottom-0 flex space-x-2 w-full bg-white border-t-2 h-14 items-center px-2">

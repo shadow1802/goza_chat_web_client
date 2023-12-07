@@ -2,7 +2,7 @@
 import { IUser } from "@/types/user"
 import { FC } from "react"
 type Props = {
-    user: IUser
+    user: { username: string, fullName: string, avatar: string }
     [key: string]: any
 }
 

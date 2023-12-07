@@ -28,6 +28,7 @@ export interface ICurrentUser {
     createdTime: Date
     status: number
     isOnline: boolean
+    friends: { _id: string, fullName: string, avatar: string, username: string }[]
     role: Role
     lastLogin: Date
     bio: string

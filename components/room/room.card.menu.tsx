@@ -34,14 +34,14 @@ const RoomCardMenu: FC<Props> = ({ room, children }) => {
 
     return <ContextMenu>
         <ContextMenuTrigger>{children}</ContextMenuTrigger>
-        <ContextMenuContent className="rounded-xl min-w-[300px] p-0 shadow-lg drop-shadow-lg">
+        <ContextMenuContent className="rounded-xl w-[330px] p-0 shadow-lg drop-shadow-lg">
             <div className="relative rounded-t-xl border-b-8 border-gray-100 room_card_menu_header bg-gradient-to-r from-cyan-500 to-blue-500 shadow-md drop-shadow-md w-full h-24">
                 <div className="absolute left-4 -bottom-[45%] flex space-x-2 items-end">
                     <div className="shadow-md drop-shadow-md w-20 h-20 rounded-full border-8 border-gray-100">
                         <img src={room.roomIcon} alt="" className="rounded-full w-full h-full" />
                     </div>
                     <div className="tran-y-3">
-                        <p className="leading-[8px] text-sm font-bold text-sky-500 ">{room.roomName} <small className="text-xs font-semibold text-gray-600">{room?.roomUsers?.length ?? '0'} thành viên</small></p>
+                        <p className="leading-[8px] text-sm font-bold text-sky-500 ">{room.roomName}</p>
                     </div>
                 </div>
             </div>
