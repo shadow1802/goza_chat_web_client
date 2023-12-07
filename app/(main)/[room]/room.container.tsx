@@ -247,11 +247,9 @@ const RoomContainer: FC<Props> = (props) => {
                         scrollThreshold={0.9}
                     >
                         {messages?.map((mess, index) => {
-                            const direction = authValue?.user._id === mess.createdBy._id ? "justify-start":"justify-end"
                             return <MessageCard
                                 key={mess._id}
                                 message={mess}
-                                direction={direction}
                                 setMessageEditor={setMessageEditor}
                                 setMessageReplySender={setMessageReplySender}
                                 handleRemoveMessage={handleRemoveMessage}

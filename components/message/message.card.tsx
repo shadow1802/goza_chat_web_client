@@ -18,10 +18,9 @@ type Props = {
     handleRemoveMessage: (id: string) => void
     prevMessage?: IMessage | null,
     handleReaction: (message: IMessage, emoji: string) => void,
-    direction: string
 }
 
-const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage, setMessageReplySender, prevMessage, handleReaction, direction }) => {
+const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage, setMessageReplySender, prevMessage, handleReaction }) => {
 
     const { roomDetail } = useRoomContext()
     const authValue = useAuthValue()
@@ -48,11 +47,9 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
 
     const isSelf = authValue?.user._id === message.createdBy._id
 
-    console.log(isSelf)
-
     return <MessageCardMenu message={message} setMessageEditor={setMessageEditor} handleRemoveMessage={handleRemoveMessage} setMessageReplySender={setMessageReplySender} handleReaction={handleReaction}>
         <div className={`message_direction px-8 w-full mt-2 flex ${isSelf?"justify-start":"justify-end"}`}>
-            <div className="message_container bg-white shadow-lg rounded-lg max-w-[500px] p-2 flex space-x-2">
+            <div className={`message_container ${isSelf?"bg-sky-500":"bg-white"} shadow-lg rounded-lg max-w-[500px] p-2 flex space-x-2`}>
                 {isSameUser ? null : <div className="">
                     <img src={message.createdBy.avatar || "/images/default-avatar.jpg"} className="w-12 h-12 rounded-full" alt="" />
                 </div>}
