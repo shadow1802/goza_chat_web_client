@@ -9,9 +9,9 @@ import Link from "next/link"
 import { useRef, useState, useEffect } from "react"
 import { CiLock, CiUser } from "react-icons/ci"
 
-type Props = { invite?: string }
+type Props = { invition?: string }
 
-export default function LoginContainer({ invite }: Props) {
+export default function LoginContainer({ invition }: Props) {
 
     const { toast } = useToast()
     const [loading, setLoading] = useState<boolean>(false)
@@ -55,7 +55,10 @@ export default function LoginContainer({ invite }: Props) {
                     description: <p className='text-green-500 font-semibold'>{message}</p>,
                 })
                 setLoading(true)
-                router.push("/")
+
+                if (invition) {
+                    router.push(`/invition/${invition}`)
+                } else router.push("/")
             } else {
                 toast({
                     title: message,

@@ -9,11 +9,11 @@ export const metadata: Metadata = {
 
 type LoginContext = {
     params: { search: any }
-    searchParams: { invite: string }
+    searchParams: { invition: string }
 }
 
 export default function Login(ctx: LoginContext) {
     return <div className="page">
-        <LoginContainer invite={ctx.searchParams.invite}/>
+        <LoginContainer invition={ctx.searchParams.invition}/>
     </div>
 }

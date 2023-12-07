@@ -31,7 +31,7 @@ export default function InviteContainer({ detail, isSuccessLoaded }: Props) {
             }
         } else {
             if (detail) {
-                router.push(`/login?invite=${detail.room._id}`)
+                router.push(`/login?invition=${detail.room._id}`)
             }
         }
     }
