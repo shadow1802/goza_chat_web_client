@@ -250,3 +250,11 @@ input[type="radio"]:checked + label{
   word-wrap: break-word;
   word-break: break-word;
 }
+
+.start {
+  justify-items: flex-start;
+}
+
+.end {
+  justify-items: flex-end;
+}

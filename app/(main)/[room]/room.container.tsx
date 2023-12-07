@@ -107,7 +107,7 @@ const RoomContainer: FC<Props> = (props) => {
             })
         })
 
-        return () => { 
+        return () => {
             socket.emit("exit_room", { roomId: room, userId: authValue?.user._id })
         }
 
@@ -246,15 +246,19 @@ const RoomContainer: FC<Props> = (props) => {
                         scrollableTarget="scrollableDiv"
                         scrollThreshold={0.9}
                     >
-                        {messages?.map((mess, index) => <MessageCard
-                            key={mess._id}
-                            message={mess}
-                            setMessageEditor={setMessageEditor}
-                            setMessageReplySender={setMessageReplySender}
-                            handleRemoveMessage={handleRemoveMessage}
-                            prevMessage={index === messages.length - 1 ? null : messages[index + 1]}
-                            handleReaction={handleReaction}
-                        />)}
+                        {messages?.map((mess, index) => {
+                            const direction = authValue?.user._id === mess.createdBy._id ? "justify-start":"justify-end"
+                            return <MessageCard
+                                key={mess._id}
+                                message={mess}
+                                direction={direction}
+                                setMessageEditor={setMessageEditor}
+                                setMessageReplySender={setMessageReplySender}
+                                handleRemoveMessage={handleRemoveMessage}
+                                prevMessage={index === messages.length - 1 ? null : messages[index + 1]}
+                                handleReaction={handleReaction}
+                            />
+                        })}
 
                     </InfiniteScroll>
                 </div>
