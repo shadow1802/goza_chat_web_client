@@ -224,10 +224,10 @@ const RoomContainer: FC<Props> = (props) => {
             <div className="flex-grow bg-gray-100 border-l-2 bg-cover" style={{ backgroundImage: `url(/images/bg2.png)` }}>
                 <RoomAnouncements />
                 <div
-                    id="scrollableDiv"
-                    className="relative pb-10 px-5 scrollbar-thin border-b-2"
+                    id="messages_container"
+                    className="relative pb-10 px-5"
                     style={{
-                        height: '80vh',
+                        height: '74.2vh',
                         overflow: 'auto',
                         display: 'flex',
                         flexDirection: 'column-reverse',
@@ -242,7 +242,7 @@ const RoomContainer: FC<Props> = (props) => {
                         loader={
                             isLoading ? <div className="text-white">loading ...</div> : null
                         }
-                        scrollableTarget="scrollableDiv"
+                        scrollableTarget="messages_container"
                         scrollThreshold={0.9}
                     >
                         {messages?.map((mess, index) => {
@@ -260,9 +260,9 @@ const RoomContainer: FC<Props> = (props) => {
                     </InfiniteScroll>
                 </div>
 
-                <div className="sticky flex flex-col items-center justify-center space-x-2 bottom-0 w-full min-h-[10vh] px-12">
+                <div className="sticky flex flex-col items-center justify-center space-x-2 bottom-0 w-full min-h-[15.8vh] px-12">
 
-                    <div className="absolute w-full top-0 h-[2px] px-12">
+                    <div className="absolute w-full top-2 h-[2px] px-12">
                         <div className="h-[2px] w-full shadow-lg drop-shadow bg-gray-100"></div>
                     </div>
 
@@ -282,13 +282,13 @@ const RoomContainer: FC<Props> = (props) => {
                         <img src="/icons/close.svg" onClick={() => setMessageEditor(null)} className="cursor-pointer w-5 h-5" alt="" />
                     </div>}
 
-                    <form ref={formRef} onSubmit={onSubmit} className="flex justify-between items-center w-full bg-gray-300 shadow-lg">
+                    <form ref={formRef} onSubmit={onSubmit} className="flex justify-between items-center w-full bg-gray-300 shadow-lg h-14">
                         <div className="px-3 w-full">
                             <textarea ref={messageRef}
                                 style={{ resize: 'none' }}
                                 placeholder="Vui lòng nhập tin nhắn"
                                 onKeyDown={onKeyDown}
-                                className="px-2 bg-gray-100 pt-[3px] rounded-lg text-gray-700 text-sm scrollbar-thin flex justify-center border-none outline-none items-center h-7 w-full"
+                                className="px-2 bg-gray-100 pt-[8px] rounded-lg text-gray-700 text-sm scrollbar-thin flex flex-col justify-center border-none outline-none items-center h-10 w-full"
                             />
                         </div>
                         <div className="flex justify-between space-x-3 bg-gray-300 px-4 py-2">

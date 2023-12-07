@@ -152,8 +152,6 @@ const ChatScreen: FC<Props> = ({ roomDetail }) => {
                 next={() => console.log("get more...")}
                 style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
                 inverse={true} //1
-
-
                 hasMore={true}
                 loader={<div className="text-white">loading ...</div>}
                 scrollableTarget="scrollableDiv"
