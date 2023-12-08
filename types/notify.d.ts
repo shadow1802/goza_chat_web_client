@@ -8,10 +8,10 @@ export interface INotify {
   updatedAt: string
 }
 
-export interface INotifyContentMessage {
+export type NotifyContent = {
   message: string
   createdBy: CreatedBy
-  [key: string]: string
+  room: Room
 }
 
 export interface CreatedBy {

@@ -34,21 +34,15 @@ import {
 import UserEditor from "./sidebar.user.editor"
 import RoomCreator from "./sidebar.room.creator"
 import { useRouter } from "next/navigation"
-
 import useInvoker from "@/utils/useInvoker"
 import { IUser } from "@/types/user"
-import { IRoom } from "@/types/room"
 import Title from "../title"
 import useAuthValue from "@/utils/useAuthValue"
 import { IRoomDetail } from "@/types/room.detail"
 import SidebarNotify from "./sidebar.notify"
-import Scanner from "../form/scanner"
 import FriendMaker from "./sidebar.friend.maker"
-import { RiContactsBook2Line } from "react-icons/ri"
 import Hoverable from "../hoverable/hoverable"
 import Contacts from "./sidebar.contacts"
-import { truncate } from "@/utils/helper"
-import { dateTimeConverter } from "@/utils/dateTimeConverter"
 import RoomCard from "../room/room.card"
 
 type Props = {}
@@ -125,7 +119,7 @@ const Sidebar: FC<Props> = (props) => {
             <Contacts open={showListOfContact} onOpenChange={setShowListOfContact} handlerClickUser={handlerClickUser} />
 
             <div className="w-full h-[20vh] bg-sky-500 flex flex-col items-center justify-between py-5">
-                
+
             </div>
         </div>
 
@@ -136,8 +130,11 @@ const Sidebar: FC<Props> = (props) => {
                 <div className="px-4 py-2 flex items-center justify-between">
                     <Title />
                     <Popover>
-                        <PopoverTrigger><img src="/icons/bell.svg" className="w-5 h-5" alt="" />
-                            {String(unreadNotify)}</PopoverTrigger>
+                        <PopoverTrigger><div>
+                            <img src="/icons/bell.svg" className="w-5 h-5" alt="" />
+                            <p className="bg-red-500 text-xs rounded-lg px-1 text-white">{String(unreadNotify)}</p>
+                        </div>
+                        </PopoverTrigger>
                         <SidebarNotify notifies={notifies} />
                     </Popover>
                 </div>

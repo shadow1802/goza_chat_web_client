@@ -12,6 +12,7 @@ import UserCard from "../user.card"
 import { IUser } from "@/types/user"
 import useInvoker from "@/utils/useInvoker"
 import { useLobbyContext } from "@/context/Lobby.context"
+import { ROLES } from "@/constants/user.roles"
 
 type Props = { open: boolean, onOpenChange: (open: boolean) => void, handlerClickUser: (userId: string) => void }
 
@@ -36,7 +37,7 @@ const Contacts: FC<Props> = ({ open, onOpenChange, handlerClickUser }) => {
             <DialogHeader className="mb-0 bg-sky-500 px-4 text-white py-3">
                 <DialogTitle className="text-white">Danh bạ</DialogTitle>
                 <DialogDescription className="text-gray-200">
-                    Tìm và nhắn tin đến người mà bạn muốn 
+                    Tìm và nhắn tin đến người mà bạn muốn
                 </DialogDescription>
             </DialogHeader>
 
@@ -48,18 +49,18 @@ const Contacts: FC<Props> = ({ open, onOpenChange, handlerClickUser }) => {
             </div>
 
             <div className="relative border-b-2">
-                <p className="px-4 mb-1 text-gray-600 font-semibold">Tổng đài:</p>
+                <p className="px-4 mb-1 text-gray-600 font-semibold">{currentUser?.role.roleName === ROLES.SUPERADMIN ? "Thành viên" : "Tổng đài"}</p>
                 {searchUserItems.length > 0 ?
                     searchUserItems?.map(item => <UserCard key={item._id} user={item} onClick={() => onClickUser(item._id)} />)
                     : users?.map(item => <UserCard key={item._id} user={item} onClick={() => onClickUser(item._id)} />)
                 }
             </div>
-            <div className="friends">
+            {currentUser?.role.roleName === ROLES.USER && <div className="friends">
                 <p className="px-4 mb-1 text-gray-600 font-semibold">Bạn bè:</p>
                 {currentUser?.friends && currentUser?.friends.map(item => {
                     return <UserCard key={item._id} user={item} onClick={() => onClickUser(item._id)} />
                 })}
-            </div>
+            </div>}
 
             <DialogFooter>
 

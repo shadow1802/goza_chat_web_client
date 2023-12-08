@@ -266,6 +266,10 @@ const RoomContainer: FC<Props> = (props) => {
                         <div className="h-[2px] w-full shadow-lg drop-shadow bg-gray-100"></div>
                     </div>
 
+                    {/* (!messageReplySender && !messageEditor) && (<div className="pb-1 w-full flex items-center">
+                        <button className="px-2 py-1 bg-red-500 text-white ">Buzz !!!</button>
+                    </div>) */}
+
                     {messageReplySender && <div className="bg-sky-500 relative ml-2 py-2 flex items-center justify-between w-full h-8 px-2">
                         <div className="absolute  right-0 -top-6 bg-red-500 px-4">
                             <p className="font-semibold">Trả lời tin nhắn của {messageReplySender.createdBy.fullName}</p>

@@ -24,6 +24,7 @@ import { useSocket } from "@/context/Socket.context";
 
 type Props = {}
 
+
 const RoomSetting: FC<Props> = () => {
 
     const { room } = useParams()
@@ -82,7 +83,7 @@ const RoomSetting: FC<Props> = () => {
     const createInviteLink = async () => {
         const { data } = await invoker.post(`/room/createInvite`, { roomId: room })
         console.log(data)
-        const url = process.env.NEXT_PUBLIC_URL_HOST + "/invition/" + data._id
+        const url = process.env.NEXT_PUBLIC_URL_HOST + "/invition/" + data.code
         setInviteUrl(url)
     }
 
