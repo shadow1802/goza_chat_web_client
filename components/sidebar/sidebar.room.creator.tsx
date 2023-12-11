@@ -21,7 +21,7 @@ import { useLobbyContext } from "@/context/Lobby.context"
 import User from "./sidebar.room.creator.user"
 import useInvoker from "@/utils/useInvoker"
 import { useRouter } from "next/navigation"
-import useUploader from "@/utils/useUploader"
+import { useToast } from "@/components/ui/use-toast"
 import UploadService from "@/utils/s3.service"
 import useAuthValue from "@/utils/useAuthValue"
 import SidebarUserSelector from "./sidebar.user.selector"
@@ -37,7 +37,8 @@ const RoomCreator: FC<Props> = ({ setShowRoomCreator, setPrivateRoomDetail }) =>
 
     const router = useRouter()
     const { socket } = useSocket()
-    const { setShowChatScreen } = useLobbyContext()
+    const { toast } = useToast()
+    const { setShowChatScreen, reloader } = useLobbyContext()
     const [usersSelected, setUsersSelected] = useState<{ _id: string, fullName: string }[]>([])
     const roomNameRef = useRef<HTMLInputElement>(null)
     const authValue = useAuthValue()
@@ -66,8 +67,16 @@ const RoomCreator: FC<Props> = ({ setShowRoomCreator, setPrivateRoomDetail }) =>
 
     const createRoomHandler = async () => {
         if (roomNameRef?.current?.value) {
+
+            let roomName = roomNameRef.current.value.trim()
+
+            if (roomName.length === 0) {
+                toast({ title: "Tên phòng không hợp lệ" })
+                return
+            }
+
             const { data, status, message } = await invoker.post("/room/insert", {
-                roomName: roomNameRef.current?.value,
+                roomName,
                 roomType: 3,
                 ...(!!roomIcon && { roomIcon }),
                 ...(usersSelected.length > 0 && { roomUsers: JSON.stringify(usersSelected.map(i => i._id)) })
@@ -80,6 +89,8 @@ const RoomCreator: FC<Props> = ({ setShowRoomCreator, setPrivateRoomDetail }) =>
             setShowRoomCreator(false)
 
             router.push(`/${data._id}`)
+
+            await reloader.rooms()
         }
     }
 

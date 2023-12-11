@@ -28,7 +28,7 @@ type Props = {}
 const RoomSetting: FC<Props> = () => {
 
     const { room } = useParams()
-    const { currentUser } = useLobbyContext()
+    const { currentUser, reloader: lobbyReloader } = useLobbyContext()
     const { roomDetail, setRoomDetail, reloader } = useRoomContext()
     const { socket } = useSocket()
     const router = useRouter()
@@ -121,6 +121,7 @@ const RoomSetting: FC<Props> = () => {
         if (roomDetail) {
             const newRoomDetail = { ...roomDetail, roomName }
             setRoomDetail(newRoomDetail)
+            lobbyReloader.rooms()
         }
     }
 

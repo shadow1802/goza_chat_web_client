@@ -22,7 +22,8 @@ const LobbyContext = createContext<{
     setLoading: Dispatch<SetStateAction<boolean>>,
     setShowChatScreen: Dispatch<SetStateAction<boolean>>,
     notifies: INotify[],
-    setNotifies: Dispatch<SetStateAction<INotify[]>>
+    setNotifies: Dispatch<SetStateAction<INotify[]>>,
+    reloader: { rooms: () => void, users: () => void, currentUser: () => void }
 }>({
     users: [],
     rooms: [],
@@ -34,7 +35,8 @@ const LobbyContext = createContext<{
     currentUser: null,
     setCurrentUser: () => [],
     notifies: [],
-    setNotifies: () => []
+    setNotifies: () => [],
+    reloader: { rooms: () => null, users: () => null, currentUser: () => null }
 })
 
 type Props = { children: ReactNode, initialUsers: IUser[], initialRooms: IRoom[], initialCurrentUser: ICurrentUser | null, initialNotifies: INotify[] }
@@ -53,11 +55,11 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
     const { socket } = useSocket()
 
     const reloader = {
-        setRooms: async () => {
+        rooms: async () => {
             const { data, status } = await invoker.get("/room/getByToken")
             setRooms(data.filter((item: any) => item !== null))
         },
-        setUsers: async () => {},
+        users: async () => {},
         currentUser: async () => {}
     }
 
@@ -128,7 +130,7 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
 
     }, [authCookie])
 
-    return <LobbyContext.Provider value={{ users, rooms, setLoading, setUsers, setRooms, showChatScreen, setShowChatScreen, currentUser, setCurrentUser, notifies, setNotifies }}>
+    return <LobbyContext.Provider value={{ reloader, users, rooms, setLoading, setUsers, setRooms, showChatScreen, setShowChatScreen, currentUser, setCurrentUser, notifies, setNotifies }}>
         {children}
         {loading && <div className="fixed z-30 top-[45%] left-[45%]">
             <img src="/icons/loading.svg" alt="" />

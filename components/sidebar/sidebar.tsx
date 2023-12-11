@@ -3,13 +3,6 @@ import { useLobbyContext } from "@/context/Lobby.context"
 import { AiOutlineSetting, AiOutlineExclamationCircle } from "react-icons/ai"
 import { FC, useState } from "react"
 import { BiExit } from "react-icons/bi"
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip"
-import UserCard from "../user.card"
 import ChatScreen from "../chat_screen/chat_screen"
 import { useAuthState } from "@/context/Auth.context"
 import { BsJournal } from "react-icons/bs"
@@ -35,9 +28,7 @@ import UserEditor from "./sidebar.user.editor"
 import RoomCreator from "./sidebar.room.creator"
 import { useRouter } from "next/navigation"
 import useInvoker from "@/utils/useInvoker"
-import { IUser } from "@/types/user"
 import Title from "../title"
-import useAuthValue from "@/utils/useAuthValue"
 import { IRoomDetail } from "@/types/room.detail"
 import SidebarNotify from "./sidebar.notify"
 import FriendMaker from "./sidebar.friend.maker"
@@ -52,11 +43,8 @@ const Sidebar: FC<Props> = (props) => {
     const { rooms, users, showChatScreen, setShowChatScreen, currentUser, notifies } = useLobbyContext()
     const router = useRouter()
     const { authState, logOut } = useAuthState()
-    const authValue = useAuthValue()
     const [showRoomCreator, setShowRoomCreator] = useState<boolean>(false)
     const [privateRoomDetail, setPrivateRoomDetail] = useState<IRoomDetail | null>(null)
-    const [searchUserItems, setSearchUsersItems] = useState<IUser[]>([])
-    const invoker = useInvoker()
     const { get, post } = useInvoker()
 
     const unreadNotify = notifies.filter(item => item.isRead === false).length
@@ -81,11 +69,6 @@ const Sidebar: FC<Props> = (props) => {
     }
 
     const [showListOfContact, setShowListOfContact] = useState<boolean>(false)
-
-    const handleSearchUser = async (input: string) => {
-        const { data } = await invoker.get(`/user/getPaging?fullName=${input}`)
-        setSearchUsersItems(data)
-    }
 
     return <div className="w-[380px] min-h-screen bg-white flex overflow-auto">
 
@@ -190,7 +173,7 @@ const Sidebar: FC<Props> = (props) => {
                     <div className="absolute right-2 top-5 flex space-x-1 items-center">
                         <Sheet>
                             <SheetTrigger><AiOutlineSetting className="text-xl text-gray-600" /></SheetTrigger>
-                            <SheetContent side={"left"} className="p-0 border-none">
+                            <SheetContent side={"left"} className="p-0 border-none" >
 
                                 <div className="relative h-full">
                                     <SheetHeader className="bg-gradient-to-r from-cyan-500 to-blue-500 p-6">
