@@ -60,7 +60,10 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
             setRooms(data.filter((item: any) => item !== null))
         },
         users: async () => {},
-        currentUser: async () => {}
+        currentUser: async () => {
+            const { data, status } = await invoker.get("/user/getByToken")
+            setCurrentUser(data)
+        }
     }
 
     useEffect(() => {

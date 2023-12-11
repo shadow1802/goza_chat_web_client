@@ -41,7 +41,7 @@ const SidebarNotify: FC<Props> = ({ notifies }) => {
                     {content.createdBy.avatar ? <img src={content.createdBy.avatar} className="border-2 border-sky-500 group-hover:border-white w-9 h-9 rounded-full" /> : <img src="images/default-avatar.jpg" className="border-2 border-sky-500 group-hover:border-white w-9 h-9 rounded-full" />}
                     <div>
                         <p className="group-hover:text-white duration-200 text-sm">{content.createdBy.fullName} <span className="text-xs">{dateTimeConverter(noti.createdAt)}</span></p>
-                        <p className="group-hover:text-white duration-200 text-sm font-semibold">{content.room.roomName && <span className="px-1 text-xs bg-sky-500 text-white">{content.room.roomName}</span>} {NOTIFY[noti.type]}</p>
+                        <p className="group-hover:text-white duration-200 text-sm font-semibold">{content?.room?.roomName && <span className="px-1 text-xs bg-sky-500 text-white">{content.room.roomName}</span>} {NOTIFY[noti.type]}</p>
                     </div>
                 </div>
             })}

@@ -5,10 +5,12 @@ import Scanner from "../form/scanner"
 import { FaBullseye } from "react-icons/fa6"
 import useInvoker from "@/utils/useInvoker"
 import { useToast } from "../ui/use-toast"
+import { useLobbyContext } from "@/context/Lobby.context"
 
 const FriendMaker = () => {
 
     const invoker = useInvoker()
+    const { reloader } = useLobbyContext()
     const { toast } = useToast()
 
     const onMakeFriend = async (event: React.SyntheticEvent<HTMLFormElement>) => {
@@ -28,6 +30,7 @@ const FriendMaker = () => {
         })
 
         if (status === 200) {
+            await reloader.currentUser()
             toast({ title: "Thêm bạn bè thành công" })
         } else {
             toast({ title: message })
