@@ -11,6 +11,7 @@ import { IoReturnDownForwardSharp } from "react-icons/io5"
 import { ROOM_ROLES_COLORS } from "@/constants/room.roles"
 import { IMAGE_TYPES, VIDEO_TYPES } from "@/constants/file.types"
 import useAuthValue from "@/utils/useAuthValue"
+import { CiFileOn } from "react-icons/ci"
 
 type Props = {
     message: IMessage,
@@ -43,6 +44,10 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
         return <div>
             {type === "video" && <video className="w-[350px]" src={file} controls></video>}
             {type === "image" && <img src={file} className="w-[350px]" />}
+            {type === "document" && <div className="flex items-center space-x-2 rounded-lg py-1 px-2 bg-gray-300">
+                <CiFileOn className="text-2xl text-sky-500"/>
+                <a href={file} className="text-sky-500">{file.split("_").pop()}</a>
+            </div>}
         </div>
     }
 

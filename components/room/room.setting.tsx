@@ -162,7 +162,7 @@ const RoomSetting: FC<Props> = () => {
                 <MdModeEdit className="hidden ml-1 text-sky-500 mt-2 text-base group-hover:block" onClick={changeRoomName} />
             </div>
 
-            <button onClick={createInviteLink} className="text-lg px-4 py-1 rounded-md text-white bg-sky-500 my-1">Tạo link mời</button>
+            <button onClick={createInviteLink} className="font-semibold px-4 py-1 text-white bg-sky-500 my-1">Tạo link mời</button>
 
             {inviteUrl && <div onClick={()=>copier(inviteUrl)} className="cursor-pointer my-2 rounded-lg bg-gray-200 px-4 py-2 shadow-lg drop-shadow-lg border-t-2 flex space-x-2 items-center">
                 <p className="cursor-pointer text-xs text-sky-500">{inviteUrl}</p>

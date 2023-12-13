@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/tabs"
 import { FaUser, FaFileImage, FaFileAlt } from "react-icons/fa"
 import { dateTimeConverter } from "@/utils/dateTimeConverter"
+import Files from "./room.files"
 type Props = {}
 
 const RoomManager: FC<Props> = (props) => {
@@ -18,10 +19,9 @@ const RoomManager: FC<Props> = (props) => {
     return <div className="">
 
         <Tabs defaultValue="members" className="border-none w-full m-0 p-0">
-            <TabsList className="grid p-0 w-full grid-cols-3 rounded-none bg-sky-500 border-none gap-2">
+            <TabsList className="flex justify-evenly p-0 w-full grid-cols-3 rounded-none bg-sky-500 border-none gap-2">
                 <TabsTrigger value="members" className="space-x-2 bg-sky-500 text-gray-700 rounded-none"><FaUser /> <p>Thành viên</p></TabsTrigger>
                 <TabsTrigger value="medias" className="space-x-2 bg-sky-500 text-gray-700 rounded-none"><FaFileImage /><p>Ảnh và video</p></TabsTrigger>
-                <TabsTrigger value="files" className="space-x-2 bg-sky-500 text-gray-700 rounded-none"><FaFileAlt /><p>Tệp tin</p></TabsTrigger>
             </TabsList>
             <TabsContent value="members" className="p-0 m-0 min-h-[200px] w-full">
                 <form className="flex space-x-2 bg-gray-200 p-2">
@@ -47,18 +47,7 @@ const RoomManager: FC<Props> = (props) => {
                 </div>
             </TabsContent>
             <TabsContent value="medias" className="p-0 m-0 min-h-[200px] w-full">
-                <div className="p-4 space-y-2 max-h-[500px] overflow-y-auto scrollbar-none">
-                    {messages.filter(item => item.file).map(item => <div className="group px-2 py-2 flex space-x-3 items-center hover:bg-sky-500 rounded-md">
-                        <img src={item.file} className="w-16 h-16 rounded-lg" />
-                        <div>
-                            <p className="group-hover:text-white text-sky-500 text-sm font-semibold">{item.createdBy.fullName}</p>
-                            <small className="group-hover:text-white text-gray-500 text-xs">{dateTimeConverter(String(item.lastModified))}</small>
-                        </div>
-                    </div>)}
-                </div>
-            </TabsContent>
-            <TabsContent value="files" className="p-0 m-0 min-h-[200px] w-full">
-                
+                <Files />
             </TabsContent>
         </Tabs>
 

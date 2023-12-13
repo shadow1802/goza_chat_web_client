@@ -32,11 +32,8 @@ type Props = {}
 const RoomContainer: FC<Props> = (props) => {
 
     const { room } = useParams()
-    const router = useRouter()
     const { socket } = useSocket()
     const { messages, setMessages, roomDetail, messageEditor, setMessageEditor, messageReplySender, setMessageReplySender, setOnlineRoomUsers } = useRoomContext()
-    const { authState } = useAuthState()
-    const { setLoading } = useLobbyContext()
     const authValue = useAuthValue()
     const messageRef = useRef<HTMLTextAreaElement>(null)
     const formRef = useRef<HTMLFormElement>(null)
