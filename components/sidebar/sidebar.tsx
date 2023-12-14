@@ -40,11 +40,10 @@ type Props = {}
 
 const Sidebar: FC<Props> = (props) => {
 
-    const { rooms, users, showChatScreen, setShowChatScreen, currentUser, notifies } = useLobbyContext()
+    const { rooms, setPrivateRoomDetail, privateRoomDetail, showChatScreen, setShowChatScreen, currentUser, notifies } = useLobbyContext()
     const router = useRouter()
     const { authState, logOut } = useAuthState()
     const [showRoomCreator, setShowRoomCreator] = useState<boolean>(false)
-    const [privateRoomDetail, setPrivateRoomDetail] = useState<IRoomDetail | null>(null)
     const { get, post } = useInvoker()
 
     const unreadNotify = notifies.filter(item => item.isRead === false).length

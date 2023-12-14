@@ -3,6 +3,7 @@ export interface IRoom {
     roomName: string
     roomIcon: string
     roomUsers: RoomUser[]
+    key: string
     roomType: number
     lastMessage?: LastMessage
   }

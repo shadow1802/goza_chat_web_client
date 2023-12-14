@@ -8,8 +8,10 @@ import { getCookie } from "cookies-next"
 import { AuthState } from "@/types/auth"
 import { INotify } from "@/types/notify"
 import { IOutSide } from "@/types/outside"
+import { useRouter } from "next/navigation"
 import { dateTimeConverter } from "@/utils/dateTimeConverter"
 import useInvoker from "@/utils/useInvoker"
+import { IRoomDetail } from "@/types/room.detail"
 
 const LobbyContext = createContext<{
     users: IUser[],
@@ -23,6 +25,8 @@ const LobbyContext = createContext<{
     setShowChatScreen: Dispatch<SetStateAction<boolean>>,
     notifies: INotify[],
     setNotifies: Dispatch<SetStateAction<INotify[]>>,
+    privateRoomDetail: IRoomDetail | null,
+    setPrivateRoomDetail: Dispatch<SetStateAction<IRoomDetail | null>>,
     reloader: { rooms: () => void, users: () => void, currentUser: () => void }
 }>({
     users: [],
@@ -36,6 +40,8 @@ const LobbyContext = createContext<{
     setCurrentUser: () => [],
     notifies: [],
     setNotifies: () => [],
+    privateRoomDetail: null,
+    setPrivateRoomDetail: () => null,
     reloader: { rooms: () => null, users: () => null, currentUser: () => null }
 })
 
@@ -44,6 +50,7 @@ type Props = { children: ReactNode, initialUsers: IUser[], initialRooms: IRoom[]
 function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initialNotifies, children }: Props) {
 
     const authCookie = getCookie("auth")
+    const router = useRouter()
     const invoker = useInvoker()
     const [loading, setLoading] = useState<boolean>(false)
     const [users, setUsers] = useState<IUser[]>(initialUsers)
@@ -53,6 +60,7 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
     const { toast } = useToast()
     const [showChatScreen, setShowChatScreen] = useState<boolean>(false)
     const { socket } = useSocket()
+    const [privateRoomDetail, setPrivateRoomDetail] = useState<IRoomDetail | null>(null)
 
     const reloader = {
         rooms: async () => {
@@ -87,7 +95,15 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
 
                 toast({
                     title: `Tin nhắn mới`,
-                    onClick: () => { console.log("123123123") },
+                    onClick: async () => {
+                        if (data.room.roomType === 3) {
+                            router.push(`/${data.room._id}`)
+                        } else {
+                            const res = await invoker.get(`/room/getRoomById/${data.room._id}`)
+                            setPrivateRoomDetail(res.data)
+                            setShowChatScreen(true)
+                        }
+                    },
                     description: <div className="flex items-center space-x-3">
                         {data.createdBy.avatar ? <img src={data.createdBy.avatar} className="border-2 border-sky-500 w-12 h-12 rounded-full" />
                             : <img src="images/default-avatar.jpg" className="border-2 border-sky-500 w-12 h-12 rounded-full" />}
@@ -122,7 +138,7 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
 
     }, [authCookie])
 
-    return <LobbyContext.Provider value={{ reloader, users, rooms, setLoading, setUsers, setRooms, showChatScreen, setShowChatScreen, currentUser, setCurrentUser, notifies, setNotifies }}>
+    return <LobbyContext.Provider value={{ privateRoomDetail, setPrivateRoomDetail, reloader, users, rooms, setLoading, setUsers, setRooms, showChatScreen, setShowChatScreen, currentUser, setCurrentUser, notifies, setNotifies }}>
         {children}
         {loading && <div className="fixed z-30 top-[45%] left-[45%]">
             <img src="/icons/loading.svg" alt="" />
