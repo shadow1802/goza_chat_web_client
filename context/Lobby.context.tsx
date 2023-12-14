@@ -77,28 +77,17 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
             console.log("receive_notify", data)
         })
 
-        socket.on("receive_chat_room_outside", (data: IOutSide) => {
+        socket.on("receive_chat_room_outside", async (data: IOutSide) => {
             try {
                 const { _id, message, lastModified, createdBy } = data
                 if (!_id && !message && !lastModified && !createdBy) return
                 if (data?.self) return
 
-                const roomIndex = rooms.findIndex(room => room._id === data.room._id)
-
-                setRooms(prev => {
-                    const newRooms = [...prev]
-                    newRooms[roomIndex].lastMessage = {
-                        _id: _id,
-                        message: message,
-                        lastModified: lastModified,
-                        createdBy: createdBy as CreatedBy,
-                        isDeleted: false
-                    }
-                    return newRooms
-                })
+                await reloader.rooms()
 
                 toast({
                     title: `Tin nhắn mới`,
+                    onClick: () => { console.log("123123123") },
                     description: <div className="flex items-center space-x-3">
                         {data.createdBy.avatar ? <img src={data.createdBy.avatar} className="border-2 border-sky-500 w-12 h-12 rounded-full" />
                             : <img src="images/default-avatar.jpg" className="border-2 border-sky-500 w-12 h-12 rounded-full" />}

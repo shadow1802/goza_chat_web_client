@@ -50,7 +50,7 @@ const Files: FC<Props> = ({ type }) => {
         "document": (file: FileObject) => <div className="flex items-center space-x-2 rounded-lg py-1 px-2">
             <IoDocument className="text-4xl text-sky-500" />
             <div>
-                <a href={process.env.NEXT_PUBLIC_DO_END_POINT + "/" + file.Key} className="text-sky-500">{truncate(file.Key.split("_").pop(), 45)}</a>
+                <a href={process.env.NEXT_PUBLIC_DO_END_POINT + "/" + file.Key} className="text-sky-500">{truncate(file.Key.split("_").pop() as string, 45)}</a>
                 <p className="text-xs">{(file.Size / 1048576).toFixed(3)} MB</p>
             </div>
         </div>

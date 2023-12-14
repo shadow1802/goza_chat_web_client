@@ -103,7 +103,7 @@ const RoomCreator: FC<Props> = ({ setShowRoomCreator, setPrivateRoomDetail }) =>
                 setShowChatScreen(true)
             } else {
                 const { data: newRoom } = await invoker.post(`/room/insert`, {
-                    roomName: '',
+                    roomName: '_',
                     roomType: 0,
                     key: `${authValue?.user._id}_${partner}`,
                     roomUsers: JSON.stringify([partner])

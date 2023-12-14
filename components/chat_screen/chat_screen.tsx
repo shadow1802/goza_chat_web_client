@@ -28,6 +28,9 @@ type Props = {
 }
 
 const ChatScreen: FC<Props> = ({ roomDetail }) => {
+
+    console.log(roomDetail)
+
     const { setShowChatScreen } = useLobbyContext()
     const [showMediaSender, setShowMediaSender] = useState<boolean>(false)
     const { authState } = useAuthState()
@@ -88,7 +91,7 @@ const ChatScreen: FC<Props> = ({ roomDetail }) => {
         return () => { socket.emit("exit_room", { roomId: roomDetail?._id, userId: authState?.user._id }) }
     }, [roomDetail, socket])
 
-    const members = roomDetail?.roomUsers.map(item => item.user._id).filter(item => item !== authValue?.user._id)
+    const members = roomDetail?.roomUsers?.map(item => item.user._id).filter(item => item !== authValue?.user._id)
 
     const handleSendMesssage = async (event: FormEvent) => {
 
@@ -119,7 +122,7 @@ const ChatScreen: FC<Props> = ({ roomDetail }) => {
         setShowMediaSender(false)
     }
 
-    const target = roomDetail?.roomUsers.find(item => item.user._id !== authValue?.user._id)
+    const target = roomDetail?.roomUsers?.find(item => item.user._id !== authValue?.user._id)
 
     return <motion.div drag className={`fixed flex flex-col rounded-lg z-20 ${fullScreen ? "top-0 left-0 w-screen min-h-screen" : "w-[25vw] bottom-16 right-6"} bg-white shadow-xl drop-shadow-xl`}>
         <div className="chat_screen_header bg-gradient-to-r from-cyan-500 to-blue-500 items-center rounded-t-md flex space-x-2 justify-between px-2 py-1">
