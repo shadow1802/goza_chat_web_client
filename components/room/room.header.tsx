@@ -53,7 +53,7 @@ const RoomHeader: FC<Props> = (props) => {
                     <DialogHeader className="border-none m-0 p-4 bg-sky-500 rounded-t-md">
                         <DialogTitle className="mb-4 text-gray-200 font-semibold">Thông tin nhóm</DialogTitle>
                         <div className="flex items-center space-x-4">
-                            <img src={roomDetail?.roomIcon} className="border-2 w-20 h-20 rounded-full" alt="" />
+                            <img src={roomDetail?.roomIcon || "/images/bg.png"} className="border-2 w-20 h-20 rounded-full" alt="" />
                             <div>
                                 <p className="text-lg text-white font-bold">{roomDetail?.roomName}</p>
                                 <p className="text-sm text-gray-200">{roomDetail?.roomUsers.length} thành viên</p>
@@ -116,7 +116,7 @@ const RoomHeader: FC<Props> = (props) => {
 
                             <p className="ml-2 text-gray-600 font-semibold">Thành viên</p>
 
-                            {roomDetail?.roomUsers.map(item => <div key={item._id} className="group hover:bg-sky-500 rounded-lg p-2 user_room flex items-center justify-between space-x-2">
+                            {roomDetail?.roomUsers.map(item => <div key={item._id} className="group hover:bg-sky-500 p-2 user_room flex items-center justify-between space-x-2">
                                 <div className="flex items-center space-x-2">
                                     <img src={item.user.avatar || "/images/default-avatar.jpg"} className="w-12 h-12 border-2 rounded-full bg-red-500" />
                                     <div>

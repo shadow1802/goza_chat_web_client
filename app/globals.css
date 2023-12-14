@@ -258,3 +258,7 @@ input[type="radio"]:checked + label{
 .end {
   justify-items: flex-end;
 }
+
+.landing {
+  background-image: url(/images/bg.png);
+}

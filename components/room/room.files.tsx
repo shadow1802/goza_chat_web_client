@@ -30,10 +30,14 @@ const Files: FC<Props> = ({ type }) => {
     const invoker = useInvoker()
 
     const fileLoader = async () => {
-        setIsLoading(true)
-        const data = await invoker.post("/file/byPath", { path: room + "/" + type })
-        setFiles(data)
-        setIsLoading(false)
+        try {
+            setIsLoading(true)
+            const data = await invoker.post("/file/byPath", { path: room + "/" + type })
+            setFiles(data)
+            setIsLoading(false)
+        } catch(error) {
+            setIsLoading(false)
+        }
     }
 
     useEffect(() => {
@@ -55,7 +59,7 @@ const Files: FC<Props> = ({ type }) => {
     return <div className="p-1">
         {isLoading ? <div className="w-full flex justify-center items-center py-12">
             <img src="/icons/loading.svg" className="w-12 h-12" />
-        </div> : <div className={`${type === 'document' ? 'space-y-1' : 'grid grid-cols-3 gap-1'}`}>
+        </div> : <div className={`min-h-[150px] ${type === 'document' ? 'space-y-1' : 'grid grid-cols-3 gap-1'}`}>
 
             {files.map(item => <div key={item.Key}>
                 {render[type](item)}

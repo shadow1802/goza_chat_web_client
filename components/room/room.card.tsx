@@ -25,7 +25,7 @@ const RoomCard: FC<Props> = ({ room }) => {
 
     return <RoomCardMenu room={room}>
         <div onClick={onClick} className="cursor-pointer hover:bg-sky-500 rounded-sm hover:shadow-md group relative items-center py-2 px-3 flex space-x-2">
-            <img src={room.roomIcon} className="w-12 h-12 border-2 border-sky-500 rounded-full" alt="" />
+            <img src={room.roomIcon || "/images/bg.png"} className="bg-sky-500 w-12 h-12 border-2 border-sky-500 rounded-full" alt="" />
             <div>
                 <p className="group-hover:text-white text-sm text-gray-500 font-semibold">{truncate(room.roomName, 21)}</p>
                 {room.lastMessage && (

@@ -20,7 +20,7 @@ const User: FC<Props> = ({ data, usersSelected, setUsersSelected }) => {
     }
 
     return <div onClick={onClick} className={`cursor-pointer ${existed && "bg-sky-500"} hover:bg-sky-400 flex items-center space-x-2 p-3 border-gray-300 border-b-2`}>
-        <div className="w-10 h-10 bg-red-500 rounded-full"></div>
+        <img src={data.avatar || "/images/default-avatar.jpg"} className="w-10 h-10 bg-sky-500 rounded-full"/>
         <div>
             <p className="leading-3 text-black text-sm font-semibold">{ data.fullName }</p>
             <small className="leading-3 text-gray-700">@{ data.username }</small>

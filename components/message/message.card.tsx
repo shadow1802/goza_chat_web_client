@@ -34,10 +34,10 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
     const FileRender: FC<{ file: string }> = ({ file }) => {
         let type = "document"
         const ext = file.split(".").pop()
-        if (ext && IMAGE_TYPES.includes(ext)) {
+        if (ext && IMAGE_TYPES.includes(ext.toLowerCase())) {
             type = "image"
         }
-        if (ext && VIDEO_TYPES.includes(ext)) {
+        if (ext && VIDEO_TYPES.includes(ext.toLowerCase())) {
             type = "video"
         }
 

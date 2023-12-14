@@ -18,13 +18,15 @@ export default function SidebarUserSelector({ setPartner }: Props) {
 
     const { users, currentUser } = useLobbyContext()
 
+    const userMap = users.map(i => i._id)
+
     return <Select onValueChange={(value) => setPartner(value)}>
         <SelectTrigger className="w-full py-2">
             <SelectValue placeholder="Chọn 1 người bạn trong danh sách dưới đây" />
         </SelectTrigger>
         <SelectContent>
             <SelectGroup>
-                {users.map(u => <SelectItem key={u._id} value={u._id} className="py-2">
+                {users.map((u) => <SelectItem key={u._id} value={u._id} className="py-2">
                     <div className="flex items-center space-x-2">
                         {u.avatar ? <img src={u.avatar} alt="" className="w-8 h-8 rounded-full" />
                             : <img src="/images/default-avatar.jpg" alt="" className="w-8 h-8 rounded-full" />}
@@ -34,7 +36,7 @@ export default function SidebarUserSelector({ setPartner }: Props) {
             </SelectGroup>
             <SelectGroup>
                 <SelectLabel>Bạn bè</SelectLabel>
-                {currentUser?.friends?.map(u => <SelectItem key={u._id} value={u._id} className="py-2">
+                {currentUser?.friends?.filter(item => !userMap.includes(item._id)).map((u) => <SelectItem key={u._id} value={u._id} className="py-2">
                     <div className="flex items-center space-x-2">
                         {u.avatar ? <img src={u.avatar} alt="" className="w-8 h-8 rounded-full" />
                             : <img src="/images/default-avatar.jpg" alt="" className="w-8 h-8 rounded-full" />}

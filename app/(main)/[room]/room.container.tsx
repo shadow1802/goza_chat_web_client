@@ -37,6 +37,7 @@ const RoomContainer: FC<Props> = (props) => {
     const authValue = useAuthValue()
     const messageRef = useRef<HTMLTextAreaElement>(null)
     const formRef = useRef<HTMLFormElement>(null)
+    const messagesRef = useRef<HTMLDivElement>(null)
     const invoker = useInvoker()
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -153,7 +154,8 @@ const RoomContainer: FC<Props> = (props) => {
                 })
                 socket.emit("insert_chat", { messageObject: data, roomId: room, userIds })
                 setMessageReplySender(null)
-                dummy.current?.scrollIntoView({ behavior: "smooth" })
+                // messagesRef.current?.scroll({ top: 33 })
+                // dummy.current?.scrollIntoView({ behavior: "smooth" })
                 messageRef.current.value = ""
                 return
             }
@@ -223,6 +225,7 @@ const RoomContainer: FC<Props> = (props) => {
                 <div
                     id="messages_container"
                     className="relative pb-10 px-5"
+                    ref={messagesRef}
                     style={{
                         height: '74.2vh',
                         overflow: 'auto',
@@ -242,6 +245,9 @@ const RoomContainer: FC<Props> = (props) => {
                         scrollableTarget="messages_container"
                         scrollThreshold={0.9}
                     >
+
+                        <div className="h-0" ref={dummy}></div>
+
                         {messages?.map((mess, index) => {
                             return <MessageCard
                                 key={mess._id}
