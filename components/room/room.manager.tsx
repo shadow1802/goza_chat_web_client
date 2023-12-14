@@ -47,7 +47,6 @@ const RoomManager: FC<Props> = (props) => {
                 </div>
             </TabsContent>
             <TabsContent value="medias" className="p-0 m-0 min-h-[200px] w-full">
-                <Files />
             </TabsContent>
         </Tabs>
 
