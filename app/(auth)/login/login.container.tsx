@@ -52,6 +52,7 @@ export default function LoginContainer({ invition }: Props) {
                 }))
                 toast({
                     title: message,
+                    duration: 2000,
                     description: <p className='text-green-500 font-semibold'>{message}</p>,
                 })
                 setLoading(true)
@@ -61,6 +62,7 @@ export default function LoginContainer({ invition }: Props) {
                 } else router.push("/")
             } else {
                 toast({
+                    duration: 2000,
                     title: message,
                     description: <p className='text-red-500 font-semibold'>{message}</p>,
                 })
@@ -68,14 +70,6 @@ export default function LoginContainer({ invition }: Props) {
         } catch (error) {
 
         }
-    }
-
-    const onError = (text: string) => {
-        toast({ title: "Không thể đăng nhập", description: <p className="text-red-500">{text}</p> })
-    }
-
-    const checker = () => {
-        setLoading(true)
     }
 
     return <div>

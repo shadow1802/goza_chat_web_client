@@ -161,7 +161,7 @@ const RoomContainer: FC<Props> = (props) => {
             }
 
             if (isBlank(messageRef.current.value)) {
-                toast({ title: "Không thể gửi tin nhắn", description: <p className="text-red-500">Tin nhắn không được bao gồm toàn bộ là khoảng trắng</p> })
+                toast({ title: "Không thể gửi tin nhắn", duration: 2000, description: <p className="text-red-500">Tin nhắn không được bao gồm toàn bộ là khoảng trắng</p> })
                 return
             }
 

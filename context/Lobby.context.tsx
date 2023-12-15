@@ -92,6 +92,7 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
 
                 toast({
                     title: `  `,
+                    duration: 2000,
                     description: <div className="flex items-center space-x-3">
                         <p>{fromUserObject.fullName} đã thêm {toUserObject.fullName} vào danh sách bạn bè bằng mã Goza</p>
                     </div>
@@ -107,6 +108,7 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
                 await reloader.currentUser()
                 toast({
                     title: `  `,
+                    duration: 2000,
                     description: <div className="flex items-center space-x-3">
                         <p>{fromUserObject.fullName} đã xóa {toUserObject.fullName} khỏi danh sách bạn bè</p>
                     </div>
@@ -126,6 +128,7 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
 
                 toast({
                     title: `Tin nhắn mới`,
+                    duration: 2000,
                     onClick: async () => {
                         if (data.room.roomType === 3) {
                             router.push(`/${data.room._id}`)
@@ -146,13 +149,14 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
                     </div>
                 })
             } catch (error: any) {
-                toast({ title: error.message })
+                toast({ duration: 2000, title: error.message })
             }
         })
 
         socket.on("receive_invite_into_room", (data) => {
 
             toast({
+                duration: 2000,
                 title: `${data.from ? data.from.fullName + ' đã mời bạn vào phòng' : 'Ai đó đã mời bạn vào phòng'}`,
                 description: <div className="flex space-x-2 items-center">
                     {data.roomObject.roomIcon && <img src={data.roomObject.roomIcon} className="w-10 h-10 border-2 border-sky-500 rounded-full" />}

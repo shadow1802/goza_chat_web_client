@@ -83,6 +83,7 @@ const UserEditor: FC<Props> = (props) => {
                 }
                 toast({
                     title: "Thành công",
+                    duration: 2000,
                     description: <p className="text-green-600">{message}</p>
                 })
             }

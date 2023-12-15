@@ -57,7 +57,7 @@ const AnouncementSender: FC<Props> = ({ setShowAnouncementSender }) => {
         if (status === 200) {
             setShowAnouncementSender(false)
         } else {
-            toast({ title: "Không thể gửi thông báo", description: <p className="text-sm text-red-500">{message}</p> })
+            toast({ title: "Không thể gửi thông báo", duration: 2000, description: <p className="text-sm text-red-500">{message}</p> })
         }
     }
 

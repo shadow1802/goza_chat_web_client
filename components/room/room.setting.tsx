@@ -127,7 +127,7 @@ const RoomSetting: FC<Props> = () => {
 
     const copier = async (text: string) => {
         await navigator.clipboard.writeText(text)
-        toast({ title: "Copy thành công", description: <p className="text-sm text-sky-500">{text}</p> })
+        toast({ title: "Copy thành công", duration: 2000, description: <p className="text-sm text-sky-500">{text}</p> })
     }
 
     const kick = async (userId: string) => {

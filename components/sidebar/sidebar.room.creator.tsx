@@ -71,7 +71,7 @@ const RoomCreator: FC<Props> = ({ setShowRoomCreator, setPrivateRoomDetail }) =>
             let roomName = roomNameRef.current.value.trim()
 
             if (roomName.length === 0) {
-                toast({ title: "Tên phòng không hợp lệ" })
+                toast({ duration: 2000, title: "Tên phòng không hợp lệ" })
                 return
             }
 

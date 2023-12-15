@@ -37,7 +37,7 @@ const RoomAnouncements: FC<Props> = () => {
             if (status === 200) {
                 await reloader.anouncements()
             } else {
-                toast({ title: "Không thể xóa thông báo", description: <p className="text-red-500">{message}</p> })
+                toast({ title: "Không thể xóa thông báo", duration: 2000, description: <p className="text-red-500">{message}</p> })
             }
         } catch (error) {
             console.log(error)

@@ -23,7 +23,7 @@ const FriendMaker = () => {
         }
 
         if (elements.goza.value.length < 6) {
-            toast({ title: "Mã goza phải bao gồm 6 ký tự" })
+            toast({ duration: 2000, title: "Mã goza phải bao gồm 6 ký tự" })
             return
         }
 
@@ -33,10 +33,10 @@ const FriendMaker = () => {
 
         if (status === 200) {
             await reloader.currentUser()
-            toast({ title: "Thêm bạn bè thành công" })
+            toast({ duration: 2000, title: "Thêm bạn bè thành công" })
             socket.emit("add_friend", { fromUserObject: data.from, toUserObject: data.to })
         } else {
-            toast({ title: message })
+            toast({ duration: 2000, title: message })
         }
     }
 

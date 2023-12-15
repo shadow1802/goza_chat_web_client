@@ -24,12 +24,17 @@ const RegisterContainer: FC<Props> = (props) => {
             password: { value: string },
             fullName: { value: string },
             email: { value: string },
+            repeat_password: { value: string },
             phoneNumber: { value: string }
         }
 
         try {
 
-            const { username, password, fullName, email, phoneNumber } = elements
+            const { username, password, fullName, email, phoneNumber, repeat_password } = elements
+
+            if (repeat_password.value !== password.value) {
+                throw new Error("Mật khẩu xác thực không trùng khớp, vui lòng thử lại")
+            }
 
             const register = await fetch(process.env.NEXT_PUBLIC_API + "/user/register", {
 
@@ -47,16 +52,25 @@ const RegisterContainer: FC<Props> = (props) => {
             if (status === 200) {
                 toast({
                     title: "Thành công",
+                    duration: 2000,
                     description: <p className='text-green-500 font-semibold'>{message}</p>,
                 })
             } else {
                 toast({
                     title: "Thất bại",
+                    duration: 2000,
                     description: <p className='text-red-500 font-semibold'>{message}</p>,
                 })
             }
 
+
+
         } catch (error: any) {
+            toast({
+                title: "Thất bại",
+                duration: 2000,
+                description: <p className='text-red-500 font-semibold'>{error.message}</p>,
+            })
             setLoading(false)
         }
     }
@@ -71,29 +85,36 @@ const RegisterContainer: FC<Props> = (props) => {
                     <CardHeader className="flex justify-center items-center">
 
                         <img src="/images/logo.png" className="w-44 h-44" alt="" />
-                        
-                        <Title size={26}/>
+
+                        <Title size={26} />
 
                         <h2 className="text-2xl font-semibold text-gray-600">Đăng ký tài khoản</h2>
 
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <div>
-                            <Label htmlFor="username" className="uppercase text-gray-600">Tên tài khoản *</Label>
+                            <Label htmlFor="username" className="uppercase text-gray-600">Tên tài khoản <span className="text-red-500">*</span></Label>
                             <div className="flex items-center px-3 py-2 space-x-2 border-b-2">
                                 <CiUser />
                                 <input id="username" name="username" type="text" placeholder="Tên tài khoản phải lớn hơn 6 ký tự" className="text-sm w-full border-none outline-none" />
                             </div>
                         </div>
                         <div>
-                            <Label htmlFor="password" className="uppercase text-gray-600">Mật khẩu *</Label>
+                            <Label htmlFor="password" className="uppercase text-gray-600">Mật khẩu <span className="text-red-500">*</span></Label>
                             <div className="flex items-center px-3 py-2 space-x-2 border-b-2">
                                 <CiLock />
                                 <input id="password" type="password" name="password" placeholder="Mật khẩu phải lớn hơn 6 ký tự" className="text-sm w-full border-none outline-none" />
                             </div>
                         </div>
                         <div>
-                            <Label htmlFor="fullName" className="uppercase text-gray-600">Họ và tên *</Label>
+                            <Label htmlFor="repeat_password" className="uppercase text-gray-600">Xác nhận mật khẩu <span className="text-red-500">*</span></Label>
+                            <div className="flex items-center px-3 py-2 space-x-2 border-b-2">
+                                <CiLock />
+                                <input id="repeat_password" type="password" name="repeat_password" placeholder="Phải trùng khớp với mật khẩu bạn đã nhập" className="text-sm w-full border-none outline-none" />
+                            </div>
+                        </div>
+                        <div>
+                            <Label htmlFor="fullName" className="uppercase text-gray-600">Họ và tên <span className="text-red-500">*</span></Label>
                             <div className="flex items-center px-3 py-2 space-x-2 border-b-2">
                                 <CiReceipt />
                                 <input id="fullName" type="text" name="fullName" placeholder="Vui lòng nhập họ và tên của bạn" className="text-sm w-full border-none outline-none" />
