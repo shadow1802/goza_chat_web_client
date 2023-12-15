@@ -3,6 +3,7 @@ import { useLobbyContext } from "@/context/Lobby.context"
 import { useSocket } from "@/context/Socket.context"
 import { IRoom } from "@/types/room"
 import { IUser } from "@/types/user"
+import { truncate } from "@/utils/helper"
 import useInvoker from "@/utils/useInvoker"
 import { FC } from "react"
 type Props = {
@@ -29,15 +30,15 @@ const UserCard: FC<Props> = ({ user, isFriend, ...rest }) => {
 
     const chatInfo = LOL.find((room: IRoom) => room?.key?.includes(user._id))
 
-    return <div {...rest} className="group cursor-pointer flex justify-between items-center hover:bg-sky-500 px-4 py-2">
+    return <div {...rest} className="group cursor-pointer flex justify-between items-center hover:bg-sky-500 rounded-sm px-3 py-2">
 
-        <div className="flex space-x-4">
-            {user.avatar ? <img src={user.avatar} className="rounded-full w-10 h-10" /> : <img src="/images/default-avatar.jpg" className="border-2 rounded-full w-10 h-10" />}
+        <div className="flex space-x-3">
+            {user.avatar ? <img src={user.avatar} className="rounded-full w-12 h-12" /> : <img src="/images/default-avatar.jpg" className="border-2 rounded-full w-12 h-12" />}
 
             <div>
                 <p className="text-sky-500 group-hover:text-white text-[0.89rem] font-semibold">{user.fullName}</p>
                 {chatInfo && <p className="text-xs text-gray-500 group-hover:text-white">
-                    {chatInfo.lastMessage && `Tin nhắn mới: ${chatInfo.lastMessage.message || '(trống)'}`}
+                    {chatInfo.lastMessage && <p><span>● {chatInfo.lastMessage?.createdBy?.fullName}</span>: <span className="font-normal">{truncate(chatInfo.lastMessage.message, 12)}</span></p>}
                 </p>}
             </div>
         </div>

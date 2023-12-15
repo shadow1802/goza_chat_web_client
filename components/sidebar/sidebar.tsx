@@ -35,12 +35,13 @@ import FriendMaker from "./sidebar.friend.maker"
 import Hoverable from "../hoverable/hoverable"
 import Contacts from "./sidebar.contacts"
 import RoomCard from "../room/room.card"
+import UserCard from "../user.card"
 
 type Props = {}
 
 const Sidebar: FC<Props> = (props) => {
 
-    const { rooms, setPrivateRoomDetail, privateRoomDetail, showChatScreen, setShowChatScreen, currentUser, notifies } = useLobbyContext()
+    const { rooms, setPrivateRoomDetail, privateRoomDetail, showChatScreen, setShowChatScreen, currentUser, notifies, users } = useLobbyContext()
     const router = useRouter()
     const { authState, logOut } = useAuthState()
     const [showRoomCreator, setShowRoomCreator] = useState<boolean>(false)
@@ -159,9 +160,21 @@ const Sidebar: FC<Props> = (props) => {
 
 
 
-            <div className="relative p-2">
+            <div className="relative p-2 max-h-[75vh] overflow-y-auto overflow-x-hidden scrollbar-none">
                 {rooms.filter(item => item.roomType === 3).map(item => {
                     return <RoomCard key={item._id} room={item} />
+                })}
+
+                {currentUser?.friends && currentUser?.friends.map(item => {
+                    return <UserCard key={item._id} user={item} onClick={() => handlerClickUser(item._id)} />
+                })}
+
+                <div className="h-[0.1px] bg-gray-200"></div>
+
+                {users?.map(item => <UserCard key={item._id} user={item} onClick={() => handlerClickUser(item._id)} />)}
+
+                {currentUser?.friends && currentUser?.friends.map(item => {
+                    return <UserCard key={item._id} user={item} onClick={() => handlerClickUser(item._id)} />
                 })}
             </div>
 

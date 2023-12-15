@@ -1,11 +1,12 @@
 "use client"
-import { useRef, type FC, ChangeEventHandler, ChangeEvent, useState, FormEvent } from "react"
+import { useRef, type FC, useState, FormEvent } from "react"
 import Scanner from "./form/scanner"
 import { RiSendPlane2Line } from "react-icons/ri"
 import UploadService from "@/utils/s3.service"
 import useAuthValue from "@/utils/useAuthValue"
 import { useRoomContext } from "@/context/Room.context"
 import { IMAGE_TYPES, VIDEO_TYPES } from "@/constants/file.types"
+import { useLobbyContext } from "@/context/Lobby.context"
 type Props = {
     handleSendMessageWithFile: (message: string, file: string) => void
 }
@@ -14,6 +15,7 @@ const MediaSender: FC<Props> = ({ handleSendMessageWithFile }) => {
 
     const fileRef = useRef<HTMLInputElement>(null)
     const { roomDetail } = useRoomContext()
+    const { currentUser } = useLobbyContext()
     const [message, setMessage] = useState<string>("")
     const [previewUrl, setPreviewUrl] = useState<string>("")
     const authValue = useAuthValue()
@@ -49,7 +51,7 @@ const MediaSender: FC<Props> = ({ handleSendMessageWithFile }) => {
                 ACL: "public-read"
             };
 
-            await UploadService.uploader(params as any)
+            await UploadService.uploader(params as any, currentUser?._id)
 
             const link = `https://luongsonchatapp.sgp1.digitaloceanspaces.com/${params.Key}`
 

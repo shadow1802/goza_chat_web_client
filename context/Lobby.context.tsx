@@ -153,7 +153,7 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
             }
         })
 
-        socket.on("receive_invite_into_room", (data) => {
+        socket.on("receive_invite_into_room", async (data) => {
 
             toast({
                 duration: 2000,
@@ -166,7 +166,9 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
                     </div>
                 </div>
             })
-            setRooms(prev => [...prev, data.roomObject])
+            
+            await reloader.rooms()
+            
         })
 
         socket.on("login_time", data => console.log(data))

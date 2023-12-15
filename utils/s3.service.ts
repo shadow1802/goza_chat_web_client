@@ -1,5 +1,5 @@
 import { PutObjectCommand, PutObjectCommandInput, S3Client } from '@aws-sdk/client-s3';
-
+type user_id = string
 class S3 {
 
     client: S3Client
@@ -16,9 +16,12 @@ class S3 {
         })
     }
 
-    async uploader(input: PutObjectCommandInput) {
+    async uploader(input: PutObjectCommandInput, owner?: user_id) {
         try {
-            const data = await this.client.send(new PutObjectCommand(input));
+            const data = await this.client.send(new PutObjectCommand({
+                ...input,
+                ...(!!owner && { Tagging:`Owner=UserId` })
+            }))
             return data
         } catch (error: any) {
             console.log("Error", error);
