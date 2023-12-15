@@ -80,7 +80,8 @@ const Sidebar: FC<Props> = (props) => {
                 </div>
                 <div className="space-y-4 flex flex-col items-center justify-center pt-6">
                     <Hoverable content={<p className="text-sky-500">Danh bạ</p>}>
-                        <BsJournal onClick={() => setShowListOfContact(true)} className="cursor-pointer text-4xl text-white" />
+                        <BsJournal onClick={() => setShowListOfContact(true)} className="shadow-lg drop-shadow-lg cursor-pointer text-4xl text-white" />
+                        <span className="mt-1 text-white text-sm font-semibold">Danh bạ</span>
                     </Hoverable>
                     <Dialog open={showRoomCreator} onOpenChange={setShowRoomCreator}>
                         <DialogTrigger>

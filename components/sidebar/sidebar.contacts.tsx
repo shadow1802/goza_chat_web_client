@@ -58,7 +58,7 @@ const Contacts: FC<Props> = ({ open, onOpenChange, handlerClickUser }) => {
             {currentUser?.role.roleName === ROLES.USER && <div className="friends">
                 <p className="px-4 mb-1 text-gray-600 font-semibold">Bạn bè:</p>
                 {currentUser?.friends && currentUser?.friends.map(item => {
-                    return <UserCard key={item._id} user={item} onClick={() => onClickUser(item._id)} />
+                    return <UserCard key={item._id} user={item} onClick={() => onClickUser(item._id)} isFriend />
                 })}
             </div>}
 

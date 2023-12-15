@@ -67,7 +67,7 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
             const { data, status } = await invoker.get("/room/getByToken")
             setRooms(data.filter((item: any) => item !== null))
         },
-        users: async () => {},
+        users: async () => { },
         currentUser: async () => {
             const { data, status } = await invoker.get("/user/getByToken")
             setCurrentUser(data)
@@ -83,6 +83,37 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
 
         socket.on("receive_notify", data => {
             console.log("receive_notify", data)
+        })
+
+        socket.on("receive_add_friend", async ({ fromUserObject, toUserObject }) => {
+
+            try {
+                await reloader.currentUser()
+
+                toast({
+                    title: `  `,
+                    description: <div className="flex items-center space-x-3">
+                        <p>{fromUserObject.fullName} đã thêm {toUserObject.fullName} vào danh sách bạn bè bằng mã Goza</p>
+                    </div>
+                })
+            } catch(error) {
+
+            }
+        })
+
+        socket.on("receive_delete_friend", async ({ fromUserObject, toUserObject }) => {
+
+            try {
+                await reloader.currentUser()
+                toast({
+                    title: `  `,
+                    description: <div className="flex items-center space-x-3">
+                        <p>{fromUserObject.fullName} đã xóa {toUserObject.fullName} khỏi danh sách bạn bè</p>
+                    </div>
+                })
+            } catch(error) {
+
+            }
         })
 
         socket.on("receive_chat_room_outside", async (data: IOutSide) => {

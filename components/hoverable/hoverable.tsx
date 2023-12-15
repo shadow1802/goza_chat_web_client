@@ -11,7 +11,7 @@ type Props = { children: ReactNode, content: ReactNode }
 const Hoverable: FC<Props> = ({ children, content }) => {
     return <TooltipProvider>
         <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger className="flex flex-col justify-center items-center">
                 { children }
             </TooltipTrigger>
             <TooltipContent side="right">

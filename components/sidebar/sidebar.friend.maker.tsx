@@ -6,12 +6,14 @@ import { FaBullseye } from "react-icons/fa6"
 import useInvoker from "@/utils/useInvoker"
 import { useToast } from "../ui/use-toast"
 import { useLobbyContext } from "@/context/Lobby.context"
+import { useSocket } from "@/context/Socket.context"
 
 const FriendMaker = () => {
 
     const invoker = useInvoker()
     const { reloader } = useLobbyContext()
     const { toast } = useToast()
+    const { socket } = useSocket()
 
     const onMakeFriend = async (event: React.SyntheticEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -32,6 +34,7 @@ const FriendMaker = () => {
         if (status === 200) {
             await reloader.currentUser()
             toast({ title: "Thêm bạn bè thành công" })
+            socket.emit("add_friend", { fromUserObject: data.from, toUserObject: data.to })
         } else {
             toast({ title: message })
         }
