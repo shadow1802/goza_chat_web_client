@@ -5,18 +5,26 @@ import { IRoom } from "@/types/room"
 import { IUser } from "@/types/user"
 import { truncate } from "@/utils/helper"
 import useInvoker from "@/utils/useInvoker"
-import { FC } from "react"
+import { FC, useEffect, useState } from "react"
 type Props = {
     user: { username: string, fullName: string, avatar: string, _id: string }
+    handlerClickUser: (id: string) => void
     isFriend?: boolean
     [key: string]: any
 }
 
-const UserCard: FC<Props> = ({ user, isFriend, ...rest }) => {
-
+const UserCard: FC<Props> = ({ user, isFriend, handlerClickUser, ...rest }) => {
     const { rooms } = useLobbyContext()
+    const { currentUser } = useLobbyContext()
     const { socket } = useSocket()
     const invoker = useInvoker()
+    const [chatInfo, setChatInfo] = useState<IRoom | undefined>(undefined)
+
+    useEffect(() => {
+        const LOL = rooms.filter(item => item.roomType === 0)
+        const info = LOL.find((room: IRoom) => room?.key?.includes(user._id))
+        setChatInfo(info)
+    }, [rooms])
 
     const handleDeteleFriend = async () => {
         const { data, status, message } = await invoker.remove(`/friend/deleteFriend/${user._id}`)
@@ -26,11 +34,23 @@ const UserCard: FC<Props> = ({ user, isFriend, ...rest }) => {
         }
     }
 
-    const LOL = rooms.filter(item => item.roomType === 0)
+    const onClick = async () => {
 
-    const chatInfo = LOL.find((room: IRoom) => room?.key?.includes(user._id))
+        setChatInfo(prev => {
+            if (prev) {
+                const next = { ...prev, unseenBy: [] }
+                return next
+            }
+        })
 
-    return <div {...rest} className="group cursor-pointer flex justify-between items-center hover:bg-sky-500 rounded-sm px-3 py-2">
+        await invoker.put(`/room/setSeenMessage/${chatInfo?._id}`)
+
+        handlerClickUser(user._id)
+    }
+
+    const unseenMessages = chatInfo?.unseenBy.filter(item => item === currentUser?._id).length
+
+    return <div {...rest} onClick={onClick} className="group cursor-pointer flex justify-between items-center hover:bg-sky-500 rounded-sm px-3 py-2">
 
         <div className="flex space-x-3">
             {user.avatar ? <img src={user.avatar} className="rounded-full w-12 h-12" /> : <img src="/images/default-avatar.jpg" className="border-2 rounded-full w-12 h-12" />}
@@ -43,8 +63,10 @@ const UserCard: FC<Props> = ({ user, isFriend, ...rest }) => {
             </div>
         </div>
 
-        { isFriend && <div onClick={e => e.stopPropagation()}>
-            <button className="px-2 text-red-500 group-hover:bg-red-500 text-sm group-hover:text-white" onClick={handleDeteleFriend}>Hủy kết bạn</button>    
+        {!!unseenMessages && (unseenMessages > 0 ? <p className="text-xs bg-red-500 text-white rounded-lg px-2">{unseenMessages}</p> : null)}
+
+        {isFriend && <div onClick={e => e.stopPropagation()}>
+            <button className="px-2 text-red-500 group-hover:bg-red-500 text-sm group-hover:text-white" onClick={handleDeteleFriend}>Hủy kết bạn</button>
         </div>}
     </div>
 }

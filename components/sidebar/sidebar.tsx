@@ -169,12 +169,12 @@ const Sidebar: FC<Props> = (props) => {
                 })}
 
                 {currentUser?.friends && currentUser?.friends.map(item => {
-                    return <UserCard key={item._id} user={item} onClick={() => handlerClickUser(item._id)} />
+                    return <UserCard key={item._id} user={item} handlerClickUser={handlerClickUser} />
                 })}
 
                 <div className="h-[0.1px] bg-gray-200"></div>
 
-                {users?.map(item => <UserCard key={item._id} user={item} onClick={() => handlerClickUser(item._id)} />)}
+                {users?.map(item => <UserCard key={item._id} user={item} handlerClickUser={handlerClickUser} />)}
 
             </div>
 

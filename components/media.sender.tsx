@@ -7,12 +7,14 @@ import useAuthValue from "@/utils/useAuthValue"
 import { useRoomContext } from "@/context/Room.context"
 import { IMAGE_TYPES, VIDEO_TYPES } from "@/constants/file.types"
 import { useLobbyContext } from "@/context/Lobby.context"
+import useInvoker from "@/utils/useInvoker"
 type Props = {
     handleSendMessageWithFile: (message: string, file: string) => void
 }
 
 const MediaSender: FC<Props> = ({ handleSendMessageWithFile }) => {
 
+    const invoker = useInvoker()
     const fileRef = useRef<HTMLInputElement>(null)
     const { roomDetail } = useRoomContext()
     const { currentUser } = useLobbyContext()
@@ -54,6 +56,9 @@ const MediaSender: FC<Props> = ({ handleSendMessageWithFile }) => {
             await UploadService.uploader(params as any, currentUser?._id)
 
             const link = `https://luongsonchatapp.sgp1.digitaloceanspaces.com/${params.Key}`
+
+            const savedFile = await invoker.post("/file/create", { room: roomDetail?._id, src: link, fileType: type, size: fileRef.current.files[0].size })
+            console.log(savedFile)
 
             handleSendMessageWithFile(message, link)
         }
