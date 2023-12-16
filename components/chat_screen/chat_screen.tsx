@@ -62,7 +62,8 @@ const ChatScreen: FC<Props> = ({ roomDetail }) => {
             if (data.room._id === roomDetail?._id) {
                 setMessages(prev => {
                     const newListOfMessage = [data, ...prev]
-                    return newListOfMessage//uniqueArray
+                    
+                    return newListOfMessage.filter((obj, index, self) => self.findIndex((t) => t._id === obj._id) === index)
                 })
             }
         })

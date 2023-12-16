@@ -37,9 +37,9 @@ const UserCard: FC<Props> = ({ user, isFriend, ...rest }) => {
 
             <div>
                 <p className="text-sky-500 group-hover:text-white text-[0.89rem] font-semibold">{user.fullName}</p>
-                {chatInfo && <p className="text-xs text-gray-500 group-hover:text-white">
+                {chatInfo && <div className="text-xs text-gray-500 group-hover:text-white">
                     {chatInfo.lastMessage && <p><span>● {chatInfo.lastMessage?.createdBy?.fullName}</span>: <span className="font-normal">{truncate(chatInfo.lastMessage.message, 12)}</span></p>}
-                </p>}
+                </div>}
             </div>
         </div>
 

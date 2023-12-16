@@ -50,6 +50,9 @@ const Sidebar: FC<Props> = (props) => {
     const unreadNotify = notifies.filter(item => item.isRead === false).length
 
     const handlerClickUser = async (userId: string) => {
+
+        console.log("click user")
+
         if (authState) {
             const { data } = await get(`/room/findPrivateRoom/${authState.user._id}_${userId}`)
             if (data) {
@@ -173,9 +176,6 @@ const Sidebar: FC<Props> = (props) => {
 
                 {users?.map(item => <UserCard key={item._id} user={item} onClick={() => handlerClickUser(item._id)} />)}
 
-                {currentUser?.friends && currentUser?.friends.map(item => {
-                    return <UserCard key={item._id} user={item} onClick={() => handlerClickUser(item._id)} />
-                })}
             </div>
 
             <div className="absolute bottom-0 flex space-x-2 w-full bg-white border-t-2 h-14 items-center px-2">
