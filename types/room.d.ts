@@ -6,6 +6,7 @@ export interface IRoom {
     key: string
     roomType: number
     lastMessage?: LastMessage
+    unseenBy: string[]
   }
   
   export interface LastMessage {
