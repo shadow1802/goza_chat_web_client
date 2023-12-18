@@ -2,7 +2,7 @@
 import { useRef, type FC, useState, FormEvent } from "react"
 import Scanner from "./form/scanner"
 import { RiSendPlane2Line } from "react-icons/ri"
-import UploadService from "@/utils/s3.service"
+import UploadService from "@/utils/aws.service"
 import useAuthValue from "@/utils/useAuthValue"
 import { useRoomContext } from "@/context/Room.context"
 import { IMAGE_TYPES, VIDEO_TYPES } from "@/constants/file.types"
@@ -21,6 +21,7 @@ const MediaSender: FC<Props> = ({ handleSendMessageWithFile }) => {
     const [message, setMessage] = useState<string>("")
     const [previewUrl, setPreviewUrl] = useState<string>("")
     const authValue = useAuthValue()
+    const [uploadPercent, setUploadPercent] = useState<number>(0)
 
     const onFileSelected = () => {
         if (fileRef?.current?.files) {
@@ -53,12 +54,13 @@ const MediaSender: FC<Props> = ({ handleSendMessageWithFile }) => {
                 ACL: "public-read"
             };
 
-            await UploadService.uploader(params as any, currentUser?._id)
+            await UploadService.uploader(params as any, (process) => {
+                setUploadPercent(process.loaded)
+            })
 
             const link = `https://luongsonchatapp.sgp1.digitaloceanspaces.com/${params.Key}`
 
             const savedFile = await invoker.post("/file/create", { room: roomDetail?._id, src: link, fileType: type, size: fileRef.current.files[0].size })
-            console.log(savedFile)
 
             handleSendMessageWithFile(message, link)
         }

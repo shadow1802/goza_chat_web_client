@@ -29,8 +29,6 @@ type Props = {
 
 const ChatScreen: FC<Props> = ({ roomDetail }) => {
 
-    console.log(roomDetail)
-
     const { setShowChatScreen } = useLobbyContext()
     const [showMediaSender, setShowMediaSender] = useState<boolean>(false)
     const { authState } = useAuthState()
@@ -47,8 +45,6 @@ const ChatScreen: FC<Props> = ({ roomDetail }) => {
     }
 
     useEffect(() => {
-
-        console.log(roomDetail)
 
         if (roomDetail?._id) {
             socket.emit("join_room", { roomId: roomDetail?._id, userId: authState?.user._id })
@@ -79,7 +75,6 @@ const ChatScreen: FC<Props> = ({ roomDetail }) => {
         })
 
         socket.on("receive_reaction_chat", (data) => {
-            console.log(data)
         })
 
         socket.on("receive_remove_chat", (data: { msg: string, removedMessageId: string }) => {
@@ -101,7 +96,6 @@ const ChatScreen: FC<Props> = ({ roomDetail }) => {
         if (messageRef?.current?.value) {
 
             const { data, message, status } = await invoker.post("/chat/insert", { message: messageRef.current.value, room: roomDetail?._id, type: 1 })
-            console.log(data)
             socket.emit("insert_chat", { messageObject: data, roomId: roomDetail?._id, userIds: members })
 
             messageRef.current.value = ""

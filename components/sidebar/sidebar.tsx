@@ -51,8 +51,6 @@ const Sidebar: FC<Props> = (props) => {
 
     const handlerClickUser = async (userId: string) => {
 
-        console.log("click user")
-
         if (authState) {
             const { data } = await get(`/room/findPrivateRoom/${authState.user._id}_${userId}`)
             if (data) {

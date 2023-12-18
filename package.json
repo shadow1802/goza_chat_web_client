@@ -26,6 +26,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@videosdk.live/react-sdk": "^0.1.78",
     "add": "^2.0.6",
+    "aws-sdk": "^2.1520.0",
     "axios": "^1.6.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",

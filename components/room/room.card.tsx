@@ -23,8 +23,6 @@ const RoomCard: FC<Props> = ({ room }) => {
 
     const onClick = async () => {
 
-        console.log(detail)
-
         setLoading(true)
         setDetail(prev => {
             const next = { ...prev, unseenBy: [] }
