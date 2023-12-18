@@ -8,7 +8,7 @@ import useInvoker from "@/utils/useInvoker"
 import { FC, useEffect, useState } from "react"
 type Props = {
     user: { username: string, fullName: string, avatar: string, _id: string }
-    handlerClickUser?: (id: string) => Promise<void>
+    handlerClickUser: (id: string) => Promise<void>
     isFriend?: boolean
     [key: string]: any
 }
@@ -36,7 +36,7 @@ const UserCard: FC<Props> = ({ user, isFriend, handlerClickUser, ...rest }) => {
 
     const onClick = async () => {
 
-        handlerClickUser && await handlerClickUser(user._id)
+        await handlerClickUser(user._id)
 
         setChatInfo(prev => {
             if (prev) {
@@ -50,7 +50,7 @@ const UserCard: FC<Props> = ({ user, isFriend, handlerClickUser, ...rest }) => {
 
     const unseenMessages = chatInfo?.unseenBy.filter(item => item === currentUser?._id).length
 
-    return <div {...rest} {...(handlerClickUser && { onClick })} className="group cursor-pointer flex justify-between items-center hover:bg-sky-500 rounded-sm px-3 py-2">
+    return <div {...rest} onClick={onClick} className="group cursor-pointer flex justify-between items-center hover:bg-sky-500 rounded-sm px-3 py-2">
 
         <div className="flex space-x-3">
             {user.avatar ? <img src={user.avatar} className="rounded-full w-12 h-12" /> : <img src="/images/default-avatar.jpg" className="border-2 rounded-full w-12 h-12" />}

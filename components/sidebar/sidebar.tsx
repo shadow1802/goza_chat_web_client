@@ -36,14 +36,16 @@ import Hoverable from "../hoverable/hoverable"
 import Contacts from "./sidebar.contacts"
 import RoomCard from "../room/room.card"
 import UserCard from "../user.card"
+import useAuthValue from "@/utils/useAuthValue"
 
 type Props = {}
 
 const Sidebar: FC<Props> = (props) => {
 
-    const { rooms, setPrivateRoomDetail, privateRoomDetail, showChatScreen, setShowChatScreen, currentUser, notifies, users } = useLobbyContext()
+    const { rooms, setPrivateRoomDetail, setShowChatScreen, currentUser, notifies, users } = useLobbyContext()
     const router = useRouter()
-    const { authState, logOut } = useAuthState()
+    const { logOut } = useAuthState()
+    const authValue = useAuthValue()
     const [showRoomCreator, setShowRoomCreator] = useState<boolean>(false)
     const { get, post } = useInvoker()
 
@@ -51,8 +53,10 @@ const Sidebar: FC<Props> = (props) => {
 
     const handlerClickUser = async (userId: string) => {
 
-        if (authState) {
-            const { data } = await get(`/room/findPrivateRoom/${authState.user._id}_${userId}`)
+        console.log("user is clicked some where")
+
+        if (authValue) {
+            const { data } = await get(`/room/findPrivateRoom/${authValue.user._id}_${userId}`)
             if (data) {
                 setPrivateRoomDetail(data)
                 setShowChatScreen(true)
@@ -60,7 +64,7 @@ const Sidebar: FC<Props> = (props) => {
                 const { data: newRoom } = await post(`/room/insert`, {
                     roomName: ' ',
                     roomType: 0,
-                    key: `${authState.user._id}_${userId}`,
+                    key: `${authValue.user._id}_${userId}`,
                     roomUsers: JSON.stringify([userId])
                 })
                 setPrivateRoomDetail(newRoom)
@@ -72,8 +76,6 @@ const Sidebar: FC<Props> = (props) => {
     const [showListOfContact, setShowListOfContact] = useState<boolean>(false)
 
     return <div className="w-[380px] min-h-screen bg-white flex overflow-auto">
-
-        {showChatScreen && (<ChatScreen roomDetail={privateRoomDetail} />)}
 
         <div className="">
             <div className="flex flex-col items-center h-[80vh] overflow-y-auto scrollbar-none bg-sky-500">

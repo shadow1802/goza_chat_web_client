@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation"
 import { dateTimeConverter } from "@/utils/dateTimeConverter"
 import useInvoker from "@/utils/useInvoker"
 import { IRoomDetail } from "@/types/room.detail"
+import ChatScreen from "@/components/chat_screen/chat_screen"
 
 const LobbyContext = createContext<{
     users: IUser[],
@@ -180,6 +181,7 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
         {loading && <div className="fixed z-30 top-[45%] left-[45%]">
             <img src="/icons/loading.svg" alt="" />
         </div>}
+        {showChatScreen && (<ChatScreen roomDetail={privateRoomDetail} />)}
     </LobbyContext.Provider>
 }
 
