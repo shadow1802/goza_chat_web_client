@@ -6,7 +6,6 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
 import UserCard from "../user.card"
 import { IUser } from "@/types/user"
@@ -22,9 +21,9 @@ const Contacts: FC<Props> = ({ open, onOpenChange, handlerClickUser }) => {
     const [searchUserItems, setSearchUsersItems] = useState<IUser[]>([])
     const { users, currentUser } = useLobbyContext()
 
-    const onClickUser = (userId: string) => {
+    const onClick = async (userId: string) => {
+        await handlerClickUser(userId)
         onOpenChange(false)
-        handlerClickUser(userId)
     }
 
     const handleSearchUser = async (input: string) => {

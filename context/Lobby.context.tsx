@@ -1,5 +1,5 @@
 "use client"
-import { CreatedBy, IRoom } from "@/types/room"
+import { IRoom } from "@/types/room"
 import { ICurrentUser, IUser } from "@/types/user"
 import { useToast } from "@/components/ui/use-toast"
 import { ReactNode, Dispatch, SetStateAction, useState, createContext, useContext, useEffect } from "react"

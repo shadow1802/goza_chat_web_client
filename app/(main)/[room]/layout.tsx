@@ -11,6 +11,8 @@ const loader = async(room: string) => {
         serverLoader.getAnouncement(room)
     ])
 
+    console.log("Load: end")
+
     return {messages: messages.data, roomDetail, anouncements}
 }
 

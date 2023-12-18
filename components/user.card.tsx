@@ -2,7 +2,6 @@
 import { useLobbyContext } from "@/context/Lobby.context"
 import { useSocket } from "@/context/Socket.context"
 import { IRoom } from "@/types/room"
-import { IUser } from "@/types/user"
 import { truncate } from "@/utils/helper"
 import useInvoker from "@/utils/useInvoker"
 import { FC, useEffect, useState } from "react"

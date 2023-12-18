@@ -2,13 +2,10 @@
 import { IMessage } from "@/types/message"
 import { dateTimeConverter } from "@/utils/dateTimeConverter"
 import { FC, Dispatch, SetStateAction } from "react"
-import Menu from "../menu"
+
 import { useRoomContext } from "@/context/Room.context"
-import { FaHeart, FaSadCry, FaAngry, FaSmile } from "react-icons/fa"
-import log from "@/utils/logger"
+
 import MessageCardMenu from "./message.card.menu"
-import { IoReturnDownForwardSharp } from "react-icons/io5"
-import { ROOM_ROLES_COLORS } from "@/constants/room.roles"
 import { IMAGE_TYPES, VIDEO_TYPES } from "@/constants/file.types"
 import useAuthValue from "@/utils/useAuthValue"
 import { CiFileOn } from "react-icons/ci"
@@ -54,6 +51,7 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
     const isSameCreator = authValue?.user._id === message.createdBy._id
 
     return <MessageCardMenu message={message} setMessageEditor={setMessageEditor} handleRemoveMessage={handleRemoveMessage} setMessageReplySender={setMessageReplySender} handleReaction={handleReaction}>
+        <>
         {isSameCreator ? <div id={message._id} className="msg_direction px-7 w-full flex justify-start">
 
             <div className="msg_container p-2 flex items-start max-w-[500px] space-x-2">
@@ -85,6 +83,7 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
                 </div>
             </div>
         </div>}
+        </>
     </MessageCardMenu>
 }
 
