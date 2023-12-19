@@ -77,7 +77,7 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
                         <p className="text-sm max-w-[500px] text-block-default">{message.replyTo.message}</p>
                         {message.replyTo.file && <FileRender file={message.replyTo.message} />}
                     </div>}
-                    {!isSameUser && <p className="font-semibold text-gray-500">{message.createdBy.fullName} <span className="text-xs text-gray-400">{dateTimeConverter(String(message.lastModified))}</span></p>}
+                    {!isSameUser && <p className="font-semibold text-gray-500 text-sm">{message.createdBy.fullName} <span className="text-xs text-gray-400">{dateTimeConverter(String(message.lastModified))}</span></p>}
                     <p className="text-sm max-w-[500px] text-block-default text-black">{message.message}</p>
                     {message.file && <FileRender file={message.file} />}
                 </div>

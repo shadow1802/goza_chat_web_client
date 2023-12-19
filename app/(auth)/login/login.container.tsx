@@ -8,6 +8,10 @@ import { setCookie } from "cookies-next"
 import Link from "next/link"
 import { useRef, useState, useEffect } from "react"
 import { CiLock, CiUser } from "react-icons/ci"
+import { FcGoogle } from "react-icons/fc"
+import { FaFacebook } from "react-icons/fa6"
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth"
+import { auth } from "@/lib/firebase"
 
 type Props = { invition?: string }
 
@@ -24,6 +28,44 @@ export default function LoginContainer({ invition }: Props) {
             console.log("2. socket relogin")
         })
     }, [])
+
+    const loginWithGoogle = async () => {
+        try {
+            const { user } = await signInWithPopup(auth, new GoogleAuthProvider())
+
+            console.log(user)
+
+            const res = await fetch(process.env.NEXT_PUBLIC_API + "/user/createSocialUser", {
+                headers: { "Content-Type": "application/json" },
+                method: "POST",
+                body: JSON.stringify({ fullName: user.displayName, email: user.email, provider: "google", avatar: user.photoURL })
+            })
+
+            const { data, message, status } = await res.json()
+            console.log(data, message, status)
+
+            if (status === 200) {
+                setCookie("auth", JSON.stringify({
+                    token: data.token, user: {
+                        _id: data.user._id, username: data.user.username, role: data.user.role, bio: data.user.bio
+                    }
+                }))
+                toast({
+                    title: message,
+                    duration: 2000,
+                    description: <p className='text-green-500 font-semibold'>{message}</p>,
+                })
+                setLoading(true)
+
+                if (invition) {
+                    router.push(`/invition/${invition}`)
+                } else router.push("/")
+            }
+
+        } catch (error) {
+
+        }
+    }
 
     const onLogin = async (event: React.SyntheticEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -72,12 +114,12 @@ export default function LoginContainer({ invition }: Props) {
         }
     }
 
-    return <div>
+    return <div className="bg-white border-t-2 w-[450px] shadow-sm shadow-white rounded-lg p-8 flex flex-col justify-center items-center">
         {loading && <div className="fixed top-[45%] left-[45%]">
             <img src="/icons/loading.svg" alt="" />
         </div>}
-        <form ref={form} onSubmit={onLogin} className="bg-white border-t-2 w-[450px] shadow-sm shadow-white rounded-lg p-8 flex flex-col justify-center items-center">
-            <div className='bg-gray-300 rounded-full drop-shadow-lg shadow-lg shadow-white'>
+        <form ref={form} onSubmit={onLogin} className="flex flex-col justify-center items-center">
+            <div className="bg-gray-300 rounded-full drop-shadow-lg shadow-lg shadow-white w-44 h-44">
                 <img src="/images/logo.png" className="w-44 h-44" alt="" />
             </div>
 
@@ -97,5 +139,21 @@ export default function LoginContainer({ invition }: Props) {
                 <button type="submit" className='text-white w-full hover:bg-sky-400 font-semibold duration-150 shadow-md shadow-white rounded-lg py-3 bg-sky-500'>Đăng Nhập</button>
             </div>
         </form>
+        <div className="my-4 w-full flex space-x-2 items-center justify-center">
+            <div className="h-[2px] w-[120px] bg-gray-300" />
+            <p className="font-semibold text-gray-600 text-sm">Hoặc đăng nhập với</p>
+            <div className="h-[2px] w-[120px] bg-gray-300" />
+        </div>
+
+        <div className="flex space-x-2 w-full">
+            <button onClick={loginWithGoogle} className="bg-black w-[50%] rounded-md px-4 py-2 text-white flex justify-center items-center space-x-2">
+                <FcGoogle className="text-lg" />
+                <span className="font-semibold">Google</span>
+            </button>
+            <button className="bg-[#4267B2] w-[50%] rounded-md px-4 py-2 text-white flex justify-center items-center space-x-2">
+                <FaFacebook className="text-lg" />
+                <span className="font-semibold">Facebook</span>
+            </button>
+        </div>
     </div>
 }

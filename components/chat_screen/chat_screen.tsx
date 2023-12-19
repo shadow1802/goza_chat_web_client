@@ -58,7 +58,7 @@ const ChatScreen: FC<Props> = ({ roomDetail }) => {
             if (data.room._id === roomDetail?._id) {
                 setMessages(prev => {
                     const newListOfMessage = [data, ...prev]
-                    
+
                     return newListOfMessage.filter((obj, index, self) => self.findIndex((t) => t._id === obj._id) === index)
                 })
             }
@@ -92,21 +92,24 @@ const ChatScreen: FC<Props> = ({ roomDetail }) => {
     const handleSendMesssage = async (event: FormEvent) => {
 
         event.preventDefault()
+        try {
+            if (messageRef?.current?.value) {
 
-        if (messageRef?.current?.value) {
+                const { data, message, status } = await invoker.post("/chat/insert", { message: messageRef.current.value, room: roomDetail?._id, type: 1 })
+                socket.emit("insert_chat", { messageObject: data, roomId: roomDetail?._id, userIds: members })
 
-            const { data, message, status } = await invoker.post("/chat/insert", { message: messageRef.current.value, room: roomDetail?._id, type: 1 })
-            socket.emit("insert_chat", { messageObject: data, roomId: roomDetail?._id, userIds: members })
+                messageRef.current.value = ""
 
-            messageRef.current.value = ""
-
-            if (roomDetail && authValue) {
-                await invoker.ring({ 
-                    userIds: roomDetail.roomUsers.map(item => item.user._id),
-                    title: authValue.user.fullName,
-                    body: data.message
-                })
+                if (roomDetail && authValue) {
+                    await invoker.ring({
+                        userIds: roomDetail.roomUsers.map(item => item.user._id),
+                        title: authValue.user.fullName,
+                        body: data.message
+                    })
+                }
             }
+        } catch (error) {
+
         }
     }
 
