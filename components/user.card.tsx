@@ -39,7 +39,7 @@ const UserCard: FC<Props> = ({ user, isFriend, handlerClickUser, ...rest }) => {
 
         setChatInfo(prev => {
             if (prev) {
-                const next = { ...prev, unseenBy: [] }
+                const next = { ...prev, unseenBy: 0 }
                 return next
             }
         })
@@ -47,7 +47,6 @@ const UserCard: FC<Props> = ({ user, isFriend, handlerClickUser, ...rest }) => {
         await invoker.put(`/room/setSeenMessage/${chatInfo?._id}`)
     }
 
-    const unseenMessages = chatInfo?.unseenBy.filter(item => item === currentUser?._id).length
 
     return <div {...rest} onClick={onClick} className="group cursor-pointer flex justify-between items-center hover:bg-sky-500 rounded-sm px-3 py-2">
 
@@ -62,7 +61,7 @@ const UserCard: FC<Props> = ({ user, isFriend, handlerClickUser, ...rest }) => {
             </div>
         </div>
 
-        {!!unseenMessages && (unseenMessages > 0 ? <p className="text-xs bg-red-500 text-white rounded-lg px-2">{unseenMessages}</p> : null)}
+        {chatInfo && (chatInfo.unseenBy > 0 ? <p className="text-xs bg-red-500 text-white rounded-lg px-2">{chatInfo.unseenBy}</p> : null)}
 
         {isFriend && <div onClick={e => e.stopPropagation()}>
             <button className="px-2 text-red-500 group-hover:bg-red-500 text-sm group-hover:text-white" onClick={handleDeteleFriend}>Hủy kết bạn</button>
