@@ -35,7 +35,7 @@ export default function LoginContainer({ invition }: Props) {
 
             console.log(user)
 
-            const res = await fetch(process.env.NEXT_PUBLIC_API + "/user/createSocialUser", {
+            const res = await fetch(process.env.NEXT_PUBLIC_API + "/user/createGoogleUser", {
                 headers: { "Content-Type": "application/json" },
                 method: "POST",
                 body: JSON.stringify({ fullName: user.displayName, email: user.email, provider: "google", avatar: user.photoURL })
