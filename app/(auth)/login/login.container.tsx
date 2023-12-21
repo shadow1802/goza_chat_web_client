@@ -69,6 +69,8 @@ export default function LoginContainer({ invition }: Props) {
         try {
             const { user } = await signInWithPopup(auth, new FacebookAuthProvider())
 
+            console.log(user)
+
             const res = await fetch(process.env.NEXT_PUBLIC_API + "/user/createFacebookUser", {
                 headers: { "Content-Type": "application/json" },
                 method: "POST",

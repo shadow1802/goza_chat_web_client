@@ -170,7 +170,13 @@ const RoomContainer: FC<Props> = (props) => {
             dummy.current?.scrollIntoView({ behavior: "smooth" })
             messageRef.current.value = ""
             if (authValue && roomDetail) {
-                await invoker.ring({ title: data.createdBy.fullName, body: data.message, userIds: roomDetail.roomUsers.map(item => item.user._id) })
+                await invoker.ring({
+                    title: data.createdBy.fullName, 
+                    body: data.message, 
+                    userIds: roomDetail.roomUsers.map(item => item.user._id),
+                    image: data.createdBy.avatar ?? "",
+                    clickAction: `IN_CHAT_ROOM_${roomDetail._id}`
+                })
             }
         }
     }

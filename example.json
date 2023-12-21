@@ -1,0 +1,27 @@
+{
+    "uid": "Ib4VoGJVQDWxwqyWW2TL6e570EO2",
+    "email": "polysgiannae@hotmail.com",
+    "emailVerified": false,
+    "displayName": "Nhật Thắng",
+    "isAnonymous": false,
+    "photoURL": "https://graph.facebook.com/356484090657936/picture",
+    "providerData": [
+        {
+            "providerId": "facebook.com",
+            "uid": "356484090657936",
+            "displayName": "Nhật Thắng",
+            "email": "polysgiannae@hotmail.com",
+            "phoneNumber": null,
+            "photoURL": "https://graph.facebook.com/356484090657936/picture"
+        }
+    ],
+    "stsTokenManager": {
+        "refreshToken": "AMf-vBydcuZf9mfgTND2qMcziRhz927_v8_h8qvQsAzIwFeAWe3tivYD3xBnTh3-TlWstGHHxVeLbpC3xlBrd9Q2GJazkstsDphkUErkZaY5J2zS1XTrdu9_61LwPLQ1aT0Gsjbfhb6j1qKISUkhhcXQ-_gbrUQDp4q-ifq8MRhNw5QA0mwexkrkK3Ha07LbRAtpP_u5tuMVrAHqUxP3hN7RiUAaNOVcU99Ud6Nh6p09_SsG3QfEy72GUyc5UKygxg7QZFY5M2P8TtmeXEbPKe_7gS65Ieq8GmzY4J0Ed3jlK8UKDiJjhsF4yLv98tPWQGMyXr5xqSms74WT0YMLzDeVQ02ZM0qo1w",
+        "accessToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjAzMmNjMWNiMjg5ZGQ0NjI2YTQzNWQ3Mjk4OWFlNDMyMTJkZWZlNzgiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiTmjhuq10IFRo4bqvbmciLCJwaWN0dXJlIjoiaHR0cHM6Ly9ncmFwaC5mYWNlYm9vay5jb20vMzU2NDg0MDkwNjU3OTM2L3BpY3R1cmUiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZ296YS1jaGF0IiwiYXVkIjoiZ296YS1jaGF0IiwiYXV0aF90aW1lIjoxNzAzMTUyNzgyLCJ1c2VyX2lkIjoiSWI0Vm9HSlZRRFd4d3F5V1cyVEw2ZTU3MEVPMiIsInN1YiI6IkliNFZvR0pWUURXeHdxeVdXMlRMNmU1NzBFTzIiLCJpYXQiOjE3MDMxNTI3ODIsImV4cCI6MTcwMzE1NjM4MiwiZW1haWwiOiJwb2x5c2dpYW5uYWVAaG90bWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZmFjZWJvb2suY29tIjpbIjM1NjQ4NDA5MDY1NzkzNiJdLCJlbWFpbCI6WyJwb2x5c2dpYW5uYWVAaG90bWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJmYWNlYm9vay5jb20ifX0.PM9aG17hlepcFZvlXaQ1vkbqN8qHue2Xc6d0YzTFz-RaEDmpE32yYzQUzSd8YqHDiZxV0uT08s1xzQkHTGArneGzIg1xl8AEnoL_rZyXBjFho9BxNuKZX6qqrXndIu33-RLtyDz13E19sw38rq9-xL9YwEJQWgG5DUTu3_3STfNLtie5AMNH4P85DnvECGZcLcXi281wdaeba67OAhIhNrPMYkIkwPEzRiOl3Xuga_MXM2Bvbti5R4E54phYCdy_Zvi4U1tp3r529lUN5HzojFnEGR5kI5S7SGz6bm4caDEMVQKnGo75Px40MeFpDrxPHhUYvfyBfUfRb8lCcDUr6Q",
+        "expirationTime": 1703156381833
+    },
+    "createdAt": "1703144239591",
+    "lastLoginAt": "1703152782487",
+    "apiKey": "AIzaSyDQqo1vf2sH9vqwIe88vlsyMG93hlOMBSM",
+    "appName": "[DEFAULT]"
+}

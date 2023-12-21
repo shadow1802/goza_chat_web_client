@@ -104,7 +104,9 @@ const ChatScreen: FC<Props> = ({ roomDetail }) => {
                     await invoker.ring({
                         userIds: roomDetail.roomUsers.map(item => item.user._id),
                         title: authValue.user.fullName,
-                        body: data.message
+                        body: data.message,
+                        image: data.createdBy.avatar ?? "",
+                        clickAction: `IN_CHAT_ROOM_${roomDetail._id}`
                     })
                 }
             }
