@@ -10,7 +10,7 @@ import { useRef, useState, useEffect } from "react"
 import { CiLock, CiUser } from "react-icons/ci"
 import { FcGoogle } from "react-icons/fc"
 import { FaFacebook } from "react-icons/fa6"
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth"
+import { GoogleAuthProvider, signInWithPopup, FacebookAuthProvider } from "firebase/auth"
 import { auth } from "@/lib/firebase"
 
 type Props = { invition?: string }
@@ -32,8 +32,6 @@ export default function LoginContainer({ invition }: Props) {
     const loginWithGoogle = async () => {
         try {
             const { user } = await signInWithPopup(auth, new GoogleAuthProvider())
-
-            console.log(user)
 
             const res = await fetch(process.env.NEXT_PUBLIC_API + "/user/createGoogleUser", {
                 headers: { "Content-Type": "application/json" },
@@ -64,6 +62,48 @@ export default function LoginContainer({ invition }: Props) {
 
         } catch (error) {
 
+        }
+    }
+
+    const loginWithFacebook = async () => {
+        try {
+            const { user } = await signInWithPopup(auth, new FacebookAuthProvider())
+
+            const res = await fetch(process.env.NEXT_PUBLIC_API + "/user/createFacebookUser", {
+                headers: { "Content-Type": "application/json" },
+                method: "POST",
+                body: JSON.stringify({
+                    fullName: user.displayName,
+                    ...(!!user.email && { email: user.email }),
+                    ...(!!user.phoneNumber && { phoneNumber: user.phoneNumber }),
+                    provider: "facebook",
+                    avatar: user.photoURL
+                })
+            })
+
+            const { data, message, status } = await res.json()
+            console.log(data, message, status)
+
+            if (status === 200) {
+                setCookie("auth", JSON.stringify({
+                    token: data.token, user: {
+                        _id: data.user._id, username: data.user.username, role: data.user.role, bio: data.user.bio
+                    }
+                }))
+                toast({
+                    title: message,
+                    duration: 2000,
+                    description: <p className='text-green-500 font-semibold'>{message}</p>,
+                })
+                setLoading(true)
+
+                if (invition) {
+                    router.push(`/invition/${invition}`)
+                } else router.push("/")
+            }
+
+        } catch (error: any) {
+            console.log(error)
         }
     }
 
@@ -150,7 +190,7 @@ export default function LoginContainer({ invition }: Props) {
                 <FcGoogle className="text-lg" />
                 <span className="font-semibold">Google</span>
             </button>
-            <button className="bg-[#4267B2] w-[50%] rounded-md px-4 py-2 text-white flex justify-center items-center space-x-2">
+            <button onClick={loginWithFacebook} className="bg-[#4267B2] w-[50%] rounded-md px-4 py-2 text-white flex justify-center items-center space-x-2">
                 <FaFacebook className="text-lg" />
                 <span className="font-semibold">Facebook</span>
             </button>
