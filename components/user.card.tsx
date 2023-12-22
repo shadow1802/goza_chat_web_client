@@ -2,7 +2,9 @@
 import { useLobbyContext } from "@/context/Lobby.context"
 import { useSocket } from "@/context/Socket.context"
 import { IRoom } from "@/types/room"
+import colorGenerator from "@/utils/colorGenerator.service"
 import { truncate } from "@/utils/helper"
+import signName from "@/utils/signName.service"
 import useInvoker from "@/utils/useInvoker"
 import { FC, useEffect, useState } from "react"
 type Props = {
@@ -51,7 +53,11 @@ const UserCard: FC<Props> = ({ user, isFriend, handlerClickUser, ...rest }) => {
     return <div {...rest} onClick={onClick} className="group cursor-pointer flex justify-between items-center hover:bg-sky-500 rounded-sm px-3 py-2">
 
         <div className="flex space-x-3">
-            {user.avatar ? <img src={user.avatar} className="rounded-full w-12 h-12" /> : <img src="/images/default-avatar.jpg" className="border-2 rounded-full w-12 h-12" />}
+            {user.avatar ? <img src={user.avatar} className="rounded-full w-12 h-12" /> : 
+                <div className="rounded-full w-12 h-12 flex items-center justify-center" style={{backgroundColor: colorGenerator(user.fullName) }}>
+                    <p className="text-white text-sm font-semibold">{signName(user.fullName)}</p>
+                </div>
+            }
 
             <div>
                 <p className="text-sky-500 group-hover:text-white text-[0.89rem] font-semibold">{user.fullName}</p>

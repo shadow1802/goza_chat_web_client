@@ -5,7 +5,7 @@ import { useSocket } from "@/context/Socket.context";
 import useInvoker from "@/utils/useInvoker";
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
 import { useParams, useRouter } from "next/navigation";
-import { FC, KeyboardEvent, useEffect, useRef, useState } from "react";
+import { FC, KeyboardEvent, LegacyRef, useEffect, useRef, useState } from "react";
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import MessageCard from "@/components/message/message.card";
@@ -44,8 +44,7 @@ const RoomContainer: FC<Props> = (props) => {
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [showMediaSender, setShowMediaSender] = useState<boolean>(false)
     const [showAnouncementSender, setShowAnouncementSender] = useState<boolean>(false)
-    const dummy = useRef<HTMLDivElement>(null)
-
+    const dummy = useRef<any>(null)
     useEffect(() => {
 
         socket.emit("join_room", { roomId: room, userId: authValue?.user._id })
@@ -154,8 +153,6 @@ const RoomContainer: FC<Props> = (props) => {
                 })
                 socket.emit("insert_chat", { messageObject: data, roomId: room, userIds })
                 setMessageReplySender(null)
-                // messagesRef.current?.scroll({ top: 33 })
-                // dummy.current?.scrollIntoView({ behavior: "smooth" })
                 messageRef.current.value = ""
                 return
             }
@@ -167,17 +164,20 @@ const RoomContainer: FC<Props> = (props) => {
 
             const { data, message, status } = await invoker.post("/chat/insert", { message: messageRef.current.value, room, type: 1 })
             socket.emit("insert_chat", { messageObject: data, roomId: room, userIds })
-            dummy.current?.scrollIntoView({ behavior: "smooth" })
+            // dummy?.current?.scrollIntoView({ behavior: "smooth" })
             messageRef.current.value = ""
             if (authValue && roomDetail) {
                 await invoker.ring({
-                    title: data.createdBy.fullName, 
-                    body: data.message, 
+                    title: data.createdBy.fullName,
+                    body: data.message,
                     userIds: roomDetail.roomUsers.map(item => item.user._id),
                     image: data.createdBy.avatar ?? "",
                     clickAction: `IN_CHAT_ROOM_${roomDetail._id}`
                 })
             }
+            
+            messagesRef?.current?.scrollTo({ top: messagesRef?.current?.scrollHeight, behavior: "smooth" })
+            
         }
     }
 
@@ -230,7 +230,7 @@ const RoomContainer: FC<Props> = (props) => {
                 <RoomAnouncements />
                 <div
                     id="messages_container"
-                    className="relative pb-10 px-5"
+                    className="relative pb-0 px-5"
                     ref={messagesRef}
                     style={{
                         height: '74.2vh',
@@ -240,9 +240,10 @@ const RoomContainer: FC<Props> = (props) => {
                     }}
                 >
                     <InfiniteScroll
+
                         dataLength={100}
                         next={fetchMoreData}
-                        style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
+                        style={{ display: 'flex', flexDirection: 'column-reverse', position: "relative" }} //To put endMessage and loader to the top.
                         inverse={true} //
                         hasMore={true}
                         loader={
@@ -252,7 +253,7 @@ const RoomContainer: FC<Props> = (props) => {
                         scrollThreshold={0.9}
                     >
 
-                        <div className="h-0" ref={dummy}></div>
+                        <div className="h-0 w-full bg-red-500 bottom-0" ref={dummy}></div>
 
                         {messages?.map((mess, index) => {
                             return <MessageCard

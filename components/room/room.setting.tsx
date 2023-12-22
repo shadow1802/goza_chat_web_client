@@ -142,7 +142,7 @@ const RoomSetting: FC<Props> = () => {
         }
     }
 
-
+    const raw = roomDetail?.roomUsers.map(item => item.user._id)
     const isOwner = roomDetail?.roomOwner === authValue?.user._id
 
     return <div className={`room_setting py-4`}>
@@ -164,9 +164,9 @@ const RoomSetting: FC<Props> = () => {
 
             <button onClick={createInviteLink} className="font-semibold px-4 py-1 text-white bg-sky-500 my-1">Tạo link mời</button>
 
-            {inviteUrl && <div onClick={()=>copier(inviteUrl)} className="cursor-pointer my-2 rounded-lg bg-gray-200 px-4 py-2 shadow-lg drop-shadow-lg border-t-2 flex space-x-2 items-center">
+            {inviteUrl && <div onClick={() => copier(inviteUrl)} className="cursor-pointer my-2 rounded-lg bg-gray-200 px-4 py-2 shadow-lg drop-shadow-lg border-t-2 flex space-x-2 items-center">
                 <p className="cursor-pointer text-xs text-sky-500">{inviteUrl}</p>
-                <FaCopy className="text-sky-500"/>
+                <FaCopy className="text-sky-500" />
             </div>}
 
             {inviteUrl && <p className="text-sm">Link mời sẽ tồn tại trong vòng 3 phút</p>}
@@ -194,9 +194,26 @@ const RoomSetting: FC<Props> = () => {
                                 <AlertDialogDescription>
                                     Sau khi thêm thành viên, người dùng có thể gửi tin nhắn, ảnh, video,...
                                     <div className="mt-4 border-2">
+                                        <p className="w-full bg-gray-200 pl-2 py-2 font-semibold">Bạn bè:</p>
                                         {
-                                            users?.filter(item => !roomDetail?.roomUsers.map(item => item.user._id).includes(item._id)).map(item => <div
+                                            users?.filter(item => !raw?.includes(item._id)).map(item => <div
                                                 key={item._id} className="group hover:bg-sky-500 border-b-2 p-2 user_room flex items-center justify-between space-x-2">
+                                                <div className="flex items-center space-x-2">
+                                                    <div className="w-10 h-10 border-2 rounded-full bg-sky-600"></div>
+                                                    <div>
+                                                        <p className="group-hover:text-white text-gray-700 text-sm">{item.fullName}</p>
+                                                        <p className="group-hover:text-white text-xs text-gray-600 font-semibold">@{item.username}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="group-hover:flex hidden space-x-2 items-center">
+                                                    <FaUserPlus onClick={() => inviteMember({ userId: item._id, roomId: String(room) })} className="cursor-pointer text-lg text-white" />
+                                                </div>
+                                            </div>)
+                                        }
+                                        <p className="w-full bg-gray-200 pl-2 py-2 font-semibold">Bạn bè:</p>
+                                        {
+                                            currentUser?.friends.filter(item => !raw?.includes(item._id)).map(item => <div
+                                                key={item._id + "3"} className="group hover:bg-sky-500 border-b-2 p-2 user_room flex items-center justify-between space-x-2">
                                                 <div className="flex items-center space-x-2">
                                                     <div className="w-10 h-10 border-2 rounded-full bg-sky-600"></div>
                                                     <div>

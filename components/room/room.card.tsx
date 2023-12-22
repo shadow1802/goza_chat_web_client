@@ -18,12 +18,7 @@ const RoomCard: FC<Props> = ({ room }) => {
     useEffect(() => { setDetail(room) }, [room])
 
     const router = useRouter()
-
-    const { setLoading, currentUser } = useLobbyContext()
-
     const onClick = async () => {
-
-        setLoading(true)
         setDetail(prev => {
             const next = { ...prev, unseenBy: 0 }
             return next
@@ -31,7 +26,6 @@ const RoomCard: FC<Props> = ({ room }) => {
 
         router.push(`/${detail._id}`)
         await invoker.put(`/room/setSeenMessage/${detail._id}`)
-        setTimeout(() => setLoading(false), 1250)
     }
 
     return <RoomCardMenu room={detail}>

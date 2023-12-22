@@ -38,31 +38,47 @@ const RoomContext = createContext<{
 })
 
 type Props = {
-    initialMessages: IMessage[]
-    initialRoomDetail: any
-    initAnouncements: IAnouncement[]
     children: React.ReactNode
 }
 
-function RoomProvider({ initialMessages, initialRoomDetail, initAnouncements, children }: Props) {
+function RoomProvider({ children }: Props) {
+    const { room } = useParams()
     const invoker = useInvoker()
-    const [messages, setMessages] = useState<IMessage[]>(initialMessages)
-    const [roomDetail, setRoomDetail] = useState<IRoomDetail | null>(initialRoomDetail)
+    const [loading, setLoading] = useState<boolean>(true)
+    const [messages, setMessages] = useState<IMessage[]>([])
+    const [roomDetail, setRoomDetail] = useState<IRoomDetail | null>(null)
     const [onlineRoomUsers, setOnlineRoomUsers] = useState<string[]>([])
     const [messageEditor, setMessageEditor] = useState<IMessage | null>(null)
     const [messageReplySender, setMessageReplySender] = useState<IMessage | null>(null)
-    const [anouncements, setAnouncements] = useState<IAnouncement[]>(initAnouncements)
+    const [anouncements, setAnouncements] = useState<IAnouncement[]>([])
 
     const reloader = {
         anouncements: async () => {
-            const { data } = await invoker.get(`/room/notify/paging?roomId=${roomDetail?._id}`)
+            const { data } = await invoker.get(`/room/notify/paging?roomId=${room}`)
             setAnouncements(data.data)
         },
         roomDetail: async () => {
-            const { data } = await invoker.get(`/room/getRoomById/${roomDetail?._id}`)
+            const { data } = await invoker.get(`/room/getRoomById/${room}`)
+            console.log(data)
             setRoomDetail(data)
+        },
+        messages: async () => {
+            const { data: { data } } = await invoker.get(`/chat/getPaging?room=${room}`)
+            setMessages(data)
         }
     }
+
+    useEffect(() => {
+        const loader = async () => {
+            await Promise.all([
+                reloader.anouncements(),
+                reloader.messages(),
+                reloader.roomDetail()
+            ])
+            setLoading(false)
+        }
+        loader()
+    }, [room])
 
     return <RoomContext.Provider value={{
         setRoomDetail,
@@ -80,6 +96,9 @@ function RoomProvider({ initialMessages, initialRoomDetail, initAnouncements, ch
         reloader
     }}>
         {children}
+        {loading && <div className="fixed top-[45%] left-[50%] z-20">
+            <img src="/icons/loading.svg" alt="" />
+        </div>}
     </RoomContext.Provider>
 }
 

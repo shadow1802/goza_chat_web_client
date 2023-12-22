@@ -1,7 +1,7 @@
 "use client"
 import { IMessage } from "@/types/message"
 import { dateTimeConverter } from "@/utils/dateTimeConverter"
-import { FC, Dispatch, SetStateAction } from "react"
+import { FC, Dispatch, SetStateAction, useEffect, useRef } from "react"
 
 import { useRoomContext } from "@/context/Room.context"
 
@@ -25,6 +25,7 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
     const authValue = useAuthValue()
     const memberDetail = roomDetail?.roomUsers.find(item => item.user._id === message.createdBy._id)
     const isSameUser = prevMessage?.createdBy._id === message.createdBy._id
+
 
     const counter = message.reactions
 
@@ -51,7 +52,7 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
     const isSameCreator = authValue?.user._id === message.createdBy._id
 
     return <MessageCardMenu message={message} setMessageEditor={setMessageEditor} handleRemoveMessage={handleRemoveMessage} setMessageReplySender={setMessageReplySender} handleReaction={handleReaction}>
-        <>
+        <div className="">
         {isSameCreator ? <div id={message._id} className="msg_direction px-7 w-full flex justify-start">
 
             <div className="msg_container p-2 flex items-start max-w-[500px] space-x-2">
@@ -71,7 +72,7 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
         </div> : <div className="my-1 msg_direction px-7 w-full flex justify-end">
             <div className="msg_container flex items-start max-w-[500px] space-x-2">
                 {!isSameUser && <img src={message.createdBy.avatar || '/images/default-avatar.jpg'} className="border-2 border-sky-500 w-14 h-14 rounded-full" />}
-                <div className="p-3 bg-white rounded-lg shadow-lg">
+                <div className="relative p-3 bg-white rounded-lg shadow-lg">
                     {message.replyTo && <div className="border-2 px-2 rounded-lg">
                         <p>Trả lời tin nhắn của {message.replyTo.createdBy.fullName}:</p>
                         <p className="text-sm max-w-[500px] text-block-default">{message.replyTo.message}</p>
@@ -83,7 +84,7 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
                 </div>
             </div>
         </div>}
-        </>
+        </div>
     </MessageCardMenu>
 }
 
