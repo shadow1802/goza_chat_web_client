@@ -56,8 +56,9 @@ const Sidebar: FC<Props> = (props) => {
         if (authValue) {
             const { data } = await get(`/room/findPrivateRoom/${authValue.user._id}_${userId}`)
             if (data) {
-                setPrivateRoomDetail(data)
-                setShowChatScreen(true)
+                router.push(`/${data._id}`)
+                // setPrivateRoomDetail(data)
+                // setShowChatScreen(true)
             } else {
                 const { data: newRoom } = await post(`/room/insert`, {
                     roomName: ' ',
@@ -65,8 +66,9 @@ const Sidebar: FC<Props> = (props) => {
                     key: `${authValue.user._id}_${userId}`,
                     roomUsers: JSON.stringify([userId])
                 })
-                setPrivateRoomDetail(newRoom)
-                setShowChatScreen(true)
+                // setPrivateRoomDetail(newRoom)
+                // setShowChatScreen(true)
+                router.push(`/${newRoom._id}`)
             }
         }
     }

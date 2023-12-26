@@ -9,6 +9,10 @@ function SocketProvider ({ children }:{ children: React.ReactNode }) {
 
     const socket = io(process.env.NEXT_PUBLIC_SOCKET as string)
 
+    useEffect(() => {
+        socket.on("receive_pre_verify_login", data => console.log(data))
+    }, [socket])
+
     return <SocketContext.Provider value={{socket}}>
         { children }
     </SocketContext.Provider>

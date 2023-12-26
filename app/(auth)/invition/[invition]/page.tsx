@@ -5,8 +5,6 @@ const loader = async (invitionId: string) => {
         const res = await fetch(`${process.env.HOST}/room/getInvite/${invitionId}`)
         const { status, data, message } = await res.json()
 
-        console.log(data)
-
         if (status !== 200) {
             return { data: null, isSuccessLoaded: false }
         } else return { isSuccessLoaded: true, data: data }

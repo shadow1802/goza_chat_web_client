@@ -34,6 +34,9 @@ export default function AuthProvider({ children }: Props) {
 
     useEffect(() => {
         loadAuthState()
+        document.addEventListener('paste', function (evt: any) {
+            console.log(evt)
+        })
     }, [authCookie])
 
     const logOut = () => {

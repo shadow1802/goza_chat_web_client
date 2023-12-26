@@ -18,6 +18,7 @@ const RoomCard: FC<Props> = ({ room }) => {
     useEffect(() => { setDetail(room) }, [room])
 
     const router = useRouter()
+    
     const onClick = async () => {
         setDetail(prev => {
             const next = { ...prev, unseenBy: 0 }

@@ -10,8 +10,13 @@ import { useRef, useState, useEffect } from "react"
 import { CiLock, CiUser } from "react-icons/ci"
 import { FcGoogle } from "react-icons/fc"
 import { FaFacebook } from "react-icons/fa6"
-import { GoogleAuthProvider, signInWithPopup, FacebookAuthProvider } from "firebase/auth"
+import { GoogleAuthProvider, signInWithPopup, FacebookAuthProvider, linkWithPhoneNumber } from "firebase/auth"
 import { auth } from "@/lib/firebase"
+import { useSocket } from "@/context/Socket.context"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
+import QRCode from "react-qr-code"
+import { nanoid } from 'nanoid'
+import { AuthObject } from "@/types/login.verify"
 
 type Props = { invition?: string }
 
@@ -21,13 +26,34 @@ export default function LoginContainer({ invition }: Props) {
     const [loading, setLoading] = useState<boolean>(false)
     const form = useRef<HTMLFormElement>(null)
     const router = useRouter()
+    const { socket } = useSocket()
+    const [openLoginVerify, setOpenLoginVerify] = useState<string | null>(null)
 
     useEffect(() => {
-        window.addEventListener("offline", () => {
-            console.log("1. socket reconnect")
-            console.log("2. socket relogin")
+        socket.on("receive_verify_login", (data: AuthObject) => {
+            setCookie("auth", JSON.stringify({
+                token: data.token,
+                user: {
+                    _id: data.user._id,
+                    username: data.user.username,
+                    role: data.user.role,
+                    bio: data.user.bio
+                }
+            }))
+
+            setOpenLoginVerify(null)
+
+            if (!invition) {
+                router.push("/")
+            } router.push(`/invition/${invition}`)
+
+            toast({
+                duration: 2000,
+                description: <p className='text-green-500 font-semibold'>Đăng nhập thành công</p>,
+            })
+            setLoading(true)
         })
-    }, [])
+    }, [socket])
 
     const loginWithGoogle = async () => {
         try {
@@ -109,14 +135,14 @@ export default function LoginContainer({ invition }: Props) {
         }
     }
 
-    const onLogin = async (event: React.SyntheticEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        const form = event.currentTarget
-        const elements = form.elements as typeof form.elements & {
-            username: { value: string },
-            password: { value: string },
-        }
+    const onLogin = async () => {
+        
+        const client = nanoid()
+        socket.emit("pre_verify_login", client)
 
+        setOpenLoginVerify(JSON.stringify({client}))
+
+        /*
         try {
             const { username, password } = elements
             console.log(username, password)
@@ -130,8 +156,12 @@ export default function LoginContainer({ invition }: Props) {
 
             if (status === 200) {
                 setCookie("auth", JSON.stringify({
-                    token: data.token, user: {
-                        _id: data.user._id, username: data.user.username, role: data.user.role, bio: data.user.bio
+                    token: data.token,
+                    user: {
+                        _id: data.user._id,
+                        username: data.user.username,
+                        role: data.user.role,
+                        bio: data.user.bio
                     }
                 }))
                 toast({
@@ -154,13 +184,43 @@ export default function LoginContainer({ invition }: Props) {
         } catch (error) {
 
         }
+        */
     }
 
     return <div className="bg-white border-t-2 w-[450px] shadow-sm shadow-white rounded-lg p-8 flex flex-col justify-center items-center">
         {loading && <div className="fixed top-[45%] left-[45%]">
             <img src="/icons/loading.svg" alt="" />
         </div>}
-        <form ref={form} onSubmit={onLogin} className="flex flex-col justify-center items-center">
+
+        <Dialog open={!!openLoginVerify} onOpenChange={() => setOpenLoginVerify(null)}>
+            <DialogContent className="p-0 m-0 outline-none border-none rounded-none">
+
+                <div className="header bg-sky-500 flex items-center px-6 h-12">
+                    <h2 className="font-semibold text-base text-white">Xác thực đăng nhập trên điện thoại</h2>
+                </div>
+
+                {openLoginVerify && <div className="p-4 flex flex-col items-center justify-center">
+                    <QRCode
+                        size={256}
+                        style={{ height: "auto", maxWidth: "50%", width: "50%" }}
+                        value={openLoginVerify}
+                        viewBox={`0 0 256 256`}
+                    />
+
+                    <img src="/icons/loader3.svg" className="mt-4 w-14 h-14" alt="" />
+
+                    <h3 className="my-4 text-lg font-semibold">Đăng nhập GOZA bằng điện thoại của bạn</h3>
+                    <ul className="mb-2">
+                        <li className="text-sm font-semibold text-gray-600">1. Mở GOZA trên điện thoại của bạn</li>
+                        <li className="text-sm font-semibold text-gray-600">2. Vào phần cài đặt để kết nối điện thoại với máy tính</li>
+                        <li className="text-sm font-semibold text-gray-600">3. Quét mã QR trên để hoàn tất việc đăng nhập</li>
+                    </ul>
+                    <li className="text-sm font-semibold text-red-500">Lưu ý: Không tắt màn hình này trong quá trình đăng nhập</li>
+                </div>}
+            </DialogContent>
+        </Dialog>
+
+        <form ref={form} className="flex flex-col justify-center items-center">
             <div className="bg-gray-300 rounded-full drop-shadow-lg shadow-lg shadow-white w-44 h-44">
                 <img src="/images/logo.png" className="w-44 h-44" alt="" />
             </div>
@@ -169,16 +229,12 @@ export default function LoginContainer({ invition }: Props) {
 
                 <Title size={26} />
                 <h2 className="text-2xl font-semibold text-gray-600">Đăng nhập</h2>
-                <p className='text-center text-gray-600 font-semibold'>Vui lòng nhập đúng tài khoản và mật khẩu của bạn để đăng nhập</p>
 
-                <Scanner name='username' icon={<CiUser />} label="Tên tài khoản *" placeholder="Tên tài khoản phải lớn hơn 6 ký tự" />
-                <Scanner name='password' type='password' icon={<CiLock />} placeholder="Mật khẩu phải lớn hơn 6 ký tự" label="Mật khẩu *" />
+                <p className="max-w-[333px] text-center font-semibold text-gray-500">Đăng nhập vào GOZA bằng cách quét QR với thiết bị của bạn</p>
 
-                <div className="flex justify-end">
-                    <p className='text-gray-500 font-semibold text-sm'>Chưa có tài khoản? <Link className='text-sky-500' href={"/register"}>Đăng ký ngay</Link></p>
-                </div>
-
-                <button type="submit" className='text-white w-full hover:bg-sky-400 font-semibold duration-150 shadow-md shadow-white rounded-lg py-3 bg-sky-500'>Đăng Nhập</button>
+                <button type="button" onClick={onLogin} className='text-white w-full hover:bg-sky-400 font-semibold duration-150 shadow-md shadow-white rounded-lg py-2 px-6 bg-sky-500'>
+                    Đăng nhập bằng điện thoại
+                </button>
             </div>
         </form>
         <div className="my-4 w-full flex space-x-2 items-center justify-center">

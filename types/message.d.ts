@@ -1,3 +1,5 @@
+import { Reaction } from "./reaction"
+
 export interface IMessage {
     _id: string
     message: string
@@ -6,7 +8,7 @@ export interface IMessage {
     file: string
     createdTime: Date
     lastModified: Date
-    reactions: Object[]
+    reactions: Reaction[]
     isDeleted: false
     createdBy: {
         _id: string,

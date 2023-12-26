@@ -6,6 +6,7 @@ import colorGenerator from "@/utils/colorGenerator.service"
 import { truncate } from "@/utils/helper"
 import signName from "@/utils/signName.service"
 import useInvoker from "@/utils/useInvoker"
+import { useRouter } from "next/navigation"
 import { FC, useEffect, useState } from "react"
 type Props = {
     user: { username: string, fullName: string, avatar: string, _id: string }
@@ -20,6 +21,8 @@ const UserCard: FC<Props> = ({ user, isFriend, handlerClickUser, ...rest }) => {
     const { socket } = useSocket()
     const invoker = useInvoker()
     const [chatInfo, setChatInfo] = useState<IRoom | undefined>(undefined)
+
+    const route = useRouter()
 
     useEffect(() => {
         const LOL = rooms.filter(item => item.roomType === 0)

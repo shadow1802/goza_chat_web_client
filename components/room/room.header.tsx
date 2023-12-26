@@ -2,15 +2,14 @@
 
 import { SiGooglemeet } from "react-icons/si"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { FC, useState } from "react"
+import { FC, ReactNode } from "react"
 import { useRoomContext } from "@/context/Room.context"
 import { useParams, useRouter } from "next/navigation"
 import { FaUserFriends } from "react-icons/fa"
-import RoomManager from "./room.manager"
-import { IoIosSettings } from "react-icons/io"
 import RoomSetting from "./room.setting"
 import { CiFileOn, CiImageOn, CiVideoOn } from "react-icons/ci"
 import Files from "./room.files"
+import { PrivateRoom, PublicRoom } from "./room.header.detail"
 
 type Props = {}
 
@@ -18,25 +17,15 @@ const RoomHeader: FC<Props> = (props) => {
     const router = useRouter()
     const { room } = useParams()
     const { roomDetail } = useRoomContext()
-    const [showRoomSetting, setShowRoomSetting] = useState<boolean>(false)
+
+    const RoomHeaderDetail: { [type: number]: ReactNode } = {
+        0: <PrivateRoom roomDetail={roomDetail} />,
+        3: <PublicRoom roomDetail={roomDetail} />
+    }
 
     return <div className="room_header min-h-[6vh] w-full bg-white border-l-2 border-b-2 flex justify-between items-center py-2 px-4">
-        <Dialog>
-            <DialogTrigger asChild>
-                <div className="w-full cursor-pointer">
-                    <p className="text-sm font-semibold text-black uppercase">{roomDetail?.roomName}</p>
-                    <p className="text-xs font-semibold text-gray-500">{roomDetail?.roomUsers?.length} thành viên</p>
-                </div>
-            </DialogTrigger>
-            <DialogContent className="rounded-none p-0 border-none gap-0">
-                <DialogHeader className="border-none rounded-none m-0 p-4 bg-sky-500 h-10 rounded-t-lg">
-                    <DialogTitle className="text-gray-200 text-base font-semibold">Thiết lập</DialogTitle>
-                </DialogHeader>
 
-                <RoomSetting />
-
-            </DialogContent>
-        </Dialog>
+        { roomDetail && RoomHeaderDetail[roomDetail.roomType] }
 
         <div className="flex items-center space-x-3">
 

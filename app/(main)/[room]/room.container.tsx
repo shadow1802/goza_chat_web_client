@@ -26,6 +26,8 @@ import isBlank from "@/utils/isBlank";
 import { toast } from "@/components/ui/use-toast";
 import { truncate } from "@/utils/helper";
 import { useLobbyContext } from "@/context/Lobby.context";
+import { Reaction } from "@/types/reaction";
+
 
 type Props = {}
 
@@ -81,8 +83,17 @@ const RoomContainer: FC<Props> = (props) => {
             })
         })
 
-        socket.on("receive_reaction_chat", (data) => {
-            console.log(data)
+        socket.on("receive_reaction_chat", (data: Reaction) => {
+            console.log(data.message.createdBy, "da thay doi")
+
+            // setMessages(prev => {
+            //     const editMessageObjectIndex = [...prev].findIndex(item => item._id == data.message._id)
+            //     const newMessage = [...prev]
+            //     let reacts = newMessage[editMessageObjectIndex].reactions
+            //     reacts.find(item => item.createdBy.user)
+            //     return newMessage
+            // })
+            
         })
 
         socket.on("receive_exit_room", (data: { room: string, users: string[] }) => {
