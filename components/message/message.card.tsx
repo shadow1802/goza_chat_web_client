@@ -55,7 +55,6 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
     return <MessageCardMenu message={message} setMessageEditor={setMessageEditor} handleRemoveMessage={handleRemoveMessage} setMessageReplySender={setMessageReplySender} handleReaction={handleReaction}>
         <div onClick={() => console.log(message)}>
             {isSameCreator ? <div id={message._id} className="msg_direction px-7 w-full flex justify-start">
-
                 <div className="msg_container p-2 flex items-start max-w-[500px] space-x-2">
 
                     {!isSameUser ? <img src={message.createdBy.avatar || '/images/default-avatar.jpg'} className="border-2 border-sky-500 w-14 h-14 rounded-full" /> : <div className="w-14"></div>}

@@ -1,7 +1,7 @@
 "use client"
 import { IMessage } from "@/types/message"
 import { FC, Dispatch, SetStateAction, ReactNode } from "react"
-import { FaFaceAngry, FaFaceGrinBeam, FaFaceGrinStars, FaFaceSadCry, FaHeart, FaLocationPin, FaPen, FaReply, FaTrashCan } from "react-icons/fa6"
+import { FaBuffer, FaFaceAngry, FaFaceGrinBeam, FaFaceGrinStars, FaFaceSadCry, FaHeart, FaLocationPin, FaPen, FaReply, FaTrashCan } from "react-icons/fa6"
 import {
     ContextMenu,
     ContextMenuContent,
@@ -9,6 +9,8 @@ import {
     ContextMenuTrigger,
 } from "@/components/ui/context-menu"
 import useAuthValue from "@/utils/useAuthValue"
+import useInvoker from "@/utils/useInvoker"
+import { useToast } from "../ui/use-toast"
 
 type Props = {
     message: IMessage,
@@ -22,7 +24,23 @@ type Props = {
 const MessageCardMenu: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage, setMessageReplySender, handleReaction, children }) => {
 
     const authValue = useAuthValue()
+    const { toast } = useToast()
     const isOwner = authValue?.user._id === message.createdBy._id
+    const invoker = useInvoker()
+
+    const handleAddToLib = async (src: string) => {
+        try {
+            const { data, status, message: lol } = await invoker.post("/media/create", { src })
+            if (status !== 200) {
+                toast({
+                    duration: 2000,
+                    description: <p className='text-red-500 font-semibold'>{ lol }</p>,
+                })
+            }
+        } catch (error) {
+
+        }
+    }
 
     return <ContextMenu>
         <ContextMenuTrigger className="w-full">{children}</ContextMenuTrigger>
@@ -44,6 +62,11 @@ const MessageCardMenu: FC<Props> = ({ message, setMessageEditor, handleRemoveMes
                     <p className="text-sky-500 group-hover:text-white text-sm font-semibold">Ghim tin nhắn</p>
                     <FaLocationPin className="text-sky-500 group-hover:text-white" />
                 </ContextMenuItem>
+
+                {message.file && <ContextMenuItem onClick={() => handleAddToLib(message.file)} className="group w-full hover:bg-sky-500 duration-300 bg-white flex items-center justify-between px-4 py-2">
+                    <p className="text-sky-500 group-hover:text-white text-sm font-semibold">Lưu vào thư viện</p>
+                    <FaBuffer className="text-sky-500 group-hover:text-white" />
+                </ContextMenuItem>}
 
                 <ContextMenuItem disabled={!isOwner} onClick={() => setMessageEditor(message)} className="group w-full hover:bg-sky-500 duration-300 bg-white flex items-center justify-between px-4 py-2">
                     <p className="text-sky-500 group-hover:text-white text-sm font-semibold">Chỉnh sửa tin nhắn</p>

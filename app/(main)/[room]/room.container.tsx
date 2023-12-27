@@ -1,5 +1,5 @@
 "use client"
-import { useAuthState } from "@/context/Auth.context";
+import { MdPhotoLibrary } from "react-icons/md"
 import { useRoomContext } from "@/context/Room.context";
 import { useSocket } from "@/context/Socket.context";
 import useInvoker from "@/utils/useInvoker";
@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import MessageCard from "@/components/message/message.card";
 import { IMessage } from "@/types/message";
 import useAuthValue from "@/utils/useAuthValue";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet"
 
 import {
     Popover,
@@ -25,8 +26,7 @@ import RoomAnouncements from "@/components/room/room.anouncements";
 import isBlank from "@/utils/isBlank";
 import { toast } from "@/components/ui/use-toast";
 import { truncate } from "@/utils/helper";
-import { useLobbyContext } from "@/context/Lobby.context";
-import { Reaction } from "@/types/reaction";
+import MediaViewer from "@/components/media/viewer";
 
 
 type Props = {}
@@ -46,7 +46,9 @@ const RoomContainer: FC<Props> = (props) => {
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [showMediaSender, setShowMediaSender] = useState<boolean>(false)
     const [showAnouncementSender, setShowAnouncementSender] = useState<boolean>(false)
+    const [showMediaLibrary, setShowMediaLibrary] = useState<boolean>(false)
     const dummy = useRef<any>(null)
+
     useEffect(() => {
 
         socket.emit("join_room", { roomId: room, userId: authValue?.user._id })
@@ -83,17 +85,16 @@ const RoomContainer: FC<Props> = (props) => {
             })
         })
 
-        socket.on("receive_reaction_chat", (data: Reaction) => {
-            console.log(data.message.createdBy, "da thay doi")
+        socket.on("receive_reaction_chat", (data) => {
+            console.log(data, "da thay doi")
 
-            // setMessages(prev => {
-            //     const editMessageObjectIndex = [...prev].findIndex(item => item._id == data.message._id)
-            //     const newMessage = [...prev]
-            //     let reacts = newMessage[editMessageObjectIndex].reactions
-            //     reacts.find(item => item.createdBy.user)
-            //     return newMessage
-            // })
-            
+            setMessages(prev => {
+                const editMessageObjectIndex = [...prev].findIndex(item => item._id == data.message._id)
+                const newMessage = [...prev]
+                newMessage[editMessageObjectIndex].reactions = data.message.reactions
+                return newMessage
+            })
+
         })
 
         socket.on("receive_exit_room", (data: { room: string, users: string[] }) => {
@@ -186,9 +187,9 @@ const RoomContainer: FC<Props> = (props) => {
                     clickAction: `IN_CHAT_ROOM_${roomDetail._id}`
                 })
             }
-            
+
             messagesRef?.current?.scrollTo({ top: messagesRef?.current?.scrollHeight, behavior: "smooth" })
-            
+
         }
     }
 
@@ -316,7 +317,7 @@ const RoomContainer: FC<Props> = (props) => {
                                 className="px-2 bg-gray-100 pt-[8px] rounded-lg text-gray-700 text-sm scrollbar-thin flex flex-col justify-center border-none outline-none items-center h-10 w-full"
                             />
                         </div>
-                        <div className="flex justify-between space-x-3 bg-gray-300 px-4 py-2">
+                        <div className="flex justify-between items-center space-x-3 bg-gray-300 px-4 py-2">
 
                             <Dialog open={showAnouncementSender} onOpenChange={setShowAnouncementSender}>
                                 <DialogTrigger>
@@ -344,6 +345,13 @@ const RoomContainer: FC<Props> = (props) => {
                                     <MediaSender handleSendMessageWithFile={handleSendMessageWithFile} />
                                 </DialogContent>
                             </Dialog>
+
+                            <Sheet modal={false} open={showMediaLibrary} onOpenChange={setShowMediaLibrary}>
+                                <SheetTrigger asChild>
+                                    <MdPhotoLibrary onClick={(()=>setShowMediaLibrary(true))} className="text-3xl text-white" />
+                                </SheetTrigger>
+                                <MediaViewer isOpen={showMediaLibrary} />
+                            </Sheet>
                         </div>
                     </form>
                 </div >
