@@ -11,6 +11,7 @@ import {
 import useAuthValue from "@/utils/useAuthValue"
 import useInvoker from "@/utils/useInvoker"
 import { useToast } from "../ui/use-toast"
+import { dateTimeConverter } from "@/utils/dateTimeConverter"
 
 type Props = {
     message: IMessage,
@@ -48,7 +49,7 @@ const MessageCardMenu: FC<Props> = ({ message, setMessageEditor, handleRemoveMes
             <div className="bg-sky-500 flex space-x-3 px-4 py-2 items-center justify-between">
                 <div>
                     <p className="text-sm text-white font-semibold">{message.createdBy.fullName}</p>
-                    <p className="text-xs text-gray-200 leading-3">@testdv01</p>
+                    <p className="text-xs text-gray-200 leading-3">{dateTimeConverter(String(message.createdTime))}</p>
                 </div>
                 <img src={message.createdBy.avatar} className="w-11 h-11 rounded-full border-2 border-white" alt="" />
             </div>

@@ -4,14 +4,16 @@ import { useRoomContext } from "@/context/Room.context";
 import { useSocket } from "@/context/Socket.context";
 import useInvoker from "@/utils/useInvoker";
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
-import { useParams, useRouter } from "next/navigation";
-import { FC, KeyboardEvent, LegacyRef, useEffect, useRef, useState } from "react";
+import { useParams } from "next/navigation";
+import { FC, KeyboardEvent, useEffect, useRef, useState } from "react";
+import { IoIosCloseCircleOutline, IoIosSend } from "react-icons/io"
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import MessageCard from "@/components/message/message.card";
 import { IMessage } from "@/types/message";
 import useAuthValue from "@/utils/useAuthValue";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet"
+import { FiSend } from "react-icons/fi"
 
 import {
     Popover,
@@ -27,6 +29,7 @@ import isBlank from "@/utils/isBlank";
 import { toast } from "@/components/ui/use-toast";
 import { truncate } from "@/utils/helper";
 import MediaViewer from "@/components/media/viewer";
+import { RiSendPlaneLine } from "react-icons/ri";
 
 
 type Props = {}
@@ -292,32 +295,36 @@ const RoomContainer: FC<Props> = (props) => {
                         <button className="px-2 py-1 bg-red-500 text-white ">Buzz !!!</button>
                     </div>) */}
 
-                    {messageReplySender && <div className="bg-sky-500 relative ml-2 py-2 flex items-center justify-between w-full h-8 px-2">
-                        <div className="absolute  right-0 -top-6 bg-red-500 px-4">
-                            <p className="font-semibold">Trả lời tin nhắn của {messageReplySender.createdBy.fullName}</p>
-                        </div>
-                        <p className="text-white text-sm font-semibold">{truncate(messageReplySender.message, 100)}</p>
-                        <img src="/icons/close.svg" onClick={() => setMessageReplySender(null)} className="cursor-pointer w-5 h-5" alt="" />
+                    {messageReplySender && <div className="mb-1 bg-sky-500 rounded-md relative ml-2 py-2 flex items-center justify-between w-full h-8 px-2">
+                        <p className="text-white w-full pr-2 text-sm font-semibold flex items-center justify-between">
+                            <span>{truncate(messageReplySender.message, 100)}</span>
+                            <span className="text-sm text-gray-200">Chỉnh sửa tin nhắn {messageReplySender.createdBy.fullName}</span>
+                        </p>
+                        <IoIosCloseCircleOutline onClick={() => setMessageReplySender(null)} className="cursor-pointer w-5 h-5" alt="" />
                     </div>}
 
-                    {messageEditor && <div className="bg-sky-500 relative ml-2 py-2 flex items-center justify-between w-full h-8 px-2">
-                        <div className="absolute right-0 bg-gray-100 -top-6 px-4 border-2 border-sky-500">
-                            <p className="font-semibold text-sky-500">Chỉnh sửa tin nhắn</p>
-                        </div>
-                        <p className="text-sm font-semibold text-white">{truncate(messageEditor.message, 100)}</p>
-                        <img src="/icons/close.svg" onClick={() => setMessageEditor(null)} className="cursor-pointer w-5 h-5" alt="" />
+                    {messageEditor && <div className="mb-1 bg-sky-500 rounded-md relative ml-2 py-2 flex items-center justify-between w-full h-8 px-2">
+                        <p className="text-white w-full pr-2 text-sm font-semibold flex items-center justify-between">
+                            <span>{truncate(messageEditor.message, 100)}</span>
+                            <span className="text-sm text-gray-200">Trả lời tin nhắn của {messageEditor.createdBy.fullName}</span>
+                        </p>
+                        <IoIosCloseCircleOutline onClick={() => setMessageEditor(null)} className="cursor-pointer w-5 h-5" alt="" />
                     </div>}
 
-                    <form ref={formRef} onSubmit={onSubmit} className="flex justify-between items-center w-full bg-gray-300 shadow-lg h-14">
-                        <div className="px-3 w-full">
+                    <form ref={formRef} onSubmit={onSubmit} className="flex pl-2 rounded-md justify-between items-center w-full bg-sky-500 shadow-lg h-14">
+                        <div className="px-3 relative w-full flex bg-gray-100 items-center rounded-r-full">
                             <textarea ref={messageRef}
                                 style={{ resize: 'none' }}
                                 placeholder="Vui lòng nhập tin nhắn"
                                 onKeyDown={onKeyDown}
-                                className="px-2 bg-gray-100 pt-[8px] rounded-lg text-gray-700 text-sm scrollbar-thin flex flex-col justify-center border-none outline-none items-center h-10 w-full"
+                                className="px-2 rounded-l-md bg-gray-100 pt-[8px] rounded-lg text-gray-700 text-sm scrollbar-thin flex flex-col justify-center border-none outline-none items-center h-10 w-full"
                             />
+                            <button onClick={handleSendMesssage} className="absolute flex pr-[2px] items-center justify-center right-2 w-7 h-7 bg-sky-500 rounded-full hover:scale-110 duration-200">
+                                <IoIosSend className="text-white text-xl" />
+                            </button>
                         </div>
-                        <div className="flex justify-between items-center space-x-3 bg-gray-300 px-4 py-2">
+
+                        <div className="flex justify-between items-center space-x-3 bg-sky-500 px-4 py-2">
 
                             <Dialog open={showAnouncementSender} onOpenChange={setShowAnouncementSender}>
                                 <DialogTrigger>
@@ -348,7 +355,7 @@ const RoomContainer: FC<Props> = (props) => {
 
                             <Sheet modal={false} open={showMediaLibrary} onOpenChange={setShowMediaLibrary}>
                                 <SheetTrigger asChild>
-                                    <MdPhotoLibrary onClick={(()=>setShowMediaLibrary(true))} className="text-3xl text-white" />
+                                    <MdPhotoLibrary onClick={(() => setShowMediaLibrary(true))} className="hover:scale-[120%] duration-200 cursor-pointer text-3xl text-white" />
                                 </SheetTrigger>
                                 <MediaViewer isOpen={showMediaLibrary} />
                             </Sheet>

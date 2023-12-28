@@ -1,15 +1,15 @@
 "use client"
 import { IMessage } from "@/types/message"
 import { dateTimeConverter } from "@/utils/dateTimeConverter"
-import { FC, Dispatch, SetStateAction, useEffect, useRef } from "react"
-
+import { FC, Dispatch, SetStateAction } from "react"
 import { useRoomContext } from "@/context/Room.context"
-
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import MessageCardMenu from "./message.card.menu"
 import { IMAGE_TYPES, VIDEO_TYPES } from "@/constants/file.types"
 import useAuthValue from "@/utils/useAuthValue"
 import { CiFileOn } from "react-icons/ci"
 import { useSocket } from "@/context/Socket.context"
+import Avatar from "../useful/avatar"
 
 type Props = {
     message: IMessage,
@@ -57,14 +57,14 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
             {isSameCreator ? <div id={message._id} className="msg_direction px-7 w-full flex justify-start">
                 <div className="msg_container p-2 flex items-start max-w-[500px] space-x-2">
 
-                    {!isSameUser ? <img src={message.createdBy.avatar || '/images/default-avatar.jpg'} className="border-2 border-sky-500 w-14 h-14 rounded-full" /> : <div className="w-14"></div>}
-                    <div className="bg-sky-500 rounded-lg shadow-lg p-3 py-2">
+                    {!isSameUser ? <Avatar className="border-2 border-sky-500 w-12 h-12 rounded-full" name={message.createdBy.fullName} src={message.createdBy.avatar}/> : <div className="w-14"></div>}
+                    <div className="bg-sky-500 rounded-lg shadow-lg px-3 py-[0.28rem]">
                         {message.replyTo && <div className="border-2 px-2 rounded-lg">
                             <p>Trả lời tin nhắn của {message.replyTo.createdBy.fullName}:</p>
                             <p className="text-sm max-w-[500px] text-block-default">{message.replyTo.message}</p>
                             {message.replyTo.file && <FileRender file={message.replyTo.message} />}
                         </div>}
-                        {!isSameUser && <p className="cursor-pointer font-semibold text-sm">{message.createdBy.fullName} <span className="text-xs text-gray-200">{dateTimeConverter(String(message.lastModified))}</span></p>}
+                        {!isSameUser && <p className="cursor-pointer font-semibold text-sm">{message.createdBy.fullName}</p>}
                         <p className="text-sm max-w-[500px] text-block-default">{message.message}</p>
                         {message.file && <FileRender file={message.file} />}
                         {message.reactions.map((item: any, index) => <p>{item.emoji}</p>)}
@@ -72,14 +72,15 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
                 </div>
             </div> : <div className="my-1 msg_direction px-7 w-full flex justify-end">
                 <div className="msg_container flex items-start max-w-[500px] space-x-2">
-                    {!isSameUser && <img src={message.createdBy.avatar || '/images/default-avatar.jpg'} className="border-2 border-sky-500 w-14 h-14 rounded-full" />}
-                    <div className="relative p-3 bg-white rounded-lg shadow-lg">
+                    {!isSameUser && <Avatar className="border-2 w-12 h-12 rounded-full" name={message.createdBy.fullName} src={message.createdBy.avatar}/>}
+                    <div className="relative px-3 py-[0.28rem] bg-white rounded-lg shadow-lg">
+
                         {message.replyTo && <div className="border-2 px-2 rounded-lg">
                             <p>Trả lời tin nhắn của {message.replyTo.createdBy.fullName}:</p>
                             <p className="text-sm max-w-[500px] text-block-default">{message.replyTo.message}</p>
                             {message.replyTo.file && <FileRender file={message.replyTo.message} />}
                         </div>}
-                        {!isSameUser && <p className="font-semibold text-gray-500 text-sm">{message.createdBy.fullName} <span className="text-xs text-gray-400">{dateTimeConverter(String(message.lastModified))}</span></p>}
+                        {!isSameUser && <p className="font-semibold text-gray-500 text-sm">{message.createdBy.fullName}</p>}
                         <p className="text-sm max-w-[500px] text-block-default text-black">{message.message}</p>
                         {message.file && <FileRender file={message.file} />}
                     </div>

@@ -82,7 +82,7 @@ const MediaSender: FC<Props> = ({ handleSendMessageWithFile }) => {
         <div className={`media_sender_body w-full min-h-[220px] bg-white ${!previewUrl && "p-4"}`}>
             <label htmlFor="media_image_sender"
                 className={`cursor-pointer w-full min-h-[220px] flex flex-col items-center justify-center rounded-lg ${!previewUrl && "border-dashed border-2"}`}>
-                {previewUrl ? <img className="bg-darkness-500" src={previewUrl} /> : <p className="text-sm font-semibold text-gray-600">Vui lòng chọn tệp tin</p>}
+                {previewUrl ? <img className="bg-darkness-500 max-h-[75vh] w-full" src={previewUrl} /> : <p className="text-sm font-semibold text-gray-600">Vui lòng chọn tệp tin</p>}
             </label>
             <input type="file" ref={fileRef} onChange={onFileSelected} id="media_image_sender" className="hidden" accept="audio/*|video/*|image/*" multiple />
             {previewUrl && <div className="px-4">
