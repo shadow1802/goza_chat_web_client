@@ -1,5 +1,5 @@
 "use client"
-import { useRef, type FC, useState, FormEvent } from "react"
+import { useRef, type FC, useState, FormEvent, useEffect } from "react"
 import Scanner from "./form/scanner"
 import { useToast } from "@/components/ui/use-toast"
 import { RiSendPlane2Line } from "react-icons/ri"
@@ -9,6 +9,8 @@ import { useRoomContext } from "@/context/Room.context"
 import { IMAGE_TYPES, VIDEO_TYPES } from "@/constants/file.types"
 import { useLobbyContext } from "@/context/Lobby.context"
 import useInvoker from "@/utils/useInvoker"
+import { nanoid } from 'nanoid'
+
 type Props = {
     handleSendMessageWithFile: (message: string, file: string) => void
 }
@@ -22,8 +24,27 @@ const MediaSender: FC<Props> = ({ handleSendMessageWithFile }) => {
     const [message, setMessage] = useState<string>("")
     const [previewUrl, setPreviewUrl] = useState<string>("")
     const authValue = useAuthValue()
+    const [clipboardFile, setClipboardFile] = useState<Blob | null>()
     const [uploadPercent, setUploadPercent] = useState<number>(0)
     const { toast } = useToast()
+
+    useEffect(() => {
+        document.onpaste = async (event) => {
+            const data = await navigator.clipboard.read()
+            for (const item of data) {
+                if (!item.types.includes("image/png")) {
+                    throw new Error("Clipboard contains non-image data.");
+                }
+                const blob = await item.getType("image/png");
+                let a = URL.createObjectURL(blob)
+
+                console.log(a)
+
+                setPreviewUrl(a)
+                setClipboardFile(blob)
+            }
+        }
+    }, [])
 
     const onFileSelected = () => {
         if (fileRef?.current?.files) {
@@ -39,6 +60,27 @@ const MediaSender: FC<Props> = ({ handleSendMessageWithFile }) => {
         event.preventDefault()
 
         let type = "document"
+
+        if (clipboardFile) {
+            const id = nanoid()
+            const params = {
+                Body: clipboardFile,
+                Bucket: "luongsonchatapp",
+                Key: `${roomDetail?._id}/${type}/${authValue?.user._id}/${Date.now()}_${id}.png`,
+                ACL: "public-read"
+            };
+            await UploadService.uploader(params as any, (process) => {
+                setUploadPercent(process.loaded)
+            })
+
+            const link = `https://luongsonchatapp.sgp1.digitaloceanspaces.com/${params.Key}`
+
+            const savedFile = await invoker.post("/file/create", { room: roomDetail?._id, src: link, fileType: "image", size: clipboardFile.size })
+
+            handleSendMessageWithFile(message, link)
+
+            return
+        }
 
         if (fileRef?.current?.files && fileRef.current.files[0]) {
 
