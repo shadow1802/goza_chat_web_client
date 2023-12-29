@@ -94,6 +94,9 @@ const RoomContainer: FC<Props> = (props) => {
             setMessages(prev => {
                 const editMessageObjectIndex = [...prev].findIndex(item => item._id == data.message._id)
                 const newMessage = [...prev]
+
+                console.log(newMessage[editMessageObjectIndex].reactions)
+
                 newMessage[editMessageObjectIndex].reactions = data.message.reactions
                 return newMessage
             })
@@ -229,11 +232,13 @@ const RoomContainer: FC<Props> = (props) => {
     }
 
     const handleReaction = async (message: IMessage, emoji: string) => {
-        const { data, status } = await invoker.post(`/reaction/insert`, { chatId: message._id, emoji: emoji })
+        try {
+            const { data, status } = await invoker.post(`/reaction/insert`, { chatId: message._id, emoji: emoji })
 
-        console.log(data)
-
-        socket.emit("send_reaction_chat", { message: data, roomId: room, emoji })
+            socket.emit("send_reaction_chat", { message: data, roomId: room, emoji })
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     return <div className="flex-grow min-h-screen overflow-y-hidden text-gray-200">

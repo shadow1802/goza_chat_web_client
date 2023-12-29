@@ -5,6 +5,7 @@ import useAuthValue from "@/utils/useAuthValue"
 import { Media } from "@/types/media"
 import LazyLoad from 'react-lazy-load'
 import useInvoker from "@/utils/useInvoker"
+import { usePlayer } from "@/context/Player.context"
 
 type Props = {
     isOpen: boolean
@@ -14,6 +15,7 @@ const MediaViewer: FC<Props> = ({ isOpen }) => {
 
     const authValue = useAuthValue()
     const [medias, setMedias] = useState<Media[]>([])
+    const { setImagePlayerData } = usePlayer()
     const invoker = useInvoker()
 
     const loader = async () => {
@@ -24,7 +26,7 @@ const MediaViewer: FC<Props> = ({ isOpen }) => {
 
     const renderMedia: { [key: number]: (item: Media) => ReactNode } = {
         1: (item) => <LazyLoad height={155} className="">
-            <img src={item.src} className="h-[155px] w-full" />
+            <img onClick={() => setImagePlayerData([{ thumbnail: item.src, original: item.src }])} src={item.src} className="h-[155px] w-full" />
         </LazyLoad>,
         2: (item) => <LazyLoad height={155} className="">
             <video src={item.src} style={{height: '155px', width: '100%'}} controls />

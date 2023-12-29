@@ -21,6 +21,6 @@ export interface Reaction {
     _id: string
     emoji: string
     createdTime: string
-    createdBy: string
+    createdBy: { _id: string }
   }
   

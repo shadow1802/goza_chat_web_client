@@ -1,8 +1,25 @@
 "use client"
+import ImageGallery from "react-image-gallery"
 
 export default function PlayGroundContainer() {
 
     const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTcyZDFhYzgzMjM4ZTZkZDQ2MjgyZjQiLCJyb2xlIjoiVVNFUiIsImlzQWN0aXZlIjp0cnVlLCJpYXQiOjE3MDIwNDM3NTJ9.tgi1UO6oj4cvc-fqnyqOJvw9Ds2eXRrHczYSj55Q-uE"
+
+    const images = [
+        {
+            original: "https://picsum.photos/id/1018/1000/600/",
+            thumbnail: "https://picsum.photos/id/1018/250/150/",
+        },
+        {
+            original: "https://picsum.photos/id/1018/1000/600/",
+            thumbnail: "https://picsum.photos/id/1018/250/150/",
+        },
+    ];
+
+    const images2 = [
+        'https://picsum.photos/id/1018/1000/600/',
+        'https://picsum.photos/id/1018/250/150/',
+      ]
 
     const onSubmit = async (event: React.SyntheticEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -63,6 +80,8 @@ export default function PlayGroundContainer() {
             <input type="file" name="file" multiple />
             <button type="submit">OK</button>
         </form>
+
+        <ImageGallery onSlide={(i) => console.log(i)} items={images} renderRightNav={() => <div className="w-8 h-8 bg-red-500"></div>}/>
 
         <div className="flex flex-col space-y-2">
             <button onClick={testSearch} className="bg-sky-500 text-white">Test Search</button>

@@ -13,6 +13,7 @@ import { ICurrentUser, IUser } from '@/types/user'
 import Sidebar from '@/components/sidebar/sidebar'
 import { cookies } from 'next/headers'
 import { AuthState } from '@/types/auth'
+import PlayerProvider from '@/context/Player.context'
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
 
@@ -46,9 +47,13 @@ export default async function MainLayout({ children }: { children: React.ReactNo
 
     const { rooms, users, currentUser, notifies } = await loader()
     return <main className={`flex w-full min-h-screen`}>
-        <LobbyProvider initialCurrentUser={currentUser} initialUsers={users} initialRooms={rooms} initialNotifies={notifies}>
-            <Sidebar />
-            {children}
-        </LobbyProvider>
+        <PlayerProvider>
+
+            <LobbyProvider initialCurrentUser={currentUser} initialUsers={users} initialRooms={rooms} initialNotifies={notifies}>
+                <Sidebar />
+                {children}
+            </LobbyProvider>
+
+        </PlayerProvider>
     </main>
 }

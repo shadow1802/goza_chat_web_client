@@ -33,6 +33,9 @@ const Files: FC<Props> = ({ type }) => {
         try {
             setIsLoading(true)
             const data = await invoker.post("/file/byPath", { path: room + "/" + type })
+
+            console.log(data)
+
             setFiles(data)
             setIsLoading(false)
         } catch(error) {

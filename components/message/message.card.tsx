@@ -10,6 +10,8 @@ import useAuthValue from "@/utils/useAuthValue"
 import { CiFileOn } from "react-icons/ci"
 import { useSocket } from "@/context/Socket.context"
 import Avatar from "../useful/avatar"
+import { Reaction } from "@/types/reaction"
+import { usePlayer } from "@/context/Player.context"
 
 type Props = {
     message: IMessage,
@@ -17,13 +19,14 @@ type Props = {
     setMessageReplySender: Dispatch<SetStateAction<IMessage | null>>,
     handleRemoveMessage: (id: string) => void
     prevMessage?: IMessage | null,
-    handleReaction: (message: IMessage, emoji: string) => void,
+    handleReaction: (message: IMessage, emoji: string, cb?: (msg: IMessage) => void) => Promise<void>,
 }
 
 const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage, setMessageReplySender, prevMessage, handleReaction }) => {
 
     const { socket } = useSocket()
     const { roomDetail } = useRoomContext()
+    const { setImagePlayerData } = usePlayer()
     const authValue = useAuthValue()
     const memberDetail = roomDetail?.roomUsers.find(item => item.user._id === message.createdBy._id)
     const isSameUser = prevMessage?.createdBy._id === message.createdBy._id
@@ -42,7 +45,10 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
 
         return <div>
             {type === "video" && <video className="w-[350px]" src={file} controls></video>}
-            {type === "image" && <img src={file} className="w-[350px]" />}
+            {type === "image" && <img onClick={()=>setImagePlayerData([{
+                original: file,
+                thumbnail: file
+            }])} src={file} className="cursor-pointer w-[350px]" />}
             {type === "document" && <div className="flex items-center space-x-2 rounded-lg py-1 px-2 bg-gray-300">
                 <CiFileOn className="text-2xl text-sky-500" />
                 <a href={file} className="text-sky-500">{file.split("_").pop()}</a>
@@ -67,7 +73,7 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
                         {!isSameUser && <p className="cursor-pointer font-semibold text-sm">{message.createdBy.fullName}</p>}
                         <p className="text-sm max-w-[500px] text-block-default">{message.message}</p>
                         {message.file && <FileRender file={message.file} />}
-                        {message.reactions.map((item: any, index) => <p>{item.emoji}</p>)}
+                        {message.reactions.map((item: Reaction, index) => <p key={index}>{item.emoji}</p>)}
                     </div>
                 </div>
             </div> : <div className="my-1 msg_direction px-7 w-full flex justify-end">

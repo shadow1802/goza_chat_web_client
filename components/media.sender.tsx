@@ -33,7 +33,8 @@ const MediaSender: FC<Props> = ({ handleSendMessageWithFile }) => {
             const data = await navigator.clipboard.read()
             for (const item of data) {
                 if (!item.types.includes("image/png")) {
-                    throw new Error("Clipboard contains non-image data.");
+                    return
+                    // throw new Error("Clipboard contains non-image data.");
                 }
                 const blob = await item.getType("image/png");
                 let a = URL.createObjectURL(blob)
@@ -63,6 +64,9 @@ const MediaSender: FC<Props> = ({ handleSendMessageWithFile }) => {
 
         if (clipboardFile) {
             const id = nanoid()
+
+            type = "image"
+            
             const params = {
                 Body: clipboardFile,
                 Bucket: "luongsonchatapp",

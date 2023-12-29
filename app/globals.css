@@ -1,6 +1,8 @@
+@import "react-image-gallery/styles/css/image-gallery.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 @layer base {
   :root {
@@ -80,27 +82,40 @@
   }
 }
 
-::-webkit-scrollbar              {
+.image-gallery-thumbnails-wrapper {
+  @apply from-cyan-500 to-blue-500 bg-gradient-to-r rounded-b-lg !important;
+}
+
+.image-gallery {
+  @apply from-cyan-500 to-blue-500 bg-gradient-to-r rounded-lg !important;
+}
+
+::-webkit-scrollbar {
   position: relative;
   background: none !important;
   width: 10px !important;
 }
-::-webkit-scrollbar-button       {
+
+::-webkit-scrollbar-button {
   background: none !important;
 }
-::-webkit-scrollbar-track        {
+
+::-webkit-scrollbar-track {
   background: none !important;
 }
-::-webkit-scrollbar-track-piece  {
+
+::-webkit-scrollbar-track-piece {
   background: none !important;
 }
-::-webkit-scrollbar-thumb        {
+
+::-webkit-scrollbar-thumb {
   position: relative;
   background-color: #0EA5E9 !important;
   width: 5px !important;
   border-radius: 20px 0px 0px 20px;
 }
-::-webkit-scrollbar-corner       {
+
+::-webkit-scrollbar-corner {
   background-color: green !important;
 }
 
@@ -241,15 +256,16 @@
 
 .video-contain video {
   object-fit: contain;
-  overflow:hidden
+  overflow: hidden
 }
-textarea:focus{
+
+textarea:focus {
   outline: none;
   border-color: none;
   box-shadow: none;
 }
 
-input:focus-visible{
+input:focus-visible {
   outline: none;
   border-color: none;
   box-shadow: none;
@@ -258,17 +274,17 @@ input:focus-visible{
 .video-cover video {
   position: absolute;
   object-fit: cover;
-  
+
 }
 
-input[type="radio"]:checked + label span {
-background-color: #fff; 
-box-shadow: 0px 0px 0px 2px black inset;
+input[type="radio"]:checked+label span {
+  background-color: #fff;
+  box-shadow: 0px 0px 0px 2px black inset;
 }
 
 
-input[type="radio"]:checked + label{
- color: #fff; 
+input[type="radio"]:checked+label {
+  color: #fff;
 }
 
 .text-block-default {
