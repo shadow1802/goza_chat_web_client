@@ -13,7 +13,6 @@ import MessageCard from "@/components/message/message.card";
 import { IMessage } from "@/types/message";
 import useAuthValue from "@/utils/useAuthValue";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet"
-import { FiSend } from "react-icons/fi"
 
 import {
     Popover,
@@ -29,8 +28,6 @@ import isBlank from "@/utils/isBlank";
 import { toast } from "@/components/ui/use-toast";
 import { truncate } from "@/utils/helper";
 import MediaViewer from "@/components/media/viewer";
-import { RiSendPlaneLine } from "react-icons/ri";
-
 
 type Props = {}
 
@@ -150,6 +147,10 @@ const RoomContainer: FC<Props> = (props) => {
         }
     }
 
+    const handlePinMessage = async () => {
+        
+    }
+
     const handleSendMesssage = async () => {
         const userIds = roomDetail?.roomUsers.filter(item => item.user._id !== authValue?.user._id).map(item => item.user._id)
         if (messageRef?.current?.value) {
@@ -246,7 +247,7 @@ const RoomContainer: FC<Props> = (props) => {
         <RoomHeader />
 
         <div className="flex">
-            <div className="flex-grow bg-gray-100 border-l-2 bg-cover" style={{ backgroundImage: `url(/images/bg2.png)` }}>
+            <div className="flex-grow bg-gray-200 border-l-2 bg-cover">
                 <RoomAnouncements />
                 <div
                     id="messages_container"
@@ -292,9 +293,6 @@ const RoomContainer: FC<Props> = (props) => {
 
                 <div className="sticky flex flex-col items-center justify-center space-x-2 bottom-0 w-full min-h-[15.8vh] px-12">
 
-                    <div className="absolute w-full top-2 h-[2px] px-12">
-                        <div className="h-[2px] w-full shadow-lg drop-shadow bg-gray-100"></div>
-                    </div>
 
                     {/* (!messageReplySender && !messageEditor) && (<div className="pb-1 w-full flex items-center">
                         <button className="px-2 py-1 bg-red-500 text-white ">Buzz !!!</button>

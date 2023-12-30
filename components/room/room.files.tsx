@@ -1,14 +1,6 @@
 import useInvoker from "@/utils/useInvoker"
 import { FC, useEffect, useState } from "react"
 import { useParams } from "next/navigation"
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/tabs"
-import { CiFileOn } from "react-icons/ci"
-import { dateTimeConverter } from "@/utils/dateTimeConverter"
 import { IoDocument } from "react-icons/io5"
 import { truncate } from "@/utils/helper"
 

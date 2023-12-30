@@ -6,7 +6,7 @@ import { FC, ReactNode } from "react"
 import { useRoomContext } from "@/context/Room.context"
 import { useParams, useRouter } from "next/navigation"
 import { FaUserFriends } from "react-icons/fa"
-import RoomSetting from "./room.setting"
+import { TiPin } from "react-icons/ti"
 import { CiFileOn, CiImageOn, CiVideoOn } from "react-icons/ci"
 import Files from "./room.files"
 import { PrivateRoom, PublicRoom } from "./room.header.detail"
@@ -25,13 +25,19 @@ const RoomHeader: FC<Props> = (props) => {
 
     return <div className="room_header min-h-[6vh] w-full bg-white border-l-2 border-b-2 flex justify-between items-center py-2 px-4">
 
-        { roomDetail && RoomHeaderDetail[roomDetail.roomType] }
+        {roomDetail && RoomHeaderDetail[roomDetail.roomType]}
 
         <div className="flex items-center space-x-3">
 
+            <div className="hidden drop-shadow-sm shadow-sm w-[240px] cursor-pointer border-[1px] border-sky-500 justify-between bg-gray-300 rounded-lg pl-3 items-center space-x-2">
+                <p className="text-sm font-semibold text-gray-600">Tin nhắn này được gim...</p>
+                <div className="relative bg-sky-500 rounded-r-sm cursor-pointer p-1">
+                    <TiPin className="text-white text-xl" />
+                </div>
+            </div>
+
             <div className="relative cursor-pointer" onClick={() => router.push(`/${room}/meeting`)}>
                 <SiGooglemeet className="text-xl text-sky-500" />
-                <p className="absolute -top-2 -left-6 bg-red-500 px-1 rounded-md text-xs font-semibold">beta</p>
             </div>
 
             <Dialog>

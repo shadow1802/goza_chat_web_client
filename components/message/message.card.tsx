@@ -1,9 +1,7 @@
 "use client"
 import { IMessage } from "@/types/message"
-import { dateTimeConverter } from "@/utils/dateTimeConverter"
 import { FC, Dispatch, SetStateAction } from "react"
 import { useRoomContext } from "@/context/Room.context"
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import MessageCardMenu from "./message.card.menu"
 import { IMAGE_TYPES, VIDEO_TYPES } from "@/constants/file.types"
 import useAuthValue from "@/utils/useAuthValue"
@@ -12,6 +10,7 @@ import { useSocket } from "@/context/Socket.context"
 import Avatar from "../useful/avatar"
 import { Reaction } from "@/types/reaction"
 import { usePlayer } from "@/context/Player.context"
+import LazyLoad from 'react-lazy-load'
 
 type Props = {
     message: IMessage,
@@ -24,14 +23,13 @@ type Props = {
 
 const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage, setMessageReplySender, prevMessage, handleReaction }) => {
 
-    const { socket } = useSocket()
     const { roomDetail } = useRoomContext()
     const { setImagePlayerData } = usePlayer()
     const authValue = useAuthValue()
-    const memberDetail = roomDetail?.roomUsers.find(item => item.user._id === message.createdBy._id)
+    // const memberDetail = roomDetail?.roomUsers.find(item => item.user._id === message.createdBy._id)
     const isSameUser = prevMessage?.createdBy._id === message.createdBy._id
 
-    const counter = message.reactions
+    // const counter = message.reactions
 
     const FileRender: FC<{ file: string }> = ({ file }) => {
         let type = "document"
@@ -59,7 +57,7 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
     const isSameCreator = authValue?.user._id === message.createdBy._id
 
     return <MessageCardMenu message={message} setMessageEditor={setMessageEditor} handleRemoveMessage={handleRemoveMessage} setMessageReplySender={setMessageReplySender} handleReaction={handleReaction}>
-        <div onClick={() => console.log(message)}>
+        <div>
             {isSameCreator ? <div id={message._id} className="msg_direction px-7 w-full flex justify-start">
                 <div className="msg_container p-2 flex items-start max-w-[500px] space-x-2">
 
