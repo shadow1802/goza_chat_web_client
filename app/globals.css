@@ -110,15 +110,11 @@
 
 ::-webkit-scrollbar-thumb {
   position: relative;
-  background-color: #0EA5E9 !important;
+  border: 1px solid rgb(167, 167, 167);
+  background-color: white !important;
   width: 5px !important;
   border-radius: 20px 0px 0px 20px;
 }
-
-::-webkit-scrollbar-corner {
-  background-color: green !important;
-}
-
 
 .tran-y-3 {
   transform: translateY(-50%);
@@ -302,4 +298,32 @@ input[type="radio"]:checked+label {
 
 .landing {
   background-image: url(/images/bg.png);
+}
+
+.hehe {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: url(/images/bg-overlay.jpg);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    opacity: 1;
+    transition: none;
+}
+
+.hehe::before {
+  content: "";
+  position: fixed;
+  top: 7vh;
+  left: 20%;
+  width: 100%;
+  height: 100%;
+  background: url(/images/bg-pattern.svg);
+  background-size: contain;
+  opacity: .4;
+  mix-blend-mode: overlay;
+}
+
+.tungdz {
+  background-color: #77A384;
 }

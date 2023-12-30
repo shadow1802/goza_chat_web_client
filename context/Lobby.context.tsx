@@ -131,13 +131,14 @@ function LobbyProvider({ initialUsers, initialRooms, initialCurrentUser, initial
                     title: `Tin nhắn mới`,
                     duration: 2000,
                     onClick: async () => {
-                        if (data.room.roomType === 3) {
-                            router.push(`/${data.room._id}`)
-                        } else {
-                            const res = await invoker.get(`/room/getRoomById/${data.room._id}`)
-                            setPrivateRoomDetail(res.data)
-                            setShowChatScreen(true)
-                        }
+                        router.push(`/${data.room._id}`)
+                        // if (data.room.roomType === 3) {
+                        //     router.push(`/${data.room._id}`)
+                        // } else {
+                        //     const res = await invoker.get(`/room/getRoomById/${data.room._id}`)
+                        //     setPrivateRoomDetail(res.data)
+                        //     setShowChatScreen(true)
+                        // }
                     },
                     description: <div className="flex items-center space-x-3">
                         {data.createdBy.avatar ? <img src={data.createdBy.avatar} className="border-2 border-sky-500 w-12 h-12 rounded-full" />

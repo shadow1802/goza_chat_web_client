@@ -62,13 +62,13 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
                 <div className="msg_container p-2 flex items-start max-w-[500px] space-x-2">
 
                     {!isSameUser ? <Avatar className="border-2 border-sky-500 w-12 h-12 rounded-full" name={message.createdBy.fullName} src={message.createdBy.avatar}/> : <div className="w-14"></div>}
-                    <div className="bg-sky-500 rounded-lg shadow-lg px-3 py-[0.28rem]">
-                        {message.replyTo && <div className="border-2 px-2 rounded-lg">
-                            <p>Trả lời tin nhắn của {message.replyTo.createdBy.fullName}:</p>
-                            <p className="text-sm max-w-[500px] text-block-default">{message.replyTo.message}</p>
+                    <div className="bg-black bg-opacity-25 rounded-lg shadow-lg px-3 py-[0.3rem]">
+                        {!isSameUser && <p className="cursor-pointer font-semibold text-sm">{message.createdBy.fullName}</p>}
+                        {message.replyTo && <div className="border-l-[2px] bg-black bg-opacity-25 border-white px-2 rounded-md">
+                            <p className="text-xs font-semibold">{message.replyTo.createdBy.fullName}</p>
+                            <p className="text-xs max-w-[500px] text-block-default">{message.replyTo.message}</p>
                             {message.replyTo.file && <FileRender file={message.replyTo.message} />}
                         </div>}
-                        {!isSameUser && <p className="cursor-pointer font-semibold text-sm">{message.createdBy.fullName}</p>}
                         <p className="text-sm max-w-[500px] text-block-default">{message.message}</p>
                         {message.file && <FileRender file={message.file} />}
                         {message.reactions.map((item: Reaction, index) => <p key={index}>{item.emoji}</p>)}
@@ -77,14 +77,13 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
             </div> : <div className="my-1 msg_direction px-7 w-full flex justify-end">
                 <div className="msg_container flex items-start max-w-[500px] space-x-2">
                     {!isSameUser && <Avatar className="border-2 w-12 h-12 rounded-full" name={message.createdBy.fullName} src={message.createdBy.avatar}/>}
-                    <div className="relative px-3 py-[0.28rem] bg-white rounded-lg shadow-lg">
-
-                        {message.replyTo && <div className="border-2 px-2 rounded-lg">
-                            <p>Trả lời tin nhắn của {message.replyTo.createdBy.fullName}:</p>
-                            <p className="text-sm max-w-[500px] text-block-default">{message.replyTo.message}</p>
+                    <div className="relative px-3 py-[0.28rem] bg-white bg-opacity-30 rounded-lg shadow-lg">
+                        {!isSameUser && <p className="font-semibold text-gray-600 text-sm">{message.createdBy.fullName}</p>}
+                        {message.replyTo && <div className="border-l-[2px] bg-white bg-opacity-30 border-white px-2 rounded-md">
+                            <p className="text-xs font-semibold text-gray-600">{message.replyTo.createdBy.fullName}</p>
+                            <p className="text-xs max-w-[500px] text-gray-600 text-block-default">{message.replyTo.message}</p>
                             {message.replyTo.file && <FileRender file={message.replyTo.message} />}
                         </div>}
-                        {!isSameUser && <p className="font-semibold text-gray-500 text-sm">{message.createdBy.fullName}</p>}
                         <p className="text-sm max-w-[500px] text-block-default text-black">{message.message}</p>
                         {message.file && <FileRender file={message.file} />}
                     </div>

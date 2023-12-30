@@ -247,7 +247,7 @@ const RoomContainer: FC<Props> = (props) => {
         <RoomHeader />
 
         <div className="flex">
-            <div className="flex-grow bg-gray-200 border-l-2 bg-cover">
+            <div className="hehe flex-grow border-l-2">
                 <RoomAnouncements />
                 <div
                     id="messages_container"

@@ -45,7 +45,7 @@ const RoomAnouncements: FC<Props> = () => {
     }
 
     return <div>
-        {anouncements?.length > 0 ? <div className="flex border-l-[10px] border-sky-500 shadow-lg drop-shadow-lg items-center w-full h-[4vh] px-4 justify-between">
+        {anouncements?.length > 0 ? <div className="bg-white flex border-l-[10px] border-sky-500 shadow-lg drop-shadow-lg items-center w-full h-[4vh] px-4 justify-between">
             <div className="flex space-x-1 text-gray-600 text-sm">
                 <strong className="text-sky-500 underline">Thông báo:</strong>
                 <span> {truncate(anouncements[0].message, 100)}</span>
@@ -101,7 +101,7 @@ const RoomAnouncements: FC<Props> = () => {
                     </div>
                 </DialogContent>
             </Dialog>
-        </div> : <div className="border-l-sky-500 shadow-lg border-l-[10px] flex items-center w-full h-[4vh] px-4 justify-between">
+        </div> : <div className="bg-white flex border-l-[10px] border-sky-500 shadow-lg drop-shadow-lg items-center w-full h-[4vh] px-4 justify-between">
             <p className="text-gray-600 text-sm"><strong className="underline text-sky-500">Thông báo:</strong> <span className="text-gray-400">trống</span></p>
         </div>}
     </div>
