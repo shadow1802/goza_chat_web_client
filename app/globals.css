@@ -301,14 +301,14 @@ input[type="radio"]:checked+label {
 }
 
 .hehe {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    background: url(/images/bg-overlay.jpg);
-    background-size: 100%;
-    background-repeat: no-repeat;
-    opacity: 1;
-    transition: none;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: url(/images/bg-overlay.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 1;
+  transition: none;
 }
 
 .hehe::before {
@@ -322,6 +322,18 @@ input[type="radio"]:checked+label {
   background-size: contain;
   opacity: .4;
   mix-blend-mode: overlay;
+}
+
+@media screen and (max-width: 800px) {
+  .hehe::before {
+    left: 0%;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .hehe::before {
+    left: 30%;
+  }
 }
 
 .tungdz {

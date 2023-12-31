@@ -43,6 +43,7 @@ const RoomSetting: FC<Props> = () => {
     const [inviteUrl, setInviteUrl] = useState<string>("")
     const { toast } = useToast()
 
+    const memberInfo = roomDetail?.roomUsers.find(item => item.user._id === authValue?.user._id)
     const inviteMember = async ({ roomId, userId }: { roomId: string, userId: string }) => {
         const { status, data } = await invoker.post("/usersrooms/insert", {
             userId,
@@ -145,6 +146,8 @@ const RoomSetting: FC<Props> = () => {
     const raw = roomDetail?.roomUsers.map(item => item.user._id)
     const isOwner = roomDetail?.roomOwner === authValue?.user._id
 
+    console.log(memberInfo)
+
     return <div className={`room_setting py-4`}>
         <div className="w-full flex flex-col items-center">
             <label htmlFor="room_icon">
@@ -161,8 +164,8 @@ const RoomSetting: FC<Props> = () => {
                 <input disabled={!isOwner} onChange={(e) => setRoomName(e.target.value)} value={roomName} className="disabled:bg-white border-none outline-none text-center mt-2 text-lg font-bold text-sky-500 w-auto" />
                 <MdModeEdit className="hidden ml-1 text-sky-500 mt-2 text-base group-hover:block" onClick={changeRoomName} />
             </div>
-
-            <button onClick={createInviteLink} className="font-semibold px-4 py-1 text-white bg-sky-500 my-1">Tạo link mời</button>
+            <p className="text-sm">Chủ phòng và quản lý mới có thể thêm thành viên</p>
+            { memberInfo && <button onClick={createInviteLink} disabled={memberInfo.roomRole === 2} className="disabled:bg-gray-500 font-semibold px-4 py-1 text-white bg-sky-500 my-1">Tạo link mời</button> }
 
             {inviteUrl && <div onClick={() => copier(inviteUrl)} className="cursor-pointer my-2 rounded-lg bg-gray-200 px-4 py-2 shadow-lg drop-shadow-lg border-t-2 flex space-x-2 items-center">
                 <p className="cursor-pointer text-xs text-sky-500">{inviteUrl}</p>
@@ -186,8 +189,8 @@ const RoomSetting: FC<Props> = () => {
 
                 <div className="border-b-2 flex p-4 justify-between items-center">
                     <p className="text-sm font-semibold">Danh sách thành viên</p>
-                    <AlertDialog>
-                        <AlertDialogTrigger><FaUserPlus className="text-lg text-sky-600" /></AlertDialogTrigger>
+                    { memberInfo && <AlertDialog>
+                        <AlertDialogTrigger disabled className="disabled:text-gray-600"><FaUserPlus className="text-lg text-sky-600" /></AlertDialogTrigger>
                         <AlertDialogContent>
                             <AlertDialogHeader>
                                 <AlertDialogTitle>Thêm thành viên</AlertDialogTitle>
@@ -234,7 +237,7 @@ const RoomSetting: FC<Props> = () => {
 
                             </AlertDialogFooter>
                         </AlertDialogContent>
-                    </AlertDialog>
+                    </AlertDialog>}
                 </div>
 
                 <div className="max-h-[400px] overflow-y-auto scrollbar-none">

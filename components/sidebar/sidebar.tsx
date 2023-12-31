@@ -75,14 +75,14 @@ const Sidebar: FC<Props> = (props) => {
 
     const [showListOfContact, setShowListOfContact] = useState<boolean>(false)
 
-    return <div className="w-[380px] min-h-screen bg-white flex overflow-auto">
+    return <div className="w-[80px] md:w-[380px] md:flex lg:w-[380px] xl:w-[380px] min-h-screen bg-white lg:flex overflow-auto">
 
-        <div className="">
+        <div className="w-[80px]">
             <div className="flex flex-col items-center h-[80vh] overflow-y-auto scrollbar-none bg-sky-500">
                 <div onClick={() => router.push("/")} className="cursor-pointer w-20 h-20">
                     <img src="/images/bg.png" className="w-full h-full" alt="" />
                 </div>
-                <div className="space-y-4 flex flex-col items-center justify-center pt-6">
+                <div className="relative z-[10] space-y-4 flex flex-col items-center justify-center pt-6">
                     <Hoverable content={<p className="text-sky-500">Danh bạ</p>}>
                         <BsJournal onClick={() => setShowListOfContact(true)} className="shadow-lg drop-shadow-lg cursor-pointer text-4xl text-white" />
                         <span className="mt-1 text-white text-sm font-semibold">Danh bạ</span>
@@ -110,7 +110,7 @@ const Sidebar: FC<Props> = (props) => {
             </div>
         </div>
 
-        <div className="relative flex-col justify-between h-full flex-grow">
+        <div className="hidden sm:hidden md:block lg:block relative flex-col justify-between h-full flex-grow">
 
             <div className="">
 
