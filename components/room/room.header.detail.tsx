@@ -23,7 +23,7 @@ export const PrivateRoom: FC<PrivateRoomProps> = ({ roomDetail }) => {
             </div>)}
         <div>
             <p className="text-sm font-semibold text-black uppercase">{target?.user.fullName}</p>
-            <p className="text-xs font-semibold text-gray-500">{roomDetail?.roomUsers?.length} thành viên</p>
+            {/*<p className="text-xs font-semibold text-gray-500">{roomDetail?.roomUsers?.length} thành viên</p>*/}
         </div>
     </div>
 }

@@ -35,7 +35,7 @@ const RoomContainer: FC<Props> = (props) => {
 
     const { room } = useParams()
     const { socket } = useSocket()
-    const { messages, setMessages, roomDetail, messageEditor, setMessageEditor, messageReplySender, setMessageReplySender, setOnlineRoomUsers } = useRoomContext()
+    const { messages, setMessages, roomDetail, messageEditor, setMessageEditor, messageReplySender, setMessageReplySender, setOnlineRoomUsers, reloader } = useRoomContext()
     const authValue = useAuthValue()
     const messageRef = useRef<HTMLTextAreaElement>(null)
     const formRef = useRef<HTMLFormElement>(null)
@@ -58,6 +58,10 @@ const RoomContainer: FC<Props> = (props) => {
 
                 setOnlineRoomUsers(data.users)
             }
+        })
+
+        socket.on("receive_send_anouncement", () => {
+            reloader.anouncements()
         })
 
         socket.on("receive_leave_room", (data: any) => {
@@ -248,7 +252,7 @@ const RoomContainer: FC<Props> = (props) => {
 
         <div className="flex">
             <div className="hehe bg-cover flex-grow border-l-2">
-                <RoomAnouncements />
+                <RoomAnouncements showAnouncementSender={showAnouncementSender} setShowAnouncementSender={setShowAnouncementSender}/>
                 <div
                     id="messages_container"
                     className="relative pb-0 px-5"
@@ -328,15 +332,6 @@ const RoomContainer: FC<Props> = (props) => {
                         </div>
 
                         <div className="flex justify-between items-center space-x-3 bg-sky-500 px-4 py-2">
-
-                            <Dialog open={showAnouncementSender} onOpenChange={setShowAnouncementSender}>
-                                <DialogTrigger>
-                                    <img src="/icons/notify.svg" className="w-6 hover:scale-[120%] duration-200" alt="" />
-                                </DialogTrigger>
-                                <DialogContent className="p-0 border-0 w-[500px]">
-                                    <AnouncementSender setShowAnouncementSender={setShowAnouncementSender} />
-                                </DialogContent>
-                            </Dialog>
 
                             <Popover>
                                 <PopoverTrigger asChild>
