@@ -86,6 +86,7 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
                         </div>}
                         <p className="text-sm max-w-[500px] text-block-default text-black">{message.message}</p>
                         {message.file && <FileRender file={message.file} />}
+                        {message.reactions.map((item: Reaction, index) => <p key={index}>{item.emoji}</p>)}
                     </div>
                 </div>
             </div>}
