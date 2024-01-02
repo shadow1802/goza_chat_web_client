@@ -6,11 +6,9 @@ import MessageCardMenu from "./message.card.menu"
 import { IMAGE_TYPES, VIDEO_TYPES } from "@/constants/file.types"
 import useAuthValue from "@/utils/useAuthValue"
 import { CiFileOn } from "react-icons/ci"
-import { useSocket } from "@/context/Socket.context"
 import Avatar from "../useful/avatar"
 import { Reaction } from "@/types/reaction"
 import { usePlayer } from "@/context/Player.context"
-import LazyLoad from 'react-lazy-load'
 
 type Props = {
     message: IMessage,
