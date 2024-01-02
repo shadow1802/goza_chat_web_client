@@ -13,7 +13,7 @@ export default function Privacy() {
 
         <main className="px-20 mt-12">
             <div className="w-full bg-white rounded-xl">
-                <h1 className="flex text-gray-600 items-center space-x-2 text-2xl font-semibold px-6 py-2 border-b-[4px] border-sky-500"><GrShieldSecurity /> <span>Chính sách bảo mật</span></h1>
+                <h1 className="flex text-gray-600 items-center space-x-2 text-2xl font-semibold px-6 py-2 border-b-[4px] border-sky-500"><GrShieldSecurity /> <span>Privacy Policy</span></h1>
 
                 <section className="section-content font-semibold text-sm px-6 py-4 space-y-1">
                     <p className="max-w-[80%]">We has built the Goza chat as a free app. This service is provided by Goza chat for free.</p>
