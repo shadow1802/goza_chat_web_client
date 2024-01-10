@@ -4,7 +4,7 @@ import { IMessage } from "@/types/message"
 import { IRoom } from "@/types/room"
 import { IRoomDetail } from "@/types/room.detail"
 import useInvoker from "@/utils/useInvoker"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { createContext, useContext, useState, Dispatch, SetStateAction, useEffect } from "react"
 
 const RoomContext = createContext<{
@@ -44,6 +44,7 @@ type Props = {
 function RoomProvider({ children }: Props) {
     const { room } = useParams()
     const invoker = useInvoker()
+    const router = useRouter()
     const [loading, setLoading] = useState<boolean>(true)
     const [messages, setMessages] = useState<IMessage[]>([])
     const [roomDetail, setRoomDetail] = useState<IRoomDetail | null>(null)
@@ -54,16 +55,27 @@ function RoomProvider({ children }: Props) {
 
     const reloader = {
         anouncements: async () => {
-            const { data } = await invoker.get(`/room/notify/paging?roomId=${room}`)
+            const { data, status } = await invoker.get(`/room/notify/paging?roomId=${room}`)
+            if (status !== 200) {
+                router.push("/")
+                throw new Error("cannot find")
+            }
             setAnouncements(data.data)
         },
         roomDetail: async () => {
-            const { data } = await invoker.get(`/room/getRoomById/${room}`)
-            console.log(data)
+            const { data, status } = await invoker.get(`/room/getRoomById/${room}`)
+            if (status !== 200) {
+                router.push("/")
+                throw new Error("cannot find")
+            }
             setRoomDetail(data)
         },
         messages: async () => {
-            const { data: { data } } = await invoker.get(`/chat/getPaging?room=${room}`)
+            const { data: { data, status } } = await invoker.get(`/chat/getPaging?room=${room}`)
+            if (status !== 200) {
+                router.push("/")
+                throw new Error("cannot find")
+            }
             setMessages(data)
         }
     }

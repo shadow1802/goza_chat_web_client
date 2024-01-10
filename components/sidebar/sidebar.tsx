@@ -51,25 +51,9 @@ const Sidebar: FC<Props> = (props) => {
 
     const handlerClickUser = async (userId: string) => {
 
-        console.log("user is clicked some where")
-
         if (authValue) {
-            const { data } = await get(`/room/findPrivateRoom/${authValue.user._id}_${userId}`)
-            if (data) {
-                router.push(`/${data._id}`)
-                // setPrivateRoomDetail(data)
-                // setShowChatScreen(true)
-            } else {
-                const { data: newRoom } = await post(`/room/insert`, {
-                    roomName: ' ',
-                    roomType: 0,
-                    key: `${authValue.user._id}_${userId}`,
-                    roomUsers: JSON.stringify([userId])
-                })
-                // setPrivateRoomDetail(newRoom)
-                // setShowChatScreen(true)
-                router.push(`/${newRoom._id}`)
-            }
+            const { data } = await post(`/room/startPrivateChat`, { target: userId })
+            router.push(`/${data._id}`)
         }
     }
 

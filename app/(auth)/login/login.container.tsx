@@ -10,7 +10,7 @@ import { useRef, useState, useEffect } from "react"
 import { CiLock, CiUser } from "react-icons/ci"
 import { FcGoogle } from "react-icons/fc"
 import { FaFacebook } from "react-icons/fa6"
-import { GoogleAuthProvider, signInWithPopup, FacebookAuthProvider, linkWithPhoneNumber } from "firebase/auth"
+import { GoogleAuthProvider, signInWithPopup, FacebookAuthProvider, OAuthProvider } from "firebase/auth"
 import { auth } from "@/lib/firebase"
 import { useSocket } from "@/context/Socket.context"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
@@ -18,9 +18,9 @@ import QRCode from "react-qr-code"
 import { nanoid } from 'nanoid'
 import { AuthObject } from "@/types/login.verify"
 
-type Props = { invition?: string }
+type Props = { invition?: string, redirect?: string }
 
-export default function LoginContainer({ invition }: Props) {
+export default function LoginContainer({ invition, redirect }: Props) {
 
     const { toast } = useToast()
     const [loading, setLoading] = useState<boolean>(false)
@@ -29,7 +29,11 @@ export default function LoginContainer({ invition }: Props) {
     const { socket } = useSocket()
     const [openLoginVerify, setOpenLoginVerify] = useState<string | null>(null)
 
+
     useEffect(() => {
+
+        console.log(redirect)
+
         socket.on("receive_verify_login", (data: AuthObject) => {
             setCookie("auth", JSON.stringify({
                 token: data.token,
@@ -54,6 +58,7 @@ export default function LoginContainer({ invition }: Props) {
             setLoading(true)
         })
     }, [socket])
+
 
     const loginWithGoogle = async () => {
         try {
@@ -81,9 +86,9 @@ export default function LoginContainer({ invition }: Props) {
                 })
                 setLoading(true)
 
-                if (invition) {
-                    router.push(`/invition/${invition}`)
-                } else router.push("/")
+                if (invition) router.push(`/invition/${invition}`)
+                if (redirect) router.push(`/${redirect}`)
+                router.push("/")
             }
 
         } catch (error) {
@@ -166,9 +171,13 @@ export default function LoginContainer({ invition }: Props) {
                     description: <p className='text-green-500 font-semibold'>{message}</p>,
                 })
                 setLoading(true)
-
-                if (invition) {
+                
+                if (redirect) {
+                    router.push(`/account/disable-account`)
+                    return
+                } else if (invition) {
                     router.push(`/invition/${invition}`)
+                    return
                 } else router.push("/")
             } else {
                 toast({
@@ -292,6 +301,9 @@ export default function LoginContainer({ invition }: Props) {
         <button type="button" onClick={loginWithPhone} className='text-white w-full font-semibold duration-150 shadow-md shadow-white rounded-lg py-2 px-6 from-cyan-500 to-blue-500 bg-gradient-to-r'>
             Đăng nhập bằng điện thoại
         </button>
+
+
+
         <div className="my-4 w-full flex space-x-2 items-center justify-center">
             <div className="h-[2px] w-[120px] bg-gray-300" />
             <p className="font-semibold text-gray-600 text-sm">Hoặc đăng nhập với</p>

@@ -90,7 +90,6 @@ const RoomContainer: FC<Props> = (props) => {
         })
 
         socket.on("receive_reaction_chat", (data) => {
-            console.log(data, "da thay doi")
 
             setMessages(prev => {
                 const editMessageObjectIndex = [...prev].findIndex(item => item._id == data.message._id)

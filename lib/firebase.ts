@@ -14,13 +14,6 @@ const firebaseConfig = {
   measurementId: "G-SBSW3HW0Y9"
 };
 
-class CreateSocialUserBody {
-    fullName!: string
-    email!: string
-    provider!: "facebook" | "google"
-    avatar?: string
-}
-
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app)
