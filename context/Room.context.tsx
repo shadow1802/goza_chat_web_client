@@ -56,26 +56,26 @@ function RoomProvider({ children }: Props) {
     const reloader = {
         anouncements: async () => {
             const { data, status } = await invoker.get(`/room/notify/paging?roomId=${room}`)
-            if (status !== 200) {
-                router.push("/")
-                throw new Error("cannot find")
-            }
+            // if (status !== 200) {
+            //     router.push("/")
+            //     throw new Error("cannot find")
+            // }
             setAnouncements(data.data)
         },
         roomDetail: async () => {
             const { data, status } = await invoker.get(`/room/getRoomById/${room}`)
-            if (status !== 200) {
-                router.push("/")
-                throw new Error("cannot find")
-            }
+            // if (status !== 200) {
+            //     router.push("/")
+            //     throw new Error("cannot find")
+            // }
             setRoomDetail(data)
         },
         messages: async () => {
             const { data: { data, status } } = await invoker.get(`/chat/getPaging?room=${room}`)
-            if (status !== 200) {
-                router.push("/")
-                throw new Error("cannot find")
-            }
+            // if (status !== 200) {
+            //     router.push("/")
+            //     throw new Error("cannot find")
+            // }
             setMessages(data)
         }
     }

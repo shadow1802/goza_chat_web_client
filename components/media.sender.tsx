@@ -77,7 +77,7 @@ const MediaSender: FC<Props> = ({ handleSendMessageWithFile }) => {
                 setUploadPercent(process.loaded)
             })
 
-            const link = `https://luongsonchatapp.sgp1.digitaloceanspaces.com/${params.Key}`
+            let link = params.Key
 
             const savedFile = await invoker.post("/file/create", { room: roomDetail?._id, src: link, fileType: "image", size: clipboardFile.size })
 

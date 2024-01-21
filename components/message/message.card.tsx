@@ -55,7 +55,7 @@ const MessageCard: FC<Props> = ({ message, setMessageEditor, handleRemoveMessage
     const isSameCreator = authValue?.user._id === message.createdBy._id
 
     return <MessageCardMenu message={message} setMessageEditor={setMessageEditor} handleRemoveMessage={handleRemoveMessage} setMessageReplySender={setMessageReplySender} handleReaction={handleReaction}>
-        <div>
+        <div onClick={()=>console.log(message)}>
             {isSameCreator ? <div id={message._id} className="msg_direction px-7 w-full flex justify-start">
                 <div className="msg_container p-2 flex items-start max-w-[500px] space-x-2">
 
