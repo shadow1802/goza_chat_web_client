@@ -71,7 +71,7 @@ const RoomContainer: FC<Props> = (props) => {
         })
 
         socket.on("receive_chat", (data: IMessage) => {
-            if (data.room._id === room) {
+            if (data.room === room) {
                 setMessages(prev => {
                     const newListOfMessage = [data, ...prev]
                     return newListOfMessage // uniqueArray
@@ -193,7 +193,7 @@ const RoomContainer: FC<Props> = (props) => {
                     title: data.createdBy.fullName,
                     body: data.message,
                     userIds: roomDetail.roomUsers.map(item => item.user._id),
-                    image: data.createdBy.avatar ?? "",
+                    image: "",
                     clickAction: `IN_CHAT_ROOM_${roomDetail._id}`
                 })
             }

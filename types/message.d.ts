@@ -3,7 +3,7 @@ import { Reaction } from "./reaction"
 export interface IMessage {
     _id: string
     message: string
-    room: { _id: string, roomName: string, roomIcon: string, roomType: number }
+    room: string
     type: number
     file: string
     createdTime: Date

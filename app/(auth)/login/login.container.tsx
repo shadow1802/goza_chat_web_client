@@ -10,13 +10,14 @@ import { useRef, useState, useEffect } from "react"
 import { CiLock, CiUser } from "react-icons/ci"
 import { FcGoogle } from "react-icons/fc"
 import { FaFacebook } from "react-icons/fa6"
-import { GoogleAuthProvider, signInWithPopup, FacebookAuthProvider, OAuthProvider } from "firebase/auth"
+import { GoogleAuthProvider, signInWithPopup, FacebookAuthProvider } from "firebase/auth"
 import { auth } from "@/lib/firebase"
 import { useSocket } from "@/context/Socket.context"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import QRCode from "react-qr-code"
 import { nanoid } from 'nanoid'
 import { AuthObject } from "@/types/login.verify"
+import { ROLES } from "@/constants/user.roles"
 
 type Props = { invition?: string, redirect?: string }
 
@@ -160,11 +161,21 @@ export default function LoginContainer({ invition, redirect }: Props) {
             const { status, data, message } = await res.json()
 
             if (status === 200) {
+
+                console.log(data.user.role.roleName)
+                
+                
                 setCookie("auth", JSON.stringify({
                     token: data.token, user: {
                         _id: data.user._id, username: data.user.username, role: data.user.role, bio: data.user.bio
                     }
                 }))
+
+                if (data.user.role.roleName === ROLES.SUPERADMIN) {
+                    console.log("hien thi popup")
+                    
+                }
+
                 toast({
                     title: message,
                     duration: 2000,
@@ -179,6 +190,7 @@ export default function LoginContainer({ invition, redirect }: Props) {
                     router.push(`/invition/${invition}`)
                     return
                 } else router.push("/")
+            
             } else {
                 toast({
                     duration: 2000,
